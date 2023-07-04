@@ -133,6 +133,14 @@
 <a href="#133" id="133">133</a>
 <a href="#134" id="134">134</a>
 <a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>actix_web::{get, web::Data, App, HttpResponse, HttpServer};
 <span class="kw">use </span>skema::config::Config;
 <span class="kw">use </span>skema::services::{comment_extraction, gromet};
@@ -169,10 +177,13 @@
 
 <span class="attr">#[actix_web::main]
 </span><span class="kw">async fn </span>main() -&gt; std::io::Result&lt;()&gt; {
+    pretty_env_logger::init();
+
     <span class="attr">#[derive(OpenApi)]
     #[openapi(
         paths(
             comment_extraction::get_comments,
+            comment_extraction::get_comments_from_zipfile,
             skema::services::mathml::get_ast_graph,
             skema::services::mathml::get_math_exp_graph,
             skema::services::mathml::get_acset,
@@ -187,6 +198,8 @@
             gromet::get_subgraph,
             gromet::get_model_PN,
             gromet::get_model_RN,
+            gromet::model2PN,
+            gromet::model2RN,
             ping
         ),
         components(
@@ -254,6 +267,7 @@
             }))
             .configure(gromet::configure())
             .service(comment_extraction::get_comments)
+            .service(comment_extraction::get_comments_from_zipfile)
             .service(skema::services::mathml::get_ast_graph)
             .service(skema::services::mathml::get_math_exp_graph)
             .service(skema::services::mathml::get_acset)
@@ -261,6 +275,8 @@
             .service(skema::services::mathml::get_amr)
             .service(gromet::get_model_PN)
             .service(gromet::get_model_RN)
+            .service(gromet::model2PN)
+            .service(gromet::model2RN)
             .service(ping)
             .service(SwaggerUi::new(<span class="string">&quot;/docs/{_:.*}&quot;</span>).url(<span class="string">&quot;/api-doc/openapi.json&quot;</span>, openapi.clone()))
     })
