@@ -39,19 +39,9 @@ node data_generation/mathjax_server.js
 &#34;&#34;&#34;
 
 from typing import Text
-from fastapi import FastAPI, File, Body
+from fastapi import FastAPI
 from skema.img2mml.api import get_mathml_from_latex
-from pydantic import BaseModel, Field
-
-
-class LatexEquation(BaseModel):
-    tex_src: Text = Field(description=&#34;The LaTeX equation to process&#34;)
-    class Config:
-        schema_extra = {
-            &#34;example&#34;: {
-                &#34;tex_src&#34;: &#34;E = mc^{c}&#34;,
-            }
-        }
+from skema.img2mml import schema
 
 # Create a web app using FastAPI
 
@@ -73,7 +63,7 @@ async def get_mathml(tex_src: str):
     return get_mathml_from_latex(tex_src)
 
 @app.post(&#34;/latex2mml&#34;, summary=&#34;Get MathML representation of a LaTeX equation&#34;)
-async def mathml(eqn: LatexEquation):
+async def mathml(eqn: schema.LatexEquation):
     &#34;&#34;&#34;
     Endpoint for generating MathML from an input LaTeX equation.
     &#34;&#34;&#34;
@@ -108,7 +98,7 @@ async def get_mathml(tex_src: str):
 </details>
 </dd>
 <dt id="skema.img2mml.latex2mml.mathml"><code class="name flex">
-<span>async def <span class="ident">mathml</span></span>(<span>eqn: <a title="skema.img2mml.latex2mml.LatexEquation" href="#skema.img2mml.latex2mml.LatexEquation">LatexEquation</a>)</span>
+<span>async def <span class="ident">mathml</span></span>(<span>eqn: <a title="skema.img2mml.schema.LatexEquation" href="schema.html#skema.img2mml.schema.LatexEquation">LatexEquation</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Endpoint for generating MathML from an input LaTeX equation.</p></div>
@@ -117,7 +107,7 @@ async def get_mathml(tex_src: str):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@app.post(&#34;/latex2mml&#34;, summary=&#34;Get MathML representation of a LaTeX equation&#34;)
-async def mathml(eqn: LatexEquation):
+async def mathml(eqn: schema.LatexEquation):
     &#34;&#34;&#34;
     Endpoint for generating MathML from an input LaTeX equation.
     &#34;&#34;&#34;
@@ -142,46 +132,6 @@ def ping():
 </dl>
 </section>
 <section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="skema.img2mml.latex2mml.LatexEquation"><code class="flex name class">
-<span>class <span class="ident">LatexEquation</span></span>
-<span>(</span><span>**data: Any)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises ValidationError if the input data cannot be parsed to form a valid model.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class LatexEquation(BaseModel):
-    tex_src: Text = Field(description=&#34;The LaTeX equation to process&#34;)
-    class Config:
-        schema_extra = {
-            &#34;example&#34;: {
-                &#34;tex_src&#34;: &#34;E = mc^{c}&#34;,
-            }
-        }</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>pydantic.main.BaseModel</li>
-<li>pydantic.utils.Representation</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="skema.img2mml.latex2mml.LatexEquation.Config"><code class="name">var <span class="ident">Config</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="skema.img2mml.latex2mml.LatexEquation.tex_src"><code class="name">var <span class="ident">tex_src</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -200,17 +150,6 @@ def ping():
 <li><code><a title="skema.img2mml.latex2mml.get_mathml" href="#skema.img2mml.latex2mml.get_mathml">get_mathml</a></code></li>
 <li><code><a title="skema.img2mml.latex2mml.mathml" href="#skema.img2mml.latex2mml.mathml">mathml</a></code></li>
 <li><code><a title="skema.img2mml.latex2mml.ping" href="#skema.img2mml.latex2mml.ping">ping</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="skema.img2mml.latex2mml.LatexEquation" href="#skema.img2mml.latex2mml.LatexEquation">LatexEquation</a></code></h4>
-<ul class="">
-<li><code><a title="skema.img2mml.latex2mml.LatexEquation.Config" href="#skema.img2mml.latex2mml.LatexEquation.Config">Config</a></code></li>
-<li><code><a title="skema.img2mml.latex2mml.LatexEquation.tex_src" href="#skema.img2mml.latex2mml.LatexEquation.tex_src">tex_src</a></code></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
