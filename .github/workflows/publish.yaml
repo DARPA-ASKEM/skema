@@ -52,17 +52,13 @@ jobs:
           distribution: temurin
           java-version: 11
 
-#      - name: Generate Text Reading app and its Dockerfile
-#        working-directory: ./skema/text_reading/scala
-#        env:
-#          APP_VERSION: steps.generate.outputs.tag
-#        run: |
-#          sbt "webapp/docker:stage"
-        
-      - name: Create a file with random information
+      - name: Generate Text Reading app and its Dockerfile
+        working-directory: ./skema/text_reading/scala
+        env:
+          APP_VERSION: steps.generate.outputs.tag
         run: |
-          echo "Random Information: $RANDOM" > random-info.txt
-          cat random-info.txt
+          sbt "webapp/docker:stage"
+
       - name: Push to main
         run: |
           cd ${GITHUB_WORKSPACE}
