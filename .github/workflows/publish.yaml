@@ -57,7 +57,7 @@ jobs:
           APP_VERSION: steps.generate.outputs.tag
         run: |
           cd skema/text_reading/scala
-          sbt "webapp/docker:stage"
+          sbt webapp / Docker / stage
           git status
 
       - name: Push to main
