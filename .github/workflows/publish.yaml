@@ -72,11 +72,22 @@ jobs:
           swap-storage: true
           tool-cache: false
 
-      - name: Push to main
+      - name: Git push Dockerfile
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add --force skema/text_reading/scala/webapp/target/docker/*
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/Dockerfile
+          git commit --message="generated text-reading Dockerfile"
+          git push
+
+      - name: Git push basic data
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/README.md
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/bin/webapp
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/conf/*
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/share/*
           git commit --message="generated text-reading"
           git push
 
