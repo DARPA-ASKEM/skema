@@ -53,19 +53,17 @@ jobs:
           java-version: 11
 
       - name: Generate Text Reading app and its Dockerfile
+        working-directory: ./skema/text_reading/scala
         env:
           APP_VERSION: steps.generate.outputs.tag
         run: |
-          cd skema/text_reading/scala
           sbt webapp / Docker / stage
-          git status
 
       - name: Push to main
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git status
-          git add --all
+          git add -vf skema/text_reading/scala/target/*
           git commit -m "generated text-reading"
           git push
 
