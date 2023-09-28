@@ -57,7 +57,7 @@ jobs:
         env:
           APP_VERSION: steps.generate.outputs.tag
         run: |
-          sbt webapp / Docker:stage
+          sbt "webapp/docker:stage"
 
       - name: Push to main
         run: |
