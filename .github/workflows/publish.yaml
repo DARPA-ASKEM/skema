@@ -59,12 +59,26 @@ jobs:
         run: |
           sbt "webapp/docker:stage"
 
+      # The Text Reading image is huge.
+      # We need to free up every last bit of space we can.
+      - name: Free disk space (aggressively)
+        # use fork with fix to https://github.com/jlumbroso/free-disk-space/issues/9
+        uses: kfir4444/free-disk-space@main
+        with:
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+          tool-cache: false
+
       - name: Push to main
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add -vf skema/text_reading/scala/webapp/target/*
-          git commit -m "generated text-reading"
+          git add --force skema/text_reading/scala/webapp/target/*
+          git commit --message="generated text-reading"
           git push
 
   bake:
