@@ -72,21 +72,47 @@ jobs:
           swap-storage: true
           tool-cache: false
 
-      - name: Git push results
+      - name: Git push Dockerfile
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/com.*
+          git add --force skema/text_reading/scala/webapp/target/docker/*
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/Dockerfile
           git commit --message="generated text-reading Dockerfile"
           git push
 
-      - name: Git push results
+      - name: Git push basic data
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.*
-          git commit --message="generated text-reading Dockerfile"
-          git push
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/README.md
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/bin/webapp
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/conf/*
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/share/*
+          git commit --amend --no-edit
+          git push --force
+
+      - name: Git push com. libs
+        run: |
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/com.*
+          git commit --amend --no-edit
+          git push --force
+
+      - name: Git push org.apaches. libs
+        run: |
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.apache.*
+          git commit --amend --no-edit
+          git push --force
+
+      - name: Git push other libs
+        run: |
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/*
+          git commit --amend --no-edit
+          git push --force
+
+      - name: Git push other files
+        run: |
+          git add --force skema/text_reading/scala/webapp/target/docker/*
+          git commit --amend --no-edit
+          git push --force
 
   bake:
     needs:
