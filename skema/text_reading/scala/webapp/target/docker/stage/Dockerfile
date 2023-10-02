@@ -1,6 +1,6 @@
 FROM openjdk:8 as stage0
 LABEL snp-multi-stage="intermediate"
-LABEL snp-multi-stage-id="7fd1ef72-f1ea-4a92-be0d-1374b8635bb4"
+LABEL snp-multi-stage-id="37f01625-686c-4a47-bba9-56359edaa5dd"
 WORKDIR /skema/text_reading/webapp/app
 COPY skema /skema
 USER root
