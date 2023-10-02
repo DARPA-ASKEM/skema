@@ -45,6 +45,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
+          lfs: true
+
+      - name: Checkout Git LFS objects
+        run: git lfs checkout
 
       - name: Setup JDK (w/ SBT)
         uses: actions/setup-java@v3
@@ -102,22 +106,14 @@ jobs:
           git commit --amend --no-edit
           git push --force
 
+
+      - name: Add big model to Git LFS
+        run: |
+          git lfs track "skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.*.jar"
+
       - name: Git push org.clulab.* libs
         run: |
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.epidemiology*
-          git commit --amend --no-edit
-          git push --force
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.pdf2txt*
-          git commit --amend --no-edit
-          git push --force
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.processors*
-          git commit --amend --no-edit
-          git push --force
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.glove*
-          git commit --amend --no-edit
-          git push --force
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.*
-          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
