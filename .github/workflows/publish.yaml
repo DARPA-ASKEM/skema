@@ -104,9 +104,6 @@ jobs:
 
       - name: Git push org.clulab.* libs
         run: |
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
-          git commit --amend --no-edit
-          git push --force
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.epidemiology*
           git commit --amend --no-edit
           git push --force
@@ -120,24 +117,28 @@ jobs:
           git commit --amend --no-edit
           git push --force
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.*
+          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
       - name: Git push other org.* libs
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.*
+          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
       - name: Git push other libs
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/*
+          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
       - name: Git push other files
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/*
+          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
