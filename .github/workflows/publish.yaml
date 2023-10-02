@@ -55,7 +55,7 @@ jobs:
       - name: Generate Text Reading app and its Dockerfile
         working-directory: ./skema/text_reading/scala
         env:
-          APP_VERSION: steps.generate.outputs.tag
+          APP_VERSION: ${steps.generate.outputs.tag}
         run: |
           sbt "webapp/docker:stage"
 
@@ -76,7 +76,15 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/*
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/com.*
+          git commit --message="generated text-reading Dockerfile"
+          git push
+
+      - name: Git push results
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.*
           git commit --message="generated text-reading Dockerfile"
           git push
 
