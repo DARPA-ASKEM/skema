@@ -82,22 +82,35 @@ jobs:
 
       - name: Git push basic data
         run: |
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/README.md
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/bin/webapp
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/conf/*
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/share/*
+          git add --force \
+            skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/README.md \
+            skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/bin/webapp \
+            skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/conf/* \
+            skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/share/*
           git commit --amend --no-edit
           git push --force
 
-      - name: Git push com. libs
+      - name: Git push com.* libs
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/com.*
           git commit --amend --no-edit
           git push --force
 
-      - name: Git push org.apaches. libs
+      - name: Git push org.apache.* libs
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.apache.*
+          git commit --amend --no-edit
+          git push --force
+
+      - name: Git push org.* libs
+        run: |
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.*
+          git commit --amend --no-edit
+          git push --force
+
+      - name: Git push webapp.* libs
+        run: |
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/webapp.*
           git commit --amend --no-edit
           git push --force
 
