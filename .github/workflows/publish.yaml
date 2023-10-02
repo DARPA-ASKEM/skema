@@ -107,9 +107,12 @@ jobs:
           git push --force
 
 
-      - name: Add big model to Git LFS
+      - name: Add all /lib to Git LFS
         run: |
-          git lfs track "skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.*.jar"
+          git lfs track "skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/*.jar"
+          git add .gitattributes
+          git commit --amend --no-edit
+          git push --force
 
       - name: Git push org.clulab.* libs
         run: |
@@ -120,21 +123,18 @@ jobs:
       - name: Git push other org.* libs
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.*
-          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
       - name: Git push other libs
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/*
-          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
       - name: Git push other files
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/*
-          git reset skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.climatechange*
           git commit --amend --no-edit
           git push --force
 
