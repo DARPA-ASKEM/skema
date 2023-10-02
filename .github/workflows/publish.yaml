@@ -78,10 +78,7 @@ jobs:
           git config user.email github-actions@github.com
           git add --force skema/text_reading/scala/webapp/target/docker/stage/Dockerfile
           git commit --message="generated text-reading Dockerfile"
-          git push
-
-      - name: Git push basic data
-        run: |
+          git push --force
           git add --force \
             skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/README.md \
             skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/bin/webapp \
@@ -102,15 +99,21 @@ jobs:
           git commit --amend --no-edit
           git push --force
 
-      - name: Git push org.* libs
+      - name: Git push org.clulab.* libs
         run: |
-          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.*
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.clulab.*
           git commit --amend --no-edit
           git push --force
 
       - name: Git push webapp.* libs
         run: |
           git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/webapp.*
+          git commit --amend --no-edit
+          git push --force
+
+      - name: Git push org.* libs
+        run: |
+          git add --force skema/text_reading/scala/webapp/target/docker/stage/skema/text_reading/webapp/app/lib/org.*
           git commit --amend --no-edit
           git push --force
 
