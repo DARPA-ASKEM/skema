@@ -38,7 +38,6 @@ jobs:
   bake:
     needs:
       - tag-generator
-      - make-dockerfile
     uses: darpa-askem/.github/.github/workflows/bake-publish.yaml@main
     with:
       file: 'docker-bake.hcl'
