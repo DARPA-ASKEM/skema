@@ -146,7 +146,7 @@ async fn main() -> std::io::Result<()> {
             .service(version)
             .service(SwaggerUi::new("/docs/{_:.*}").url("/api-doc/openapi.json", openapi.clone()))
     })
-    .bind((host_env, port_env.parse::<u16>()))?
+    .bind((host_env, port_env.parse::<u16>().unwrap()))?
     .run()
     .await
 }
