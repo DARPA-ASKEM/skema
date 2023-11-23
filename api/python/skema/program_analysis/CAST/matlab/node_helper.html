@@ -29,44 +29,22 @@
 </summary>
 <pre><code class="python">from typing import List, Dict
 from skema.program_analysis.CAST2FN.model.cast import SourceRef
+from skema.program_analysis.CAST.matlab.tokens import OTHER_TOKENS, KEYWORDS
 
 from tree_sitter import Node
 
-CONTROL_CHARACTERS = [
-    &#34;,&#34;,
-    &#34;=&#34;,
-    &#34;==&#34;,
-    &#34;(&#34;,
-    &#34;)&#34;,
-    &#34;(/&#34;,
-    &#34;/)&#34;,
-    &#34;:&#34;,
-    &#34;::&#34;,
-    &#34;+&#34;,
-    &#34;-&#34;,
-    &#34;*&#34;,
-    &#34;**&#34;,
-    &#34;/&#34;,
-    &#34;&gt;&#34;,
-    &#34;&lt;&#34;,
-    &#34;&lt;=&#34;,
-    &#34;&gt;=&#34;,
-    &#34;only&#34;,
-]
-
+CONTROL_CHARACTERS = OTHER_TOKENS
+        
 class NodeHelper():
     def __init__(self, source: str, source_file_name: str):
-        &#34;&#34;&#34;Docstring&#34;&#34;&#34;
         self.source = source
         self.source_file_name = source_file_name
-
 
     def get_source_ref(self, node: Node) -&gt; SourceRef:
         &#34;&#34;&#34;Given a node and file name, return a CAST SourceRef object.&#34;&#34;&#34;
         row_start, col_start = node.start_point
         row_end, col_end = node.end_point
         return SourceRef(self.source_file_name, col_start, col_end, row_start, row_end)
-
 
     def get_identifier(self, node: Node) -&gt; str:
         &#34;&#34;&#34;Given a node, return the identifier it represents. ie. The code between node.start_point and node.end_point&#34;&#34;&#34;
@@ -91,56 +69,25 @@ class NodeHelper():
 
         return identifier
 
-def get_first_child_by_type(node: Node, type: str, recurse=False):
-    &#34;&#34;&#34;Takes in a node and a type string as inputs and returns the first child matching that type. Otherwise, return None
-    When the recurse argument is set, it will also recursivly search children nodes as well.
-    &#34;&#34;&#34;
+def get_first_child_by_type(node: Node, child_type: str):
+    &#34;&#34;&#34; Return the first node child with matching type &#34;&#34;&#34;
     for child in node.children:
-        if child.type == type:
+        if child.type == child_type:
             return child
 
-    if recurse:
-        for child in node.children:
-            out = get_first_child_by_type(child, type, True)
-            if out:
-                return out
     return None
-
 
 def get_children_by_types(node: Node, types: List):
     &#34;&#34;&#34;Takes in a node and a list of types as inputs and returns all children matching those types. Otherwise, return an empty list&#34;&#34;&#34;
     return [child for child in node.children if child.type in types]
 
-
-def get_first_child_index(node, type: str):
-    &#34;&#34;&#34;Get the index of the first child of node with type type.&#34;&#34;&#34;
-    for i, child in enumerate(node.children):
-        if child.type == type:
-            return i
-
-
-def get_last_child_index(node, type: str):
-    &#34;&#34;&#34;Get the index of the last child of node with type type.&#34;&#34;&#34;
-    last = None
-    for i, child in enumerate(node.children):
-        if child.type == type:
-            last = child
-    return last
-
-
 def get_control_children(node: Node):
-    &#34;&#34;&#34;Docstring&#34;&#34;&#34;
+    &#34;&#34;&#34; return node children with control character types &#34;&#34;&#34;
     return get_children_by_types(node, CONTROL_CHARACTERS)
 
-
-def get_non_control_children(node: Node):
-    &#34;&#34;&#34;Docstring&#34;&#34;&#34;
-    children = []
-    for child in node.children:
-        if child.type not in CONTROL_CHARACTERS:
-            children.append(child)
-
-    return children</code></pre>
+def get_keyword_children(node: Node):
+    &#34;&#34;&#34; return node children with Tree-sitter syntax keyword types &#34;&#34;&#34;
+    return get_children_by_types(node, KEYWORDS)</code></pre>
 </details>
 </section>
 <section>
@@ -168,93 +115,46 @@ def get_non_control_children(node: Node):
 <span>def <span class="ident">get_control_children</span></span>(<span>node: tree_sitter.Node)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Docstring</p></div>
+<div class="desc"><p>return node children with control character types</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_control_children(node: Node):
-    &#34;&#34;&#34;Docstring&#34;&#34;&#34;
+    &#34;&#34;&#34; return node children with control character types &#34;&#34;&#34;
     return get_children_by_types(node, CONTROL_CHARACTERS)</code></pre>
 </details>
 </dd>
 <dt id="skema.program_analysis.CAST.matlab.node_helper.get_first_child_by_type"><code class="name flex">
-<span>def <span class="ident">get_first_child_by_type</span></span>(<span>node: tree_sitter.Node, type: str, recurse=False)</span>
+<span>def <span class="ident">get_first_child_by_type</span></span>(<span>node: tree_sitter.Node, child_type: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Takes in a node and a type string as inputs and returns the first child matching that type. Otherwise, return None
-When the recurse argument is set, it will also recursivly search children nodes as well.</p></div>
+<div class="desc"><p>Return the first node child with matching type</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_first_child_by_type(node: Node, type: str, recurse=False):
-    &#34;&#34;&#34;Takes in a node and a type string as inputs and returns the first child matching that type. Otherwise, return None
-    When the recurse argument is set, it will also recursivly search children nodes as well.
-    &#34;&#34;&#34;
+<pre><code class="python">def get_first_child_by_type(node: Node, child_type: str):
+    &#34;&#34;&#34; Return the first node child with matching type &#34;&#34;&#34;
     for child in node.children:
-        if child.type == type:
+        if child.type == child_type:
             return child
 
-    if recurse:
-        for child in node.children:
-            out = get_first_child_by_type(child, type, True)
-            if out:
-                return out
     return None</code></pre>
 </details>
 </dd>
-<dt id="skema.program_analysis.CAST.matlab.node_helper.get_first_child_index"><code class="name flex">
-<span>def <span class="ident">get_first_child_index</span></span>(<span>node, type: str)</span>
+<dt id="skema.program_analysis.CAST.matlab.node_helper.get_keyword_children"><code class="name flex">
+<span>def <span class="ident">get_keyword_children</span></span>(<span>node: tree_sitter.Node)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the index of the first child of node with type type.</p></div>
+<div class="desc"><p>return node children with Tree-sitter syntax keyword types</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_first_child_index(node, type: str):
-    &#34;&#34;&#34;Get the index of the first child of node with type type.&#34;&#34;&#34;
-    for i, child in enumerate(node.children):
-        if child.type == type:
-            return i</code></pre>
-</details>
-</dd>
-<dt id="skema.program_analysis.CAST.matlab.node_helper.get_last_child_index"><code class="name flex">
-<span>def <span class="ident">get_last_child_index</span></span>(<span>node, type: str)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get the index of the last child of node with type type.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_last_child_index(node, type: str):
-    &#34;&#34;&#34;Get the index of the last child of node with type type.&#34;&#34;&#34;
-    last = None
-    for i, child in enumerate(node.children):
-        if child.type == type:
-            last = child
-    return last</code></pre>
-</details>
-</dd>
-<dt id="skema.program_analysis.CAST.matlab.node_helper.get_non_control_children"><code class="name flex">
-<span>def <span class="ident">get_non_control_children</span></span>(<span>node: tree_sitter.Node)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Docstring</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_non_control_children(node: Node):
-    &#34;&#34;&#34;Docstring&#34;&#34;&#34;
-    children = []
-    for child in node.children:
-        if child.type not in CONTROL_CHARACTERS:
-            children.append(child)
-
-    return children</code></pre>
+<pre><code class="python">def get_keyword_children(node: Node):
+    &#34;&#34;&#34; return node children with Tree-sitter syntax keyword types &#34;&#34;&#34;
+    return get_children_by_types(node, KEYWORDS)</code></pre>
 </details>
 </dd>
 </dl>
@@ -267,24 +167,21 @@ When the recurse argument is set, it will also recursivly search children nodes 
 <span>(</span><span>source: str, source_file_name: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Docstring</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class NodeHelper():
     def __init__(self, source: str, source_file_name: str):
-        &#34;&#34;&#34;Docstring&#34;&#34;&#34;
         self.source = source
         self.source_file_name = source_file_name
-
 
     def get_source_ref(self, node: Node) -&gt; SourceRef:
         &#34;&#34;&#34;Given a node and file name, return a CAST SourceRef object.&#34;&#34;&#34;
         row_start, col_start = node.start_point
         row_end, col_end = node.end_point
         return SourceRef(self.source_file_name, col_start, col_end, row_start, row_end)
-
 
     def get_identifier(self, node: Node) -&gt; str:
         &#34;&#34;&#34;Given a node, return the identifier it represents. ie. The code between node.start_point and node.end_point&#34;&#34;&#34;
@@ -381,9 +278,7 @@ When the recurse argument is set, it will also recursivly search children nodes 
 <li><code><a title="skema.program_analysis.CAST.matlab.node_helper.get_children_by_types" href="#skema.program_analysis.CAST.matlab.node_helper.get_children_by_types">get_children_by_types</a></code></li>
 <li><code><a title="skema.program_analysis.CAST.matlab.node_helper.get_control_children" href="#skema.program_analysis.CAST.matlab.node_helper.get_control_children">get_control_children</a></code></li>
 <li><code><a title="skema.program_analysis.CAST.matlab.node_helper.get_first_child_by_type" href="#skema.program_analysis.CAST.matlab.node_helper.get_first_child_by_type">get_first_child_by_type</a></code></li>
-<li><code><a title="skema.program_analysis.CAST.matlab.node_helper.get_first_child_index" href="#skema.program_analysis.CAST.matlab.node_helper.get_first_child_index">get_first_child_index</a></code></li>
-<li><code><a title="skema.program_analysis.CAST.matlab.node_helper.get_last_child_index" href="#skema.program_analysis.CAST.matlab.node_helper.get_last_child_index">get_last_child_index</a></code></li>
-<li><code><a title="skema.program_analysis.CAST.matlab.node_helper.get_non_control_children" href="#skema.program_analysis.CAST.matlab.node_helper.get_non_control_children">get_non_control_children</a></code></li>
+<li><code><a title="skema.program_analysis.CAST.matlab.node_helper.get_keyword_children" href="#skema.program_analysis.CAST.matlab.node_helper.get_keyword_children">get_keyword_children</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
