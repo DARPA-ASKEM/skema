@@ -17626,15 +17626,45 @@
                                                 "source_file_name": ""
                                             }
                                         ],
-                                        "type": "Integer",
+                                        "type": "List",
                                         "val": {
-                                            "id": 14,
-                                            "name": "lat",
+                                            "id": 2,
+                                            "name": "o2",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 38,
-                                                    "col_start": 35,
+                                                    "col_end": 23,
+                                                    "col_start": 21,
+                                                    "node_type": "SourceRef",
+                                                    "row_end": 7,
+                                                    "row_start": 7,
+                                                    "source_file_name": "newton.F"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "default_value": null,
+                                        "node_type": "Var",
+                                        "source_refs": [
+                                            {
+                                                "col_end": -1,
+                                                "col_start": -1,
+                                                "node_type": "SourceRef",
+                                                "row_end": -1,
+                                                "row_start": -1,
+                                                "source_file_name": ""
+                                            }
+                                        ],
+                                        "type": "List",
+                                        "val": {
+                                            "id": 9,
+                                            "name": "cool_explicit",
+                                            "node_type": "Name",
+                                            "source_refs": [
+                                                {
+                                                    "col_end": 14,
+                                                    "col_start": 1,
                                                     "node_type": "SourceRef",
                                                     "row_end": 8,
                                                     "row_start": 8,
@@ -17656,48 +17686,18 @@
                                                 "source_file_name": ""
                                             }
                                         ],
-                                        "type": "List",
+                                        "type": "Integer",
                                         "val": {
-                                            "id": 3,
-                                            "name": "o1",
+                                            "id": 11,
+                                            "name": "lev1",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 26,
-                                                    "col_start": 24,
+                                                    "col_end": 24,
+                                                    "col_start": 20,
                                                     "node_type": "SourceRef",
-                                                    "row_end": 7,
-                                                    "row_start": 7,
-                                                    "source_file_name": "newton.F"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "default_value": null,
-                                        "node_type": "Var",
-                                        "source_refs": [
-                                            {
-                                                "col_end": -1,
-                                                "col_start": -1,
-                                                "node_type": "SourceRef",
-                                                "row_end": -1,
-                                                "row_start": -1,
-                                                "source_file_name": ""
-                                            }
-                                        ],
-                                        "type": "List",
-                                        "val": {
-                                            "id": 6,
-                                            "name": "barm",
-                                            "node_type": "Name",
-                                            "source_refs": [
-                                                {
-                                                    "col_end": 37,
-                                                    "col_start": 33,
-                                                    "node_type": "SourceRef",
-                                                    "row_end": 7,
-                                                    "row_start": 7,
+                                                    "row_end": 8,
+                                                    "row_start": 8,
                                                     "source_file_name": "newton.F"
                                                 }
                                             ]
@@ -17725,6 +17725,96 @@
                                                 {
                                                     "col_end": 32,
                                                     "col_start": 30,
+                                                    "node_type": "SourceRef",
+                                                    "row_end": 7,
+                                                    "row_start": 7,
+                                                    "source_file_name": "newton.F"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "default_value": null,
+                                        "node_type": "Var",
+                                        "source_refs": [
+                                            {
+                                                "col_end": -1,
+                                                "col_start": -1,
+                                                "node_type": "SourceRef",
+                                                "row_end": -1,
+                                                "row_start": -1,
+                                                "source_file_name": ""
+                                            }
+                                        ],
+                                        "type": "Integer",
+                                        "val": {
+                                            "id": 10,
+                                            "name": "lev0",
+                                            "node_type": "Name",
+                                            "source_refs": [
+                                                {
+                                                    "col_end": 19,
+                                                    "col_start": 15,
+                                                    "node_type": "SourceRef",
+                                                    "row_end": 8,
+                                                    "row_start": 8,
+                                                    "source_file_name": "newton.F"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "default_value": null,
+                                        "node_type": "Var",
+                                        "source_refs": [
+                                            {
+                                                "col_end": -1,
+                                                "col_start": -1,
+                                                "node_type": "SourceRef",
+                                                "row_end": -1,
+                                                "row_start": -1,
+                                                "source_file_name": ""
+                                            }
+                                        ],
+                                        "type": "Unknown",
+                                        "val": {
+                                            "id": 0,
+                                            "name": "newton",
+                                            "node_type": "Name",
+                                            "source_refs": [
+                                                {
+                                                    "col_end": 17,
+                                                    "col_start": 11,
+                                                    "node_type": "SourceRef",
+                                                    "row_end": 7,
+                                                    "row_start": 7,
+                                                    "source_file_name": "newton.F"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "default_value": null,
+                                        "node_type": "Var",
+                                        "source_refs": [
+                                            {
+                                                "col_end": -1,
+                                                "col_start": -1,
+                                                "node_type": "SourceRef",
+                                                "row_end": -1,
+                                                "row_start": -1,
+                                                "source_file_name": ""
+                                            }
+                                        ],
+                                        "type": "List",
+                                        "val": {
+                                            "id": 7,
+                                            "name": "cp",
+                                            "node_type": "Name",
+                                            "source_refs": [
+                                                {
+                                                    "col_end": 40,
+                                                    "col_start": 38,
                                                     "node_type": "SourceRef",
                                                     "row_end": 7,
                                                     "row_start": 7,
@@ -17806,15 +17896,45 @@
                                                 "source_file_name": ""
                                             }
                                         ],
-                                        "type": "Unknown",
+                                        "type": "List",
                                         "val": {
-                                            "id": 0,
-                                            "name": "newton",
+                                            "id": 3,
+                                            "name": "o1",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 17,
-                                                    "col_start": 11,
+                                                    "col_end": 26,
+                                                    "col_start": 24,
+                                                    "node_type": "SourceRef",
+                                                    "row_end": 7,
+                                                    "row_start": 7,
+                                                    "source_file_name": "newton.F"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "default_value": null,
+                                        "node_type": "Var",
+                                        "source_refs": [
+                                            {
+                                                "col_end": -1,
+                                                "col_start": -1,
+                                                "node_type": "SourceRef",
+                                                "row_end": -1,
+                                                "row_start": -1,
+                                                "source_file_name": ""
+                                            }
+                                        ],
+                                        "type": "List",
+                                        "val": {
+                                            "id": 6,
+                                            "name": "barm",
+                                            "node_type": "Name",
+                                            "source_refs": [
+                                                {
+                                                    "col_end": 37,
+                                                    "col_start": 33,
                                                     "node_type": "SourceRef",
                                                     "row_end": 7,
                                                     "row_start": 7,
@@ -17866,75 +17986,15 @@
                                                 "source_file_name": ""
                                             }
                                         ],
-                                        "type": "List",
-                                        "val": {
-                                            "id": 7,
-                                            "name": "cp",
-                                            "node_type": "Name",
-                                            "source_refs": [
-                                                {
-                                                    "col_end": 40,
-                                                    "col_start": 38,
-                                                    "node_type": "SourceRef",
-                                                    "row_end": 7,
-                                                    "row_start": 7,
-                                                    "source_file_name": "newton.F"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "default_value": null,
-                                        "node_type": "Var",
-                                        "source_refs": [
-                                            {
-                                                "col_end": -1,
-                                                "col_start": -1,
-                                                "node_type": "SourceRef",
-                                                "row_end": -1,
-                                                "row_start": -1,
-                                                "source_file_name": ""
-                                            }
-                                        ],
                                         "type": "Integer",
                                         "val": {
-                                            "id": 10,
-                                            "name": "lev0",
+                                            "id": 14,
+                                            "name": "lat",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 19,
-                                                    "col_start": 15,
-                                                    "node_type": "SourceRef",
-                                                    "row_end": 8,
-                                                    "row_start": 8,
-                                                    "source_file_name": "newton.F"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "default_value": null,
-                                        "node_type": "Var",
-                                        "source_refs": [
-                                            {
-                                                "col_end": -1,
-                                                "col_start": -1,
-                                                "node_type": "SourceRef",
-                                                "row_end": -1,
-                                                "row_start": -1,
-                                                "source_file_name": ""
-                                            }
-                                        ],
-                                        "type": "List",
-                                        "val": {
-                                            "id": 9,
-                                            "name": "cool_explicit",
-                                            "node_type": "Name",
-                                            "source_refs": [
-                                                {
-                                                    "col_end": 14,
-                                                    "col_start": 1,
+                                                    "col_end": 38,
+                                                    "col_start": 35,
                                                     "node_type": "SourceRef",
                                                     "row_end": 8,
                                                     "row_start": 8,
@@ -17968,66 +18028,6 @@
                                                     "node_type": "SourceRef",
                                                     "row_end": 8,
                                                     "row_start": 8,
-                                                    "source_file_name": "newton.F"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "default_value": null,
-                                        "node_type": "Var",
-                                        "source_refs": [
-                                            {
-                                                "col_end": -1,
-                                                "col_start": -1,
-                                                "node_type": "SourceRef",
-                                                "row_end": -1,
-                                                "row_start": -1,
-                                                "source_file_name": ""
-                                            }
-                                        ],
-                                        "type": "Integer",
-                                        "val": {
-                                            "id": 11,
-                                            "name": "lev1",
-                                            "node_type": "Name",
-                                            "source_refs": [
-                                                {
-                                                    "col_end": 24,
-                                                    "col_start": 20,
-                                                    "node_type": "SourceRef",
-                                                    "row_end": 8,
-                                                    "row_start": 8,
-                                                    "source_file_name": "newton.F"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "default_value": null,
-                                        "node_type": "Var",
-                                        "source_refs": [
-                                            {
-                                                "col_end": -1,
-                                                "col_start": -1,
-                                                "node_type": "SourceRef",
-                                                "row_end": -1,
-                                                "row_start": -1,
-                                                "source_file_name": ""
-                                            }
-                                        ],
-                                        "type": "List",
-                                        "val": {
-                                            "id": 2,
-                                            "name": "o2",
-                                            "node_type": "Name",
-                                            "source_refs": [
-                                                {
-                                                    "col_end": 23,
-                                                    "col_start": 21,
-                                                    "node_type": "SourceRef",
-                                                    "row_end": 7,
-                                                    "row_start": 7,
                                                     "source_file_name": "newton.F"
                                                 }
                                             ]
@@ -29905,15 +29905,75 @@
                                                 "source_file_name": ""
                                             }
                                         ],
-                                        "type": "Integer",
+                                        "type": "List",
                                         "val": {
-                                            "id": 64,
-                                            "name": "lat",
+                                            "id": 59,
+                                            "name": "cool_explicit",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 24,
-                                                    "col_start": 21,
+                                                    "col_end": 55,
+                                                    "col_start": 42,
+                                                    "node_type": "SourceRef",
+                                                    "row_end": 138,
+                                                    "row_start": 138,
+                                                    "source_file_name": "newton.F"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "default_value": null,
+                                        "node_type": "Var",
+                                        "source_refs": [
+                                            {
+                                                "col_end": -1,
+                                                "col_start": -1,
+                                                "node_type": "SourceRef",
+                                                "row_end": -1,
+                                                "row_start": -1,
+                                                "source_file_name": ""
+                                            }
+                                        ],
+                                        "type": "Integer",
+                                        "val": {
+                                            "id": 61,
+                                            "name": "lev1",
+                                            "node_type": "Name",
+                                            "source_refs": [
+                                                {
+                                                    "col_end": 10,
+                                                    "col_start": 6,
+                                                    "node_type": "SourceRef",
+                                                    "row_end": 139,
+                                                    "row_start": 139,
+                                                    "source_file_name": "newton.F"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "default_value": null,
+                                        "node_type": "Var",
+                                        "source_refs": [
+                                            {
+                                                "col_end": -1,
+                                                "col_start": -1,
+                                                "node_type": "SourceRef",
+                                                "row_end": -1,
+                                                "row_start": -1,
+                                                "source_file_name": ""
+                                            }
+                                        ],
+                                        "type": "Integer",
+                                        "val": {
+                                            "id": 60,
+                                            "name": "lev0",
+                                            "node_type": "Name",
+                                            "source_refs": [
+                                                {
+                                                    "col_end": 5,
+                                                    "col_start": 1,
                                                     "node_type": "SourceRef",
                                                     "row_end": 139,
                                                     "row_start": 139,
@@ -29937,13 +29997,13 @@
                                         ],
                                         "type": "List",
                                         "val": {
-                                            "id": 56,
-                                            "name": "o1",
+                                            "id": 57,
+                                            "name": "cp",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 24,
-                                                    "col_start": 22,
+                                                    "col_end": 27,
+                                                    "col_start": 25,
                                                     "node_type": "SourceRef",
                                                     "row_end": 138,
                                                     "row_start": 138,
@@ -30027,13 +30087,13 @@
                                         ],
                                         "type": "List",
                                         "val": {
-                                            "id": 57,
-                                            "name": "cp",
+                                            "id": 56,
+                                            "name": "o1",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 27,
-                                                    "col_start": 25,
+                                                    "col_end": 24,
+                                                    "col_start": 22,
                                                     "node_type": "SourceRef",
                                                     "row_end": 138,
                                                     "row_start": 138,
@@ -30057,46 +30117,16 @@
                                         ],
                                         "type": "Integer",
                                         "val": {
-                                            "id": 60,
-                                            "name": "lev0",
+                                            "id": 64,
+                                            "name": "lat",
                                             "node_type": "Name",
                                             "source_refs": [
                                                 {
-                                                    "col_end": 5,
-                                                    "col_start": 1,
+                                                    "col_end": 24,
+                                                    "col_start": 21,
                                                     "node_type": "SourceRef",
                                                     "row_end": 139,
                                                     "row_start": 139,
-                                                    "source_file_name": "newton.F"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "default_value": null,
-                                        "node_type": "Var",
-                                        "source_refs": [
-                                            {
-                                                "col_end": -1,
-                                                "col_start": -1,
-                                                "node_type": "SourceRef",
-                                                "row_end": -1,
-                                                "row_start": -1,
-                                                "source_file_name": ""
-                                            }
-                                        ],
-                                        "type": "List",
-                                        "val": {
-                                            "id": 59,
-                                            "name": "cool_explicit",
-                                            "node_type": "Name",
-                                            "source_refs": [
-                                                {
-                                                    "col_end": 55,
-                                                    "col_start": 42,
-                                                    "node_type": "SourceRef",
-                                                    "row_end": 138,
-                                                    "row_start": 138,
                                                     "source_file_name": "newton.F"
                                                 }
                                             ]
@@ -30124,36 +30154,6 @@
                                                 {
                                                     "col_end": 15,
                                                     "col_start": 11,
-                                                    "node_type": "SourceRef",
-                                                    "row_end": 139,
-                                                    "row_start": 139,
-                                                    "source_file_name": "newton.F"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "default_value": null,
-                                        "node_type": "Var",
-                                        "source_refs": [
-                                            {
-                                                "col_end": -1,
-                                                "col_start": -1,
-                                                "node_type": "SourceRef",
-                                                "row_end": -1,
-                                                "row_start": -1,
-                                                "source_file_name": ""
-                                            }
-                                        ],
-                                        "type": "Integer",
-                                        "val": {
-                                            "id": 61,
-                                            "name": "lev1",
-                                            "node_type": "Name",
-                                            "source_refs": [
-                                                {
-                                                    "col_end": 10,
-                                                    "col_start": 6,
                                                     "node_type": "SourceRef",
                                                     "row_end": 139,
                                                     "row_start": 139,
