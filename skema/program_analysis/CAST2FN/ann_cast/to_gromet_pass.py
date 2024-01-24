@@ -84,20 +84,19 @@ def insert_gromet_object(t: list, obj):
     If the table we're trying to insert into doesn't already exist, then we
     first create it, and then insert the value.
     """
+    
+    if t == None:
+        t = []
 
     # Logic for generating port ids
     if isinstance(obj, GrometPort):
-        if t == None:
-            obj.id = 1
-        else:
-            current_box = obj.box
-            current_box_ports = [port for port in t if port.box == current_box]
-            obj.id = len(current_box_ports) + 1
+        obj.id = 1
+        for port in reversed(t):
+            if port.box == obj.box:
+                obj.id = port.id + 1
+                break
 
-    if t == None:
-        t = []
     t.append(obj)
-
     return t
 
 
@@ -2521,6 +2520,7 @@ class ToGrometPass:
         from_assignment = False
         from_call = False
         from_operator = False
+        from_loop = False
         func_name, qual_func_name = get_func_name(node)
 
         if isinstance(parent_cast_node, AnnCastAssignment):
@@ -2529,6 +2529,8 @@ class ToGrometPass:
             from_call = True
         elif isinstance(parent_cast_node, AnnCastOperator):
             from_operator = True
+        elif isinstance(parent_cast_node, AnnCastLoop):
+            from_loop = True
 
         if isinstance(node.func, AnnCastAttribute):
             self.visit(node.func, parent_gromet_fn, parent_cast_node)
@@ -2733,7 +2735,7 @@ class ToGrometPass:
                     )
                     # if isinstance(arg.right)
 
-        if from_call or from_operator or from_assignment:
+        if from_call or from_operator or from_assignment or from_loop:
             # Operator and calls need a pof appended here because they dont
             # do it themselves
             # At some point we would like the call handler to always append a POF
@@ -2913,6 +2915,9 @@ class ToGrometPass:
         if isinstance(node, AnnCastLiteralValue):
             if is_tuple(node):
                 self.pack_return_tuple(node, gromet_fn)
+            else:
+                gromet_fn.opo = insert_gromet_object(gromet_fn.opo, GrometPort(box=len(gromet_fn.b)))
+                gromet_fn.wfopo = insert_gromet_object(gromet_fn.wfopo, GrometWire(src=len(gromet_fn.opo),tgt=len(gromet_fn.pof)))
             return
         elif isinstance(node, AnnCastVar):
             var_name = node.val.name
@@ -3013,7 +3018,6 @@ class ToGrometPass:
         # We're out of the function definition here, so we
         # can clear the local  variable environment
         var_environment["local"] = deepcopy(prev_local_env)
-
 
     @_visit.register
     def visit_function_def(
@@ -3241,7 +3245,6 @@ class ToGrometPass:
             )
 
             code_data_metadata = SourceCodeDataType(
-                gromet_type="source_code_data_type",
                 provenance=generate_provenance(),
                 source_language=ref[0],
                 source_language_version=ref[1],
