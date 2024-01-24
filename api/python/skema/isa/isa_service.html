@@ -29,13 +29,16 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from fastapi import FastAPI, File
+from fastapi import Depends, FastAPI, APIRouter, status
 from skema.isa.lib import align_mathml_eqs
+import skema.isa.data as isa_data
+from skema.rest import utils
 from pydantic import BaseModel
+import httpx
 
-# Create a web app using FastAPI
+from skema.rest.proxies import SKEMA_RS_ADDESS
 
-app = FastAPI()
+router = APIRouter()
 
 
 # Model for ISA_Result
@@ -44,17 +47,39 @@ class ISA_Result(BaseModel):
     union_graph: str = None
 
 
-@app.get(&#34;/ping&#34;, summary=&#34;Ping endpoint to test health of service&#34;)
-def ping():
-    return &#34;The ISA service is running.&#34;
+@router.get(
+    &#34;/healthcheck&#34;, 
+    summary=&#34;Status of ISA service&#34;,
+    response_model=int,
+    status_code=status.HTTP_200_OK
+)
+async def healthcheck(client: httpx.AsyncClient = Depends(utils.get_client)) -&gt; int:
+    res = await client.get(f&#34;{SKEMA_RS_ADDESS}/ping&#34;)
+    return res.status_code
 
 
-@app.put(&#34;/align-eqns&#34;, summary=&#34;Align two MathML equations&#34;)
+@router.post(
+    &#34;/align-eqns&#34;, 
+    summary=&#34;Align two MathML equations&#34;
+)
 async def align_eqns(
-    file1: str, file2: str, mention_json1: str = &#34;&#34;, mention_json2: str = &#34;&#34;
+    mml1: str, mml2: str, mention_json1: str = &#34;&#34;, mention_json2: str = &#34;&#34;
 ) -&gt; ISA_Result:
-    &#34;&#34;&#34;
+    f&#34;&#34;&#34;
     Endpoint for align two MathML equations.
+
+    ### Python example
+
+    ```
+    import requests
+
+    request = {{
+        &#34;mml1&#34;: {isa_data.mml},
+        &#34;mml2&#34;: {isa_data.mml}
+    }}
+
+    response=requests.post(&#34;/isa/align-eqns&#34;, json=request)
+    res = response.json()
     &#34;&#34;&#34;
     (
         matching_ratio,
@@ -65,11 +90,19 @@ async def align_eqns(
         aligned_indices2,
         union_graph,
         perfectly_matched_indices1,
-    ) = align_mathml_eqs(file1, file2, mention_json1, mention_json2)
-    ir = ISA_Result()
-    ir.matching_ratio = matching_ratio
-    ir.union_graph = union_graph.to_string()
-    return ir</code></pre>
+    ) = align_mathml_eqs(mml1, mml2, mention_json1, mention_json2)
+    return ISA_Result(
+      matching_ratio = matching_ratio,
+      union_graph = union_graph.to_string()
+    )
+
+
+app = FastAPI()
+app.include_router(
+    router,
+    prefix=&#34;/isa&#34;,
+    tags=[&#34;isa&#34;],
+)</code></pre>
 </details>
 </section>
 <section>
@@ -80,20 +113,36 @@ async def align_eqns(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="skema.isa.isa_service.align_eqns"><code class="name flex">
-<span>async def <span class="ident">align_eqns</span></span>(<span>file1: str, file2: str, mention_json1: str = '', mention_json2: str = '') ‑> <a title="skema.isa.isa_service.ISA_Result" href="#skema.isa.isa_service.ISA_Result">ISA_Result</a></span>
+<span>async def <span class="ident">align_eqns</span></span>(<span>mml1: str, mml2: str, mention_json1: str = '', mention_json2: str = '') ‑> <a title="skema.isa.isa_service.ISA_Result" href="#skema.isa.isa_service.ISA_Result">ISA_Result</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Endpoint for align two MathML equations.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@app.put(&#34;/align-eqns&#34;, summary=&#34;Align two MathML equations&#34;)
+<pre><code class="python">@router.post(
+    &#34;/align-eqns&#34;, 
+    summary=&#34;Align two MathML equations&#34;
+)
 async def align_eqns(
-    file1: str, file2: str, mention_json1: str = &#34;&#34;, mention_json2: str = &#34;&#34;
+    mml1: str, mml2: str, mention_json1: str = &#34;&#34;, mention_json2: str = &#34;&#34;
 ) -&gt; ISA_Result:
-    &#34;&#34;&#34;
+    f&#34;&#34;&#34;
     Endpoint for align two MathML equations.
+
+    ### Python example
+
+    ```
+    import requests
+
+    request = {{
+        &#34;mml1&#34;: {isa_data.mml},
+        &#34;mml2&#34;: {isa_data.mml}
+    }}
+
+    response=requests.post(&#34;/isa/align-eqns&#34;, json=request)
+    res = response.json()
     &#34;&#34;&#34;
     (
         matching_ratio,
@@ -104,15 +153,15 @@ async def align_eqns(
         aligned_indices2,
         union_graph,
         perfectly_matched_indices1,
-    ) = align_mathml_eqs(file1, file2, mention_json1, mention_json2)
-    ir = ISA_Result()
-    ir.matching_ratio = matching_ratio
-    ir.union_graph = union_graph.to_string()
-    return ir</code></pre>
+    ) = align_mathml_eqs(mml1, mml2, mention_json1, mention_json2)
+    return ISA_Result(
+      matching_ratio = matching_ratio,
+      union_graph = union_graph.to_string()
+    )</code></pre>
 </details>
 </dd>
-<dt id="skema.isa.isa_service.ping"><code class="name flex">
-<span>def <span class="ident">ping</span></span>(<span>)</span>
+<dt id="skema.isa.isa_service.healthcheck"><code class="name flex">
+<span>async def <span class="ident">healthcheck</span></span>(<span>client: httpx.AsyncClient = Depends(get_client)) ‑> int</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -120,9 +169,15 @@ async def align_eqns(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@app.get(&#34;/ping&#34;, summary=&#34;Ping endpoint to test health of service&#34;)
-def ping():
-    return &#34;The ISA service is running.&#34;</code></pre>
+<pre><code class="python">@router.get(
+    &#34;/healthcheck&#34;, 
+    summary=&#34;Status of ISA service&#34;,
+    response_model=int,
+    status_code=status.HTTP_200_OK
+)
+async def healthcheck(client: httpx.AsyncClient = Depends(utils.get_client)) -&gt; int:
+    res = await client.get(f&#34;{SKEMA_RS_ADDESS}/ping&#34;)
+    return res.status_code</code></pre>
 </details>
 </dd>
 </dl>
@@ -229,7 +284,7 @@ allow <code>self</code> as a field name.</p></div>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="skema.isa.isa_service.align_eqns" href="#skema.isa.isa_service.align_eqns">align_eqns</a></code></li>
-<li><code><a title="skema.isa.isa_service.ping" href="#skema.isa.isa_service.ping">ping</a></code></li>
+<li><code><a title="skema.isa.isa_service.healthcheck" href="#skema.isa.isa_service.healthcheck">healthcheck</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
