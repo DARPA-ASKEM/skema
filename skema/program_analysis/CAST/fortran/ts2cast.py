@@ -12,7 +12,7 @@ from skema.program_analysis.CAST2FN.model.cast import (
     SourceRef,
     ModelBreak,
     Assignment,
-    LiteralValue,
+    CASTLiteralValue,
     Var,
     VarType,
     Name,
@@ -27,6 +27,8 @@ from skema.program_analysis.CAST2FN.model.cast import (
     ModelIf,
     RecordDef,
     Attribute,
+    Label,
+    Goto,
 )
 
 from skema.program_analysis.CAST.fortran.variable_context import VariableContext
@@ -78,7 +80,7 @@ class TS2CAST(object):
 
         # Start visiting
         self.out_cast = self.generate_cast()
-        # print(self.out_cast[0].to_json_str())
+        #print(self.out_cast[0].to_json_str())
 
     def generate_cast(self) -> List[CAST]:
         """Interface for generating CAST."""
@@ -103,13 +105,7 @@ class TS2CAST(object):
         # TODO: Research the above
         outer_body_nodes = get_children_by_types(root, ["function", "subroutine"])
         if len(outer_body_nodes) > 0:
-            body = []
-            for body_node in outer_body_nodes:
-                child_cast = self.visit(body_node)
-                if isinstance(child_cast, List):
-                    body.extend(child_cast)
-                elif isinstance(child_cast, AstNode):
-                    body.append(child_cast)
+            body = self.generate_cast_body(outer_body_nodes)
             modules.append(
                 Module(
                     name=None,
@@ -154,6 +150,8 @@ class TS2CAST(object):
             return self.visit_literal(node)
         elif node.type == "keyword_statement":
             return self.visit_keyword_statement(node)
+        elif node.type == "statement_label":
+            return self.visit_statement_label(node)
         elif node.type in builtin_statements:
             return self.visit_fortran_builtin_statement(node)
         elif node.type == "extent_specifier":
@@ -175,14 +173,8 @@ class TS2CAST(object):
         """Visitor for program and module statement. Returns a Module object"""
         self.variable_context.push_context()
 
-        program_body = []
-        for child in node.children[1:-1]:  # Ignore the start and end program statement
-            child_cast = self.visit(child)
-            if isinstance(child_cast, List):
-                program_body.extend(child_cast)
-            elif isinstance(child_cast, AstNode):
-                program_body.append(child_cast)
-
+        program_body = self.generate_cast_body(node.children[1:-1])
+      
         self.variable_context.pop_context()
 
         return Module(
@@ -227,7 +219,7 @@ class TS2CAST(object):
         #     (function_result) - Optional
         #       (identifier)
         #  (body_node) ...
-
+     
         # Create a new variable context
         self.variable_context.push_context()
 
@@ -312,6 +304,19 @@ class TS2CAST(object):
         # Pop variable context off of stack before leaving this scope
         self.variable_context.pop_context()
 
+        
+        # If this is a class function, we need to associate the function def with the class
+        # We should also return None here so we don't duplicate the function def
+        if self.variable_context.is_class_function(name.name):
+            self.variable_context.copy_class_function(name.name,
+            FunctionDef(
+            name=name,
+            func_args=func_args,
+            body=body,
+            source_refs=[self.node_helper.get_source_ref(node)],
+        ))
+            return None
+        
         return FunctionDef(
             name=name,
             func_args=func_args,
@@ -376,12 +381,55 @@ class TS2CAST(object):
             source_refs=[self.node_helper.get_source_ref(node)],
         )
 
+    """
+     (keyword_statement [6, 6] - [6, 61]
+      (statement_label_reference [6, 13] - [6, 16])
+      (statement_label_reference [6, 18] - [6, 21])
+      (statement_label_reference [6, 23] - [6, 26])
+      (statement_label_reference [6, 28] - [6, 31])
+      (math_expression [6, 34] - [6, 61]
+        left: (call_expression [6, 34] - [6, 57]
+          (identifier [6, 34] - [6, 37])
+          (argument_list [6, 37] - [6, 57]
+            (math_expression [6, 38] - [6, 53]
+              left: (math_expression [6, 38] - [6, 49]
+                left: (parenthesized_expression [6, 38] - [6, 45]
+                  (math_expression [6, 39] - [6, 44]
+                    left: (identifier [6, 39] - [6, 40])
+                    right: (identifier [6, 43] - [6, 44])))
+                right: (identifier [6, 48] - [6, 49]))
+              right: (number_literal [6, 52] - [6, 53]))
+            (number_literal [6, 55] - [6, 56])))
+        right: (number_literal [6, 60] - [6, 61])))
+    """
+
     def visit_keyword_statement(self, node):
-        # NOTE: RETURN is not the only Fortran keyword. GO TO and CONTINUE are also considered keywords.
-        # TODO: Handle GO TO and CONTINUE
+        # NOTE: RETURN is not the only Fortran keyword. GO TO and CONTINUE are also considered keywords
         identifier = self.node_helper.get_identifier(node).lower()
         if node.type == "keyword_statement":
-            if "continue" in identifier or "go to" in identifier:
+            if "go to" in identifier:
+                statement_labels = [
+                    self.node_helper.get_identifier(child)
+                    for child in get_children_by_types(
+                        node, ["statement_label_reference"]
+                    )
+                ]
+                # If there are multiple statement labels, then this is a COMPUTED GO TO
+                # Those are handled as a "_get" access into a List of statement labels with the index determined by the expression
+                if len(statement_labels) > 1:
+                    expr = Call(
+                        func=self.get_gromet_function_node("_get"),
+                        arguments=[
+                            CASTLiteralValue(value_type="List", value=[CASTLiteralValue(value=label, value_type="List") for label in statement_labels]),
+                            self.visit(node.children[-1]),
+                        ],
+                    )
+                    return Goto(label=None, expr=expr)
+                return Goto(
+                    label=statement_labels[0],
+                    expr=None,
+                )
+            if "continue" in identifier:
                 return self._visit_no_op(node)
             if "exit" in identifier:
                 return ModelBreak(source_refs=[self.node_helper.get_source_ref(node)])
@@ -395,18 +443,22 @@ class TS2CAST(object):
         if len(return_values) == 1:
             value = self.variable_context.get_node(list(return_values)[0])
         elif len(return_values) > 1:
-            value = LiteralValue(
+            value = CASTLiteralValue(
                 value_type="Tuple",
                 value=[self.variable_context.get_node(ret) for ret in return_values],
                 source_code_data_type=None,
                 source_refs=None,
             )
         else:
-            value = LiteralValue(value=None, value_type=None, source_refs=None)
+            value = CASTLiteralValue(value=None, value_type=None, source_refs=None)
 
         return ModelReturn(
             value=value, source_refs=[self.node_helper.get_source_ref(node)]
         )
+
+    def visit_statement_label(self, node):
+        """Visitor for fortran statement labels"""
+        return Label(label=self.node_helper.get_identifier(node))
 
     def visit_fortran_builtin_statement(self, node):
         """Visitor for Fortran keywords that are not classified as keyword_statement by tree-sitter"""
@@ -514,7 +566,7 @@ class TS2CAST(object):
             itterator, start, stop = [
                 self.visit(child) for child in loop_control_children
             ]
-            step = LiteralValue("Integer", "1")
+            step = CASTLiteralValue("Integer", "1")
         elif len(loop_control_children) == 4:
             itterator, start, stop, step = [
                 self.visit(child) for child in loop_control_children
@@ -546,7 +598,7 @@ class TS2CAST(object):
         # (i, generated_iter_0, sc_0) = next(generated_iter_0)
         pre.append(
             Assignment(
-                left=LiteralValue(
+                left=CASTLiteralValue(
                     "Tuple",
                     [
                         itterator,
@@ -567,7 +619,7 @@ class TS2CAST(object):
             op="!=",  # TODO: Should this be == or !=
             operands=[
                 Var(stop_condition_name_node, "Boolean"),
-                LiteralValue("Boolean", True),
+                CASTLiteralValue("Boolean", True),
             ],
         )
 
@@ -576,7 +628,7 @@ class TS2CAST(object):
         # We just need to append the iterator next call
         body.append(
             Assignment(
-                left=LiteralValue(
+                left=CASTLiteralValue(
                     "Tuple",
                     [
                         itterator,
@@ -663,8 +715,8 @@ class TS2CAST(object):
         if len(node.children) < 3:
             return self.visit_math_expression(node)
 
-        literal_value_false = LiteralValue("Boolean", False)
-        literal_value_true = LiteralValue("Boolean", True)
+        literal_value_false = CASTLiteralValue("Boolean", False)
+        literal_value_true = CASTLiteralValue("Boolean", True)
 
         # AND: Right side goes in body if, left side in condition
         # OR: Right side goes in body else, left side in condition
@@ -702,8 +754,8 @@ class TS2CAST(object):
             source_refs=[self.node_helper.get_source_ref(node)],
         )
 
-    def visit_literal(self, node) -> LiteralValue:
-        """Visitor for literals. Returns a LiteralValue"""
+    def visit_literal(self, node) -> CASTLiteralValue:
+        """Visitor for literals. Returns a CASTLiteralValue"""
         literal_type = node.type
         literal_value = self.node_helper.get_identifier(node)
         literal_source_ref = self.node_helper.get_source_ref(node)
@@ -711,14 +763,14 @@ class TS2CAST(object):
         if literal_type == "number_literal":
             # Check if this is a real value, or an Integer
             if "e" in literal_value.lower() or "." in literal_value:
-                return LiteralValue(
+                return CASTLiteralValue(
                     value_type="AbstractFloat",
                     value=literal_value,
                     source_code_data_type=["Fortran", "Fortran95", "real"],
                     source_refs=[literal_source_ref],
                 )
             else:
-                return LiteralValue(
+                return CASTLiteralValue(
                     value_type="Integer",
                     value=literal_value,
                     source_code_data_type=["Fortran", "Fortran95", "integer"],
@@ -726,7 +778,7 @@ class TS2CAST(object):
                 )
 
         elif literal_type == "string_literal":
-            return LiteralValue(
+            return CASTLiteralValue(
                 value_type="Character",
                 value=literal_value,
                 source_code_data_type=["Fortran", "Fortran95", "character"],
@@ -734,7 +786,7 @@ class TS2CAST(object):
             )
 
         elif literal_type == "boolean_literal":
-            return LiteralValue(
+            return CASTLiteralValue(
                 value_type="Boolean",
                 value=literal_value,
                 source_code_data_type=["Fortran", "Fortran95", "logical"],
@@ -750,7 +802,7 @@ class TS2CAST(object):
             if implied_do_loop_expression_node:
                 return self._visit_implied_do_loop(implied_do_loop_expression_node)
 
-            return LiteralValue(
+            return CASTLiteralValue(
                 value_type="List",
                 value=[
                     self.visit(element) for element in get_non_control_children(node)
@@ -919,9 +971,9 @@ class TS2CAST(object):
         # Fortran uses the character ':' to differentiate these values
         argument_pointer = 0
         arguments = [
-            LiteralValue("None", "None"),
-            LiteralValue("None", "None"),
-            LiteralValue("None", "None"),
+            CASTLiteralValue("None", "None"),
+            CASTLiteralValue("None", "None"),
+            CASTLiteralValue("None", "None"),
         ]
         for child in node.children:
             if child.type == ":":
@@ -969,20 +1021,17 @@ class TS2CAST(object):
         # If we tell the variable context we are in a record definition, it will append the type name as a prefix to all defined variables.
         self.variable_context.enter_record_definition(record_name)
 
-        # Note:
+        # Note: In derived type declarations, functions are only declared. The actual definition will be in the outer module.
         funcs = []
-        derived_type_procedures_node = get_first_child_by_type(
+        if derived_type_procedures_node := get_first_child_by_type(
             node, "derived_type_procedures"
-        )
-        if derived_type_procedures_node:
+        ):
             for procedure_node in get_children_by_types(
                 derived_type_procedures_node, ["procedure_statement"]
             ):
-                funcs.append(
-                    self.visit_name(
-                        get_first_child_by_type(procedure_node, "method_name")
-                    )
-                )
+                function_name = self.node_helper.get_identifier(get_first_child_by_type(procedure_node, "method_name", recurse=True))
+                funcs.append(self.variable_context.register_module_function(function_name))
+               
 
         # A derived type can only have variable declarations in its body.
         fields = []
@@ -1073,7 +1122,7 @@ class TS2CAST(object):
 
         # If there are more than one arguments, then this is a multi dimensional array and we need to use an extended slice
         if len(argument_nodes) > 1:
-            dimension_list = LiteralValue()
+            dimension_list = CASTLiteralValue()
             dimension_list.value_type = "List"
             dimension_list.value = []
             for argument in argument_nodes:
@@ -1128,7 +1177,7 @@ class TS2CAST(object):
         # Fortran has certain while(True) constructs that won't contain a while_statement node
         if not while_statement_node:
             body_start_index = 0
-            expr = LiteralValue(
+            expr = CASTLiteralValue(
                 value_type="Boolean",
                 value="True",
             )
@@ -1163,7 +1212,7 @@ class TS2CAST(object):
             itterator, start, stop = [
                 self.visit(child) for child in loop_control_children
             ]
-            step = LiteralValue("Integer", "1")
+            step = CASTLiteralValue("Integer", "1")
         elif len(loop_control_children) == 4:
             itterator, start, stop, step = [
                 self.visit(child) for child in loop_control_children
@@ -1210,12 +1259,14 @@ class TS2CAST(object):
 
     def generate_cast_body(self, body_nodes: List):
         body = []
+     
         for node in body_nodes:
             cast = self.visit(node)
+        
             if isinstance(cast, AstNode):
                 body.append(cast)
             elif isinstance(cast, List):
-                body.extend(cast)
+                body.extend([element for element in cast if element is not None])
 
         # Gromet doesn't support empty bodies, so we should create a no_op instead
         if len(body) == 0:
@@ -1223,3 +1274,4 @@ class TS2CAST(object):
 
         # TODO: How to add more support for source references
         return body
+

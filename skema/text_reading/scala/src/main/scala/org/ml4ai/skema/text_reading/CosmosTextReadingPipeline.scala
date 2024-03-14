@@ -1,5 +1,6 @@
 package org.ml4ai.skema.text_reading
 
+import org.apache.poi.openxml4j.exceptions.InvalidOperationException
 import org.clulab.odin.Mention
 import org.clulab.pdf2txt.Pdf2txt
 import org.clulab.pdf2txt.common.pdf.TextConverter
@@ -9,12 +10,17 @@ import org.clulab.processors.Processor
 import org.ml4ai.skema.text_reading.attachments.MentionLocationAttachment
 import org.ml4ai.skema.text_reading.data.CosmosJsonDataLoader
 import org.ml4ai.skema.text_reading.grounding.Grounder
-import org.ml4ai.skema.text_reading.scenario_context.{ContextEngine, CosmosOrderer, SentenceIndexOrderer}
+import org.ml4ai.skema.text_reading.scenario_context.ContextEngine
+import org.ml4ai.skema.text_reading.scenario_context.openai.DecoderContextEngine
+
+import scala.util.{Success, Try}
+//import org.ml4ai.skema.text_reading.scenario_context.openai.ContextEngine
+import org.ml4ai.skema.text_reading.scenario_context.{HeuristicContextEngine, CosmosOrderer}
 import org.ml4ai.skema.text_reading.serializer.SkemaJSONSerializer
 
 import scala.collection.mutable.ArrayBuffer
 
-class CosmosTextReadingPipeline(contextWindowSize: Int, processorOpt: Option[Processor] = None, odinEngineOpt: Option[OdinEngine] = None, grounderOpt: Option[Grounder] = None )
+class CosmosTextReadingPipeline(contextWindowSize: Int, contextEngineType:String, processorOpt: Option[Processor] = None, odinEngineOpt: Option[OdinEngine] = None, grounderOpt: Option[Grounder] = None )
     extends TextReadingPipeline(processorOpt, odinEngineOpt, grounderOpt) {
 
   // PDF converted to fix pdf tokenization artifacts
@@ -54,14 +60,17 @@ class CosmosTextReadingPipeline(contextWindowSize: Int, processorOpt: Option[Pro
     val locations = textsAndLocations.map(_.split(jsonSeparator).takeRight(2).mkString(jsonSeparator)) //location = pageNum::blockIdx
 
     // extract mentions form each text block
-    val mentions = for (tf <- textsAndFilenames) yield {
-      val Array(rawText, filename) = tf.split(jsonSeparator)
-      // Extract mentions and apply grounding
+    val mentions =
+      (for (tf <- textsAndFilenames) yield Try {
+        val Array(rawText, filename) = tf.split(jsonSeparator)
+        // Extract mentions and apply grounding
 
-      val text = pdf2txt.process(rawText, maxLoops = 1)
-      this.extractMentions(text, Some(filename))._2
+        val text = pdf2txt.process(rawText, maxLoops = 1)
+        this.extractMentions(text, Some(filename))._2
 
-    }
+      }) collect {
+        case Success(ms) => ms
+      }
 
     // store location information from cosmos as an attachment for each mention
     val menWInd = mentions.zipWithIndex
@@ -84,7 +93,14 @@ class CosmosTextReadingPipeline(contextWindowSize: Int, processorOpt: Option[Pro
 
     // Resolve scenario context
     val cosmosOrderer = new CosmosOrderer(mentionsWithLocations)
-    val scenarioContextEngine = new ContextEngine(windowSize = contextWindowSize, mentionsWithLocations, cosmosOrderer)
+    val scenarioContextEngine: ContextEngine = {
+      if(contextEngineType.toLowerCase() == "heuristic")
+        new HeuristicContextEngine(windowSize = contextWindowSize, mentionsWithLocations, cosmosOrderer)
+      else if(contextEngineType.toLowerCase() == "decoder")
+        new DecoderContextEngine(contextWindowSize, mentionsWithLocations, cosmosOrderer)
+      else
+        throw new InvalidOperationException("Undefined type of context engine")
+    }
     val mentionsWithScenarioContext = mentionsWithLocations map scenarioContextEngine.resolveContext
     mentionsWithScenarioContext
   }

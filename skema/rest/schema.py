@@ -2,7 +2,7 @@
 """
 Response models for API
 """
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from askem_extractions.data_model import AttributeCollection
 from pydantic import BaseModel, Field
@@ -60,6 +60,29 @@ class EquationLatexToAMR(BaseModel):
         description="The model type", examples=["regnet"]
     )
 
+
+class EquationToMET(BaseModel):
+    equations: List[str] = Field(
+        description="Equations in LaTeX or pMathML",
+        examples=[[
+            r"\frac{\partial x}{\partial t} = {\alpha x} - {\beta x y}",
+            r"\frac{\partial y}{\partial t} = {\alpha x y} - {\gamma y}",
+            "<math><mfrac><mrow><mi>d</mi><mi>Susceptible</mi></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mi>Infection</mi><mi>Infected</mi><mi>Susceptible</mi></math>",
+        ]],
+    )
+
+class EquationsToAMRs(BaseModel):
+    equations: List[str] = Field(
+        description="Equations in LaTeX or pMathML",
+        examples=[[
+            r"\frac{\partial x}{\partial t} = {\alpha x} - {\beta x y}",
+            r"\frac{\partial y}{\partial t} = {\alpha x y} - {\gamma y}",
+            "<math><mfrac><mrow><mi>d</mi><mi>Susceptible</mi></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><mo>−</mo><mi>Infection</mi><mi>Infected</mi><mi>Susceptible</mi></math>",
+        ]],
+    )
+    model: Literal["regnet", "petrinet", "met", "gamr", "decapode"] = Field(
+        description="The model type", examples=["gamr"]
+    )
 
 class MmlToAMR(BaseModel):
     equations: List[str] = Field(
@@ -232,4 +255,10 @@ class TextReadingAnnotationsOutput(BaseModel):
         None, name="generalized_errors",
         description="Any pipeline-wide errors, not specific to a particular input",
         examples=[[TextReadingError(pipeline="MIT", message="API quota exceeded")]],
+    )
+
+    aligned_amrs: List[Dict[str, Any]] = Field(
+        description="An aligned list of AMRs to the text extractions. This field will be populated only if it was"
+                    " provided as part of the input",
+        default_factory=lambda: []
     )

@@ -1,7 +1,10 @@
 //! Structs to represent elements of ACSets (Annotated C-Sets, a concept from category theory).
 //! JSON-serialized ACSets are the form of model exchange between TA1 and TA2.
 use crate::parsers::first_order_ode::{get_terms, FirstOrderODE, PnTerm};
-
+use crate::parsers::math_expression_tree::MathExpressionTree;
+use crate::ast::operator::{Operator};
+use crate::ast::{MathExpression, Ci, Mi, Type};
+use schemars::{JsonSchema};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use utoipa;
@@ -10,24 +13,24 @@ use utoipa::ToSchema;
 // We keep our ACSet representation in addition to the new SKEMA model representation since it is
 // more compact and easy to work with for development.
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct Specie {
     pub sname: String,
     pub uid: usize,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct ACSetTransition {
     pub tname: String,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct InputArc {
     pub it: usize,
     pub is: usize,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct OutputArc {
     pub ot: usize,
     pub os: usize,
@@ -35,7 +38,7 @@ pub struct OutputArc {
 
 #[allow(non_snake_case)]
 #[derive(
-    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct ACSet {
     pub S: Vec<Specie>,
@@ -47,7 +50,7 @@ pub struct ACSet {
 // -------------------------------------------------------------------------------------------
 // The following data structs are those requested by TA-4 as an exchange format for the models.
 // the spec in json format can be found here: https://github.com/DARPA-ASKEM/Model-Representations/blob/main/petrinet/petrinet_schema.json
-#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct PetriNet {
     pub header: Header,
     pub model: ModelPetriNet,
@@ -56,7 +59,7 @@ pub struct PetriNet {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<Metadata>,
 }
-#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct RegNet {
     pub header: Header,
     pub model: ModelRegNet,
@@ -64,7 +67,9 @@ pub struct RegNet {
     pub metadata: Option<Metadata>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
+)]
 pub struct Header {
     pub name: String,
     pub schema: String,
@@ -73,7 +78,7 @@ pub struct Header {
     pub model_version: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct ModelRegNet {
     pub vertices: BTreeSet<RegState>,
     pub edges: BTreeSet<RegTransition>,
@@ -82,7 +87,7 @@ pub struct ModelRegNet {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<Parameter>>,
 }
-#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize, ToSchema, JsonSchema)]
 pub struct ModelPetriNet {
     pub states: BTreeSet<State>,
     pub transitions: BTreeSet<Transition>,
@@ -93,21 +98,21 @@ pub struct ModelPetriNet {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Metadata {
     pub placeholder: String, // once we finalize the metadata data struct fill in this data struct
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Semantics {
     pub ode: Ode,
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Ode {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -123,7 +128,7 @@ pub struct Ode {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Observable {
     id: String,
@@ -138,7 +143,7 @@ pub struct Observable {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct RegState {
     pub id: String,
@@ -154,7 +159,7 @@ pub struct RegState {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct State {
     pub id: String,
@@ -166,7 +171,7 @@ pub struct State {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Units {
     pub expression: String,
@@ -174,21 +179,21 @@ pub struct Units {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Grounding {
     pub identifiers: Identifier,
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Identifier {
     pub ido: String,
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema,
+    Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Initial {
     pub target: String,
@@ -196,8 +201,12 @@ pub struct Initial {
     pub expression_mathml: String,
 }
 
+impl Default for Initial {
+    fn default() -> Self { Initial { target: "temp".to_string(), expression: "0".to_string(), expression_mathml: "<math><\\math>".to_string() } }
+}
+
 #[derive(
-    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Rate {
     pub target: String,
@@ -206,7 +215,7 @@ pub struct Rate {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct RegTransition {
     pub id: String,
@@ -232,7 +241,7 @@ pub struct RegTransition {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Transition {
     pub id: String,
@@ -258,7 +267,7 @@ pub struct Transition {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Properties {
     pub name: String,
@@ -267,7 +276,7 @@ pub struct Properties {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Parameter {
     pub id: String,
@@ -286,7 +295,7 @@ pub struct Parameter {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Time {
     id: String,
@@ -295,7 +304,7 @@ pub struct Time {
 }
 
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct Distribution {
     #[serde(rename = "type")]
@@ -305,7 +314,7 @@ pub struct Distribution {
 
 // This is for the routing of mathml for various endpoints to extract the appropriate AMR
 #[derive(
-    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema,
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema,
 )]
 pub struct AMRmathml {
     pub model: String,
@@ -313,8 +322,136 @@ pub struct AMRmathml {
 }
 
 // -------------------------------------------------------------------------------------------
+// These next structs are for Generalized AMR's
+// -------------------------------------------------------------------------------------------
+#[derive(
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema
+)]
+pub struct GeneralizedAMR {
+    pub header: Header,
+    pub met: Vec<MathExpressionTree>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub semantics: Option<GeneralSemantics>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<Metadata>,
+}
+
+#[derive(
+    Debug, Default, PartialEq, Eq, Clone, PartialOrd, Ord, Serialize, Deserialize, ToSchema, JsonSchema
+)]
+pub struct GeneralSemantics {
+    pub states: BTreeSet<State>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<Vec<Parameter>>
+}
+
+// -------------------------------------------------------------------------------------------
 // This function takes our previous model form, the ACSet and transforms it to the new TA4 exchange format
 // -------------------------------------------------------------------------------------------
+impl From<Vec<MathExpressionTree>> for GeneralizedAMR {
+    fn from(met_vec: Vec<MathExpressionTree>) -> GeneralizedAMR {
+        let mut states_vec = BTreeSet::<State>::new();
+        let mut parameter_vec = Vec::<Parameter>::new();
+        let mut rhs_vec = Vec::<MathExpressionTree>::new();
+
+
+        // construct state vector, under assumption that only differentialed LHS terms are states
+        for equation in met_vec.iter() {
+            match equation {
+                MathExpressionTree::Cons(ref x, ref y) => { 
+                    match &x {
+                        Operator::Equals => {
+                            match &y[0] {
+                                MathExpressionTree::Cons(Operator::Derivative(_d), ref x1) => {
+                                    let state_name = x1[0].to_string();
+                                    let state = State {
+                                        id: state_name.clone(),
+                                        name: state_name.clone(),
+                                        grounding: None,
+                                        units: None,
+                                    };
+                                    states_vec.insert(state.clone());
+                                    rhs_vec.push(y[1].clone());
+                                }
+                                _ =>{
+                                        println!("Non-differential Equation");
+                                        rhs_vec.push(y[1].clone());
+                                    }
+                            }
+                        }
+                        _ => {println!("Expected an equation!")}
+                    }
+                }
+                _ => {println!("Expected an equation!")}
+            }
+        }
+
+        // now to construct the parameters vector
+        // might be best to make a first order ODE and pass the get terms thing and then pull all terms from it
+        // would need to flatten the mults and then pull make temp lhs 
+        let mut param_str_vec = Vec::<String>::new();
+        let mut state_str_vec = Vec::<String>::new();
+        for state in states_vec.iter() {
+            state_str_vec.push(state.name.clone());
+        }
+        for (i, _equation) in met_vec.iter().enumerate() {
+            let deriv = Ci {
+                r#type: Some(Type::Function),
+                content: Box::new(MathExpression::Mi(Mi("temp".to_string()))),
+                func_of: None,
+            };
+            let fode = FirstOrderODE {
+                lhs_var: deriv.clone(),
+                func_of: [deriv.clone()].to_vec(), // just place holders for construction
+                with_respect_to: deriv.clone(),    // just place holders for construction
+                rhs: rhs_vec[i].clone(),
+            };
+            let terms = get_terms(state_str_vec.clone(), fode);
+            for term in terms.iter() {
+                println!("{:?}", term.clone());
+                println!("{:?}", term.parameters.clone());
+                param_str_vec.extend(term.parameters.clone().into_iter());
+            }
+        }
+
+        // dedup the parameters vector
+        param_str_vec.sort();
+        param_str_vec.dedup();
+
+        // now to make the parameter vec from the strings
+        for param in param_str_vec.iter() {
+            let parameter = Parameter {
+                id: param.clone(),
+                name: Some(param.clone()),
+                ..Default::default()
+            };
+            parameter_vec.push(parameter.clone());
+        }
+
+        let header = Header {
+            name: "Model".to_string(),
+            schema: "G-AMR".to_string(),
+            schema_name: "Generalized AMR".to_string(),
+            description: "Generalized AMR model from...".to_string(),
+            model_version: "0.1".to_string(),
+        };
+
+        let semantics = GeneralSemantics {
+            states: states_vec,
+            parameters: Some(parameter_vec),
+        };
+
+        
+
+        GeneralizedAMR {
+            header,
+            met: met_vec.clone(),
+            semantics: Some(semantics),
+            metadata: None
+        }
+    }
+}
+
 impl From<Vec<FirstOrderODE>> for PetriNet {
     fn from(ode_vec: Vec<FirstOrderODE>) -> PetriNet {
         // initialize vecs
@@ -336,7 +473,6 @@ impl From<Vec<FirstOrderODE>> for PetriNet {
             };
             let initials = Initial {
                 target: ode.lhs_var.to_string().clone(),
-                expression: "".to_string(),
                 ..Default::default()
             };
             /*let parameters = Parameter {
@@ -352,6 +488,7 @@ impl From<Vec<FirstOrderODE>> for PetriNet {
             initial_vec.push(initials.clone());
             states_vec.insert(states.clone());
             state_string_list.push(ode.lhs_var.to_string().clone()); // used later for transition parsing
+            println!("ode.rhs: {:?}", ode.rhs.to_string().clone());
         }
 
         // now for the construction of the transitions and their results
@@ -360,11 +497,16 @@ impl From<Vec<FirstOrderODE>> for PetriNet {
         for ode in ode_vec.iter() {
             dirty_terms.append(&mut get_terms(state_string_list.clone(), ode.clone()));
         }
-
         // now to trim off terms that are for euler methods, dyn_state != exp_state && parameters.len() != 0
+        // this conditional does nothing now, but is kept in case we need to turn it on later.
         for term in dirty_terms.iter() {
-            if term.dyn_state != term.exp_states[0] || !term.parameters.is_empty() {
-                terms.push(term.clone());
+            println!("-----\nterm: {:?}\n-----", term.clone());
+            if !term.exp_states.is_empty() {
+                if term.dyn_state != term.exp_states[0] || !term.parameters.is_empty() {
+                    terms.push(term.clone());
+                } else {
+                    terms.push(term.clone());
+                }
             }
         }
         for term in terms.iter() {
@@ -548,15 +690,26 @@ impl From<Vec<FirstOrderODE>> for PetriNet {
         }
 
         // now we construct transitions from unpaired terms, assuming them to be sources and sinks
+        // This should also support sources and sinks that are state dependent. 
         if !terms.is_empty() {
             for (i, term) in terms.iter().enumerate() {
                 if term.polarity {
                     let mut input = Vec::<String>::new();
+                    let mut exp_eq_dyn = false;
 
-                    let output = [term.dyn_state.clone()].to_vec();
+                    let mut output = [term.dyn_state.clone()].to_vec();
 
                     for state in term.exp_states.iter() {
                         input.push(state.clone());
+                        if *state == term.dyn_state.clone() {
+                            exp_eq_dyn = true;
+                        }
+                    }
+
+                    // I think if the expression equals the dynamic state both in the input and output get 
+                    if exp_eq_dyn {
+                        input.push(term.dyn_state.clone());
+                        output.push(term.dyn_state.clone());
                     }
 
                     let transitions = Transition {
@@ -712,13 +865,14 @@ impl From<Vec<FirstOrderODE>> for RegNet {
             // This finishes the construction of the state
             let mut counter = 0;
             for term in terms.iter() {
-                if term.exp_states.len() == 1 && term.exp_states[0] == term.dyn_state {
+                if term.exp_states.len() == 1 && term.exp_states[0] == *state {
                     // note this is only grabbing one term. This is somewhat limited by the current AMR schema
                     // it assumes only a simple single parameter for this Date: 08/10/23
                     r_state.rate_constant = Some(term.parameters[0].clone());
                     r_state.sign = Some(term.polarity);
                     // This adds the edges for the environment couplings
-                    let prop = Properties {
+                    //---DO WE INCLUDE THE SINGLE TRANSITION?---
+                    /*let prop = Properties {
                         name: term.parameters[0].clone(),
                         rate_constant: None,
                     };
@@ -730,7 +884,7 @@ impl From<Vec<FirstOrderODE>> for RegNet {
                         grounding: None,
                         properties: Some(prop.clone()),
                     };
-                    transitions_vec.insert(self_trans.clone());
+                    transitions_vec.insert(self_trans.clone()); */
                     counter += 1;
                 }
             }
@@ -751,8 +905,9 @@ impl From<Vec<FirstOrderODE>> for RegNet {
 
         // first for the polarity pairs of terms we need to construct the transistions
         let mut transition_pair = Vec::<(PnTerm, PnTerm)>::new();
-        for term1 in terms.clone().iter() {
-            for term2 in terms.clone().iter() {
+        let mut paired_indicies = Vec::<usize>::new();
+        for (i, term1) in terms.clone().iter().enumerate() {
+            for (j, term2) in terms.clone().iter().enumerate() {
                 if term1.polarity != term2.polarity
                     && term1.parameters == term2.parameters
                     && term1.polarity
@@ -760,8 +915,18 @@ impl From<Vec<FirstOrderODE>> for RegNet {
                     // first term is positive, second is negative
                     let temp_pair = (term1.clone(), term2.clone());
                     transition_pair.push(temp_pair);
+                    paired_indicies.push(i);
+                    paired_indicies.push(j);
                 }
             }
+        }
+
+        paired_indicies.sort();
+        paired_indicies.dedup();
+
+        let mut unpaired_terms = terms.clone();
+        for i in paired_indicies.iter().rev() {
+            unpaired_terms.remove(*i);
         }
 
         for (i, t) in transition_pair.iter().enumerate() {
@@ -793,12 +958,6 @@ impl From<Vec<FirstOrderODE>> for RegNet {
                     }
                 }
 
-                let _transitions = Transition {
-                    id: format!("t{}", i.clone()),
-                    input: Some(t.1.exp_states.clone()),
-                    output: Some(output.clone()),
-                    ..Default::default()
-                };
                 let prop = Properties {
                     // once again the assumption of only one parameters for transition
                     name: t.0.parameters[0].clone(),
@@ -807,6 +966,47 @@ impl From<Vec<FirstOrderODE>> for RegNet {
                 let trans = RegTransition {
                     id: format!("t{}", i.clone()),
                     source: Some(t.1.exp_states.clone()),
+                    target: Some(output.clone()),
+                    sign: Some(true),
+                    grounding: None,
+                    properties: Some(prop.clone()),
+                };
+                transitions_vec.insert(trans.clone());
+            }
+        }
+
+        for (i, term) in unpaired_terms.iter().enumerate() {
+            println!("Term: {:?}", term.clone());
+            if term.exp_states.len() > 1 {
+                let mut output = [term.dyn_state.clone()].to_vec();
+                let mut input = term.exp_states.clone();
+
+                let param_len = term.parameters.len();
+
+                let prop = Properties {
+                    // once again the assumption of only one parameters for transition
+                    name: term.parameters[param_len - 1].clone(),
+                    rate_constant: None,
+                };
+
+                input.sort();
+                input.dedup();
+                output.sort();
+                output.dedup();
+
+                if input.clone().len() > 1 {
+                    let old_input = input.clone();
+                    input = [].to_vec();
+                    for term in old_input.clone().iter() {
+                        if *term != output[0] {
+                            input.push(term.clone());
+                        }
+                    }
+                }
+
+                let trans = RegTransition {
+                    id: format!("s{}", i.clone()),
+                    source: Some(input.clone()),
                     target: Some(output.clone()),
                     sign: Some(true),
                     grounding: None,

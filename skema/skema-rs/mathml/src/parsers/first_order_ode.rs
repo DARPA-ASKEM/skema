@@ -1,4 +1,4 @@
-use crate::ast::operator::Operator::{Add, Divide, Multiply, Subtract};
+use crate::ast::operator::Operator::{Add, Divide, Multiply, Subtract, Power};
 use crate::parsers::math_expression_tree::MathExpressionTree::Atom;
 use crate::parsers::math_expression_tree::MathExpressionTree::Cons;
 use crate::{
@@ -11,7 +11,7 @@ use crate::{
         interpreted_mathml::{
             ci_univariate_with_bounds, ci_univariate_without_bounds, ci_unknown_with_bounds,
             ci_unknown_without_bounds, first_order_derivative_leibniz_notation, math_expression,
-            newtonian_derivative, operator,
+            newtonian_derivative, operator, first_order_partial_derivative_leibniz_notation, first_order_partial_derivative_partial_func, first_order_dderivative_leibniz_notation
         },
         math_expression_tree::MathExpressionTree,
     },
@@ -31,6 +31,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::str::FromStr;
 
+use crate::ast::operator::DerivativeNotation;
 #[cfg(test)]
 use crate::{ast::Mi, parsers::generic_mathml::test_parser};
 
@@ -39,7 +40,7 @@ use crate::{ast::Mi, parsers::generic_mathml::test_parser};
 /// in Leibniz or Newtonian notation.
 #[derive(Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Hash, new)]
 pub struct FirstOrderODE {
-    /// The variable/univariate function) on the LHS of the equation that is being
+    /// The variable/univariate function on the LHS of the equation that is being
     /// differentiated. This variable may be referred to as a 'specie', 'state', or 'vertex' in the
     /// context of discussions about Petri Nets and RegNets.
     pub lhs_var: Ci,
@@ -57,7 +58,7 @@ pub fn first_order_ode(input: Span) -> IResult<FirstOrderODE> {
     // Recognize LHS derivative
     let (s, (derivative, ci)) = alt((
         first_order_derivative_leibniz_notation,
-        newtonian_derivative,
+        newtonian_derivative, first_order_partial_derivative_leibniz_notation, first_order_partial_derivative_partial_func, first_order_dderivative_leibniz_notation
     ))(s)?;
     //let ci = binding.content;
     //let parenthesized = ci.func_of.clone();
@@ -128,7 +129,12 @@ pub fn first_order_ode(input: Span) -> IResult<FirstOrderODE> {
 impl FirstOrderODE {
     pub fn to_cmml(&self) -> String {
         let lhs_expression_tree = MathExpressionTree::Cons(
-            Operator::Derivative(Derivative::new(1, 1, self.with_respect_to.clone())),
+            Operator::Derivative(Derivative::new(
+                1,
+                1,
+                self.with_respect_to.clone(),
+                DerivativeNotation::LeibnizTotal,
+            )),
             vec![MathExpressionTree::Atom(MathExpression::Ci(
                 self.lhs_var.clone(),
             ))],
@@ -225,15 +231,151 @@ pub fn get_terms(sys_states: Vec<String>, ode: FirstOrderODE) -> Vec<PnTerm> {
                     terms.push(t_term.clone());
                 }
             }
+            Power => {
+                let mut temp_term = get_term_power(sys_states, y.clone());
+                temp_term.dyn_state = dyn_state;
+                terms.push(temp_term);
+            }
             _ => {
                 println!("Warning unsupported case");
             }
         },
-        Atom(_x) => {
-            println!("Warning unexpected RHS structure")
+        Atom(ref x) => {
+            // also need to construct a partial term here to handle distribution of just a parameter
+            let mut is_state = false;
+            for state in sys_states.iter() {
+                if x.to_string() == *state {
+                    is_state = true;
+                }
+            }
+            if is_state {
+                let temp_term = PnTerm {
+                    dyn_state: "temp".to_string(),
+                    exp_states: [x.to_string().clone()].to_vec(),
+                    polarity: true,
+                    expression: "".to_string(),
+                    parameters: Vec::<String>::new(),
+                    sub_terms: None,
+                    math_vec: None,
+                };
+                terms.push(temp_term.clone());
+            } else {
+                let temp_term = PnTerm {
+                    dyn_state: "temp".to_string(),
+                    exp_states: Vec::<String>::new(),
+                    polarity: true,
+                    expression: "".to_string(),
+                    parameters: [x.to_string().clone()].to_vec(),
+                    sub_terms: None,
+                    math_vec: None,
+                };
+                terms.push(temp_term.clone());
+            }
         }
     }
     terms
+}
+
+pub fn get_term_power(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> PnTerm {
+    let mut variables = Vec::<String>::new();
+    let mut exp_states = Vec::<String>::new();
+    let mut polarity = true;
+    let mut power = 0;
+    // assume power arguments are only length 2. 
+    power = eq[1].to_string().parse::<i32>().unwrap();
+
+    // this walks the tree and composes a vector of all variable and polarity changes
+    for (i, obj) in eq.iter().enumerate() {
+        match obj {
+            Cons(x, y) => {
+                match &x {
+                    Subtract => {
+                        if y.len() == 1 {
+                            polarity = false;
+                            variables.push(y[0].to_string());
+                        } else {
+                            for var in y.iter() {
+                                variables.push(var.to_string().clone());
+                            }
+                        }
+                    }
+                    Multiply => {
+                        // call mult function to get a partial term
+                        let mut temp_term = get_term_mult(sys_states.clone(), y.clone());
+
+                        // parse term polarity
+                        polarity = temp_term.polarity;
+
+                        // parse term parameters and expression states
+                        // need to do both to populate both later
+                        variables.append(&mut temp_term.parameters);
+                        let mut j = 0;
+                        while j < power {
+                            variables.append(&mut temp_term.exp_states);
+                            j += 1;
+                        }
+                    }
+                    Add => {
+                        if y.len() == 1 {
+                            // really should need to support unary addition, but oh well
+                            variables.push(y[0].to_string());
+                        } else {
+                            for var in y.iter() {
+                                variables.push(var.to_string().clone());
+                            }
+                        }
+                    }
+                    _ => {
+                        println!("Not expected operation inside Power")
+                    }
+                }
+            }
+            Atom(x) => {
+                // need to add expression state a number of times equal to the power
+                if i == 0 {
+                    let mut j = 0;
+                    while j < power {
+                        variables.push(x.to_string());
+                        j += 1;
+                    }
+                } else {
+                    variables.push(x.to_string());
+                }
+            },
+        }
+    }
+
+    // this compiles the vector of expression states for the term
+    let mut ind = Vec::<usize>::new();
+    for (i, var) in variables.iter().enumerate() {
+        for sys_var in sys_states.iter() {
+            if var == sys_var {
+                exp_states.push(var.clone());
+                ind.push(i);
+            }
+        }
+    }
+
+    // this removes the expression states from the variable vector
+    for i in ind.iter().rev() {
+        variables.remove(*i);
+    }
+
+    // now to dedup variables and exp_states
+    variables.sort();
+    variables.dedup();
+    exp_states.sort();
+    //exp_states.dedup();
+
+    PnTerm {
+        dyn_state: "temp".to_string(),
+        exp_states,
+        polarity,
+        expression: MathExpressionTree::Cons(Multiply, eq).to_cmml(),
+        parameters: variables,
+        sub_terms: None,
+        math_vec: None,
+    }
 }
 
 // this takes in the arguments of a closer to root level add operator and returns the PnTerms for it's subgraphs
@@ -267,6 +409,11 @@ pub fn get_terms_add(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> Ve
                     for term in temp_terms.iter() {
                         terms.push(term.clone());
                     }
+                }
+                Power => {
+                    let mut temp_term = get_term_power(sys_states.clone(), y1.clone());
+                    temp_term.math_vec = Some(arg.clone());
+                    terms.push(temp_term);
                 }
                 _ => {
                     println!("Error unsupported operation")
@@ -379,6 +526,18 @@ pub fn get_terms_sub(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> Ve
                         }
                         terms.push(t_term.clone());
                     }
+                }
+                Power => {
+                    let mut temp_term = get_term_power(sys_states, y1.clone());
+                    temp_term.polarity = !temp_term.polarity;
+                    if temp_term.sub_terms.is_some() {
+                        for (i, sub_term) in temp_term.sub_terms.clone().unwrap().iter().enumerate()
+                        {
+                            temp_term.sub_terms.as_mut().unwrap()[i].polarity = !sub_term.polarity;
+                        }
+                    }
+                    temp_term.math_vec = Some(eq[0].clone());
+                    terms.push(temp_term);
                 }
                 _ => {
                     println!("Not valid term for PN")
@@ -507,6 +666,26 @@ pub fn get_terms_sub(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> Ve
                             }
                         }
                     }
+                    Power => {
+                        let mut temp_term = get_term_power(sys_states.clone(), y1.clone());
+                        if i == 1 {
+                            // swap polarity of temp term
+                            temp_term.polarity = !temp_term.polarity;
+                            if temp_term.sub_terms.is_some() {
+                                for (i, sub_term) in
+                                    temp_term.sub_terms.clone().unwrap().iter().enumerate()
+                                {
+                                    temp_term.sub_terms.as_mut().unwrap()[i].polarity =
+                                        !sub_term.polarity;
+                                }
+                            }
+                            temp_term.math_vec = Some(arg.clone());
+                            terms.push(temp_term);
+                        } else {
+                            temp_term.math_vec = Some(arg.clone());
+                            terms.push(temp_term);
+                        }
+                    }
                     _ => {
                         println!("Error unsupported operation")
                     }
@@ -601,6 +780,18 @@ pub fn get_term_div(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> PnT
                             }
                         }
                     }
+                    Power => {
+                        // call mult function to get a partial term
+                        let mut temp_term = get_term_power(sys_states.clone(), y.clone());
+
+                        // parse term polarity
+                        polarity = temp_term.polarity;
+
+                        // parse term parameters and expression states
+                        // need to do both to populate both later
+                        variables.append(&mut temp_term.parameters);
+                        variables.append(&mut temp_term.exp_states);
+                    }
                     _ => {
                         println!("Not expected operation inside Multiply")
                     }
@@ -630,7 +821,7 @@ pub fn get_term_div(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> PnT
     variables.sort();
     variables.dedup();
     exp_states.sort();
-    exp_states.dedup();
+    //exp_states.dedup();
 
     PnTerm {
         dyn_state: "temp".to_string(),
@@ -656,8 +847,10 @@ pub fn get_terms_mult(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> P
     // determine if we need to distribute or if simply mult we can just make term from
     let mut distribution = false;
     for arg in eq.iter() {
-        if let Cons(_x1, _y1) = arg {
-            distribution = true;
+        if let Cons(x1, y1) = arg {
+            if *x1 != Power && *x1 != Divide && !(*x1 == Subtract && y1.len() == 1) {
+                distribution = true;
+            } 
         }
     }
 
@@ -706,6 +899,14 @@ pub fn get_terms_mult(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> P
                             variables.append(&mut term.parameters.clone());
                             exp_states.append(&mut term.exp_states.clone());
                         }
+                    }
+                    Power => {
+                        let mut temp_term = get_term_power(sys_states.clone(), y1.clone());
+                        temp_term.math_vec = Some(arg.clone());
+                        arg_terms.push((i.try_into().unwrap(), temp_term.clone()));
+                        // we now need to parse the term to constuct the large full term
+                        variables.append(&mut temp_term.parameters.clone());
+                        exp_states.append(&mut temp_term.exp_states.clone());
                     }
                     _ => {
                         println!("Error unsupported operation")
@@ -805,7 +1006,7 @@ pub fn get_terms_mult(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> P
         variables.sort();
         variables.dedup();
         exp_states.sort();
-        exp_states.dedup();
+        //exp_states.dedup();
 
         PnTerm {
             dyn_state: "temp".to_string(),
@@ -863,6 +1064,18 @@ pub fn get_term_mult(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> Pn
                             }
                         }
                     }
+                    Power => {
+                        // call mult function to get a partial term
+                        let mut temp_term = get_term_power(sys_states.clone(), y.clone());
+
+                        // parse term polarity
+                        polarity = temp_term.polarity;
+
+                        // parse term parameters and expression states
+                        // need to do both to populate both later
+                        variables.append(&mut temp_term.parameters);
+                        variables.append(&mut temp_term.exp_states);
+                    }
                     _ => {
                         println!("Not expected operation inside Multiply")
                     }
@@ -892,7 +1105,7 @@ pub fn get_term_mult(sys_states: Vec<String>, eq: Vec<MathExpressionTree>) -> Pn
     variables.sort();
     variables.dedup();
     exp_states.sort();
-    exp_states.dedup();
+    //exp_states.dedup();
 
     PnTerm {
         dyn_state: "temp".to_string(),
@@ -1011,6 +1224,7 @@ fn test_first_order_derivative_leibniz_notation_with_implicit_time_dependence() 
                     Box::new(MathExpression::Mi(Mi("t".to_string()))),
                     None,
                 ),
+                DerivativeNotation::LeibnizTotal,
             ),
             Ci::new(
                 Some(Type::Function),
@@ -1043,6 +1257,7 @@ fn test_first_order_derivative_leibniz_notation_with_explicit_time_dependence() 
                     Box::new(MathExpression::Mi(Mi("t".to_string()))),
                     None,
                 ),
+                DerivativeNotation::LeibnizTotal,
             ),
             Ci::new(
                 Some(Type::Function),
@@ -1125,6 +1340,7 @@ fn test_msub_derivative() {
                     Box::new(MathExpression::Mi(Mi("t".to_string()))),
                     None,
                 ),
+                DerivativeNotation::LeibnizTotal,
             ),
             Ci::new(
                 Some(Type::Function),
