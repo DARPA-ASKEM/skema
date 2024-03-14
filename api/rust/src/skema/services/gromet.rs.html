@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `skema/src/services/gromet.rs`."><title>gromet.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="skema" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `skema/src/services/gromet.rs`."><title>gromet.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="skema" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -365,6 +366,110 @@
 <a href="#365" id="365">365</a>
 <a href="#366" id="366">366</a>
 <a href="#367" id="367">367</a>
+<a href="#368" id="368">368</a>
+<a href="#369" id="369">369</a>
+<a href="#370" id="370">370</a>
+<a href="#371" id="371">371</a>
+<a href="#372" id="372">372</a>
+<a href="#373" id="373">373</a>
+<a href="#374" id="374">374</a>
+<a href="#375" id="375">375</a>
+<a href="#376" id="376">376</a>
+<a href="#377" id="377">377</a>
+<a href="#378" id="378">378</a>
+<a href="#379" id="379">379</a>
+<a href="#380" id="380">380</a>
+<a href="#381" id="381">381</a>
+<a href="#382" id="382">382</a>
+<a href="#383" id="383">383</a>
+<a href="#384" id="384">384</a>
+<a href="#385" id="385">385</a>
+<a href="#386" id="386">386</a>
+<a href="#387" id="387">387</a>
+<a href="#388" id="388">388</a>
+<a href="#389" id="389">389</a>
+<a href="#390" id="390">390</a>
+<a href="#391" id="391">391</a>
+<a href="#392" id="392">392</a>
+<a href="#393" id="393">393</a>
+<a href="#394" id="394">394</a>
+<a href="#395" id="395">395</a>
+<a href="#396" id="396">396</a>
+<a href="#397" id="397">397</a>
+<a href="#398" id="398">398</a>
+<a href="#399" id="399">399</a>
+<a href="#400" id="400">400</a>
+<a href="#401" id="401">401</a>
+<a href="#402" id="402">402</a>
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a>
+<a href="#419" id="419">419</a>
+<a href="#420" id="420">420</a>
+<a href="#421" id="421">421</a>
+<a href="#422" id="422">422</a>
+<a href="#423" id="423">423</a>
+<a href="#424" id="424">424</a>
+<a href="#425" id="425">425</a>
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a>
+<a href="#434" id="434">434</a>
+<a href="#435" id="435">435</a>
+<a href="#436" id="436">436</a>
+<a href="#437" id="437">437</a>
+<a href="#438" id="438">438</a>
+<a href="#439" id="439">439</a>
+<a href="#440" id="440">440</a>
+<a href="#441" id="441">441</a>
+<a href="#442" id="442">442</a>
+<a href="#443" id="443">443</a>
+<a href="#444" id="444">444</a>
+<a href="#445" id="445">445</a>
+<a href="#446" id="446">446</a>
+<a href="#447" id="447">447</a>
+<a href="#448" id="448">448</a>
+<a href="#449" id="449">449</a>
+<a href="#450" id="450">450</a>
+<a href="#451" id="451">451</a>
+<a href="#452" id="452">452</a>
+<a href="#453" id="453">453</a>
+<a href="#454" id="454">454</a>
+<a href="#455" id="455">455</a>
+<a href="#456" id="456">456</a>
+<a href="#457" id="457">457</a>
+<a href="#458" id="458">458</a>
+<a href="#459" id="459">459</a>
+<a href="#460" id="460">460</a>
+<a href="#461" id="461">461</a>
+<a href="#462" id="462">462</a>
+<a href="#463" id="463">463</a>
+<a href="#464" id="464">464</a>
+<a href="#465" id="465">465</a>
+<a href="#466" id="466">466</a>
+<a href="#467" id="467">467</a>
+<a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! REST API endpoints related to CRUD operations and other queries on GroMEt objects.
 </span><span class="kw">use </span><span class="kw">crate</span>::config::Config;
 <span class="kw">use </span><span class="kw">crate</span>::database::{parse_gromet_queries, run_queries};
@@ -372,15 +477,16 @@
 <span class="kw">use </span><span class="kw">crate</span>::ModuleCollection;
 <span class="kw">use </span>actix_web::web::ServiceConfig;
 <span class="kw">use </span>actix_web::{delete, get, post, put, web, HttpResponse};
-<span class="kw">use </span>mathml::acset::{PetriNet, RegNet};
+<span class="kw">use </span>mathml::acset::{GeneralizedAMR, PetriNet, RegNet};
 
-<span class="kw">use </span>mathml::ast::MathExpression;
+<span class="kw">use </span>mathml::ast::{<span class="self">self</span>, MathExpression};
 <span class="kw">use </span>mathml::parsers::math_expression_tree::MathExpressionTree;
 <span class="kw">use </span>neo4rs;
 <span class="kw">use </span>neo4rs::{query, Error, Node};
 <span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::sync::Arc;
 
+<span class="kw">use </span>mathml::ast::operator::DerivativeNotation;
 <span class="kw">use </span>utoipa;
 
 <span class="kw">pub fn </span>configure() -&gt; <span class="kw">impl </span>FnOnce(<span class="kw-2">&amp;mut </span>ServiceConfig) {
@@ -430,7 +536,7 @@
     <span class="comment">// construct the query that will delete the module with a given unique identifier
 
     </span><span class="kw">let </span>query = <span class="macro">format!</span>(
-        <span class="string">&quot;MATCH (n)-[r:Contains|Port_Of|Wire|Metadata*1..7]-&gt;(m) WHERE id(n) = {}\nDETACH DELETE n,m&quot;</span>,
+        <span class="string">"MATCH (n)-[r:Contains|Port_Of|Wire|Metadata*1..7]-&gt;(m) WHERE id(n) = {}\nDETACH DELETE n,m"</span>,
         module_id
     );
     run_queries(<span class="macro">vec!</span>[query], config.clone()).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -447,15 +553,15 @@
     <span class="kw">let </span><span class="kw-2">mut </span>result = graph
         .execute(
             query(
-                <span class="string">&quot;MATCH (n)-[r:Contains|Port_Of|Wire*1..7]-&gt;(m) WHERE id(n) = $id
-        \nwith DISTINCT m\nmatch (m:Opi) where not m.name = &#39;un-named&#39;\nreturn m&quot;</span>,
+                <span class="string">"MATCH (n)-[r:Contains|Port_Of|Wire*1..7]-&gt;(m) WHERE id(n) = $id
+        \nwith DISTINCT m\nmatch (m:Opi) where not m.name = 'un-named'\nreturn m"</span>,
             )
-            .param(<span class="string">&quot;id&quot;</span>, module_id),
+            .param(<span class="string">"id"</span>, module_id),
         )
         .<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="kw">while let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(row)) = result.next().<span class="kw">await </span>{
-        <span class="kw">let </span>node: Node = row.get(<span class="string">&quot;m&quot;</span>).unwrap();
-        <span class="kw">let </span>name: String = node.get(<span class="string">&quot;name&quot;</span>).unwrap();
+        <span class="kw">let </span>node: Node = row.get(<span class="string">"m"</span>).unwrap();
+        <span class="kw">let </span>name: String = node.get(<span class="string">"name"</span>).unwrap();
         port_names.push(name.clone());
     }
 
@@ -472,15 +578,15 @@
     <span class="kw">let </span><span class="kw-2">mut </span>result = graph
         .execute(
             query(
-                <span class="string">&quot;MATCH (n)-[r:Contains|Port_Of|Wire*1..5]-&gt;(m) WHERE id(n) = $id
-        \nwith DISTINCT m\nmatch (m:Opo) where not m.name = &#39;un-named&#39;\nreturn m&quot;</span>,
+                <span class="string">"MATCH (n)-[r:Contains|Port_Of|Wire*1..5]-&gt;(m) WHERE id(n) = $id
+        \nwith DISTINCT m\nmatch (m:Opo) where not m.name = 'un-named'\nreturn m"</span>,
             )
-            .param(<span class="string">&quot;id&quot;</span>, module_id),
+            .param(<span class="string">"id"</span>, module_id),
         )
         .<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="kw">while let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(row)) = result.next().<span class="kw">await </span>{
-        <span class="kw">let </span>node: Node = row.get(<span class="string">&quot;m&quot;</span>).unwrap();
-        <span class="kw">let </span>name: String = node.get(<span class="string">&quot;name&quot;</span>).unwrap();
+        <span class="kw">let </span>node: Node = row.get(<span class="string">"m"</span>).unwrap();
+        <span class="kw">let </span>name: String = node.get(<span class="string">"name"</span>).unwrap();
         port_names.push(name.clone());
     }
 
@@ -490,12 +596,12 @@
 <span class="kw">pub async fn </span>named_port_query(
     module_id: i64,
     config: Config,
-) -&gt; <span class="prelude-ty">Result</span>&lt;HashMap&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;static </span>str, Vec&lt;String&gt;&gt;, Error&gt; {
+) -&gt; <span class="prelude-ty">Result</span>&lt;HashMap&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str, Vec&lt;String&gt;&gt;, Error&gt; {
     <span class="kw">let </span><span class="kw-2">mut </span>result = HashMap::&lt;<span class="kw-2">&amp;</span>str, Vec&lt;String&gt;&gt;::new();
     <span class="kw">let </span>opis = named_opi_query(module_id, config.clone()).<span class="kw">await</span>;
     <span class="kw">let </span>opos = named_opo_query(module_id, config.clone()).<span class="kw">await</span>;
-    result.insert(<span class="string">&quot;opis&quot;</span>, opis.unwrap());
-    result.insert(<span class="string">&quot;opos&quot;</span>, opos.unwrap());
+    result.insert(<span class="string">"opis"</span>, opis.unwrap());
+    result.insert(<span class="string">"opos"</span>, opos.unwrap());
     <span class="prelude-val">Ok</span>(result)
 }
 
@@ -504,9 +610,9 @@
     <span class="comment">// Connect to Memgraph.
 
     </span><span class="kw">let </span>graph = Arc::new(config.graphdb_connection().<span class="kw">await</span>);
-    <span class="kw">let </span><span class="kw-2">mut </span>result = graph.execute(query(<span class="string">&quot;MATCH (n:Module) RETURN n&quot;</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>result = graph.execute(query(<span class="string">"MATCH (n:Module) RETURN n"</span>)).<span class="kw">await</span><span class="question-mark">?</span>;
     <span class="kw">while let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(row)) = result.next().<span class="kw">await </span>{
-        <span class="kw">let </span>node: Node = row.get(<span class="string">&quot;n&quot;</span>).unwrap();
+        <span class="kw">let </span>node: Node = row.get(<span class="string">"n"</span>).unwrap();
         ids.push(node.id());
     }
 
@@ -521,7 +627,7 @@
         </span>)
     )
 )]
-#[get(<span class="string">&quot;/models&quot;</span>)]
+#[get(<span class="string">"/models"</span>)]
 </span><span class="kw">pub async fn </span>get_model_ids(config: web::Data&lt;Config&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>config1 = Config {
         db_host: config.db_host.clone(),
@@ -536,10 +642,10 @@
 </span><span class="attr">#[utoipa::path(
     request_body = ModuleCollection,
     responses(
-        (status = <span class="number">200</span>, description = <span class="string">&quot;Model successfully pushed&quot;</span>)
+        (status = <span class="number">200</span>, description = <span class="string">"Model successfully pushed"</span>)
     )
 )]
-#[post(<span class="string">&quot;/models&quot;</span>)]
+#[post(<span class="string">"/models"</span>)]
 </span><span class="kw">pub async fn </span>post_model(
     payload: web::Json&lt;ModuleCollection&gt;,
     config: web::Data&lt;Config&gt;,
@@ -558,10 +664,10 @@
 <span class="doccomment">/// Deletes a model from the database based on its id.
 </span><span class="attr">#[utoipa::path(
     responses(
-        (status = <span class="number">200</span>, description = <span class="string">&quot;Model deleted&quot;</span>)
+        (status = <span class="number">200</span>, description = <span class="string">"Model deleted"</span>)
     )
 )]
-#[delete(<span class="string">&quot;/models/{id}&quot;</span>)]
+#[delete(<span class="string">"/models/{id}"</span>)]
 </span><span class="kw">pub async fn </span>delete_model(path: web::Path&lt;i64&gt;, config: web::Data&lt;Config&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>id = path.into_inner();
     <span class="kw">let </span>config1 = Config {
@@ -570,16 +676,16 @@
         db_protocol: config.db_protocol.clone(),
     };
     delete_module(id, config1).<span class="kw">await</span>.unwrap();
-    HttpResponse::Ok().body(<span class="string">&quot;Model deleted&quot;</span>)
+    HttpResponse::Ok().body(<span class="string">"Model deleted"</span>)
 }
 
 <span class="doccomment">/// This retrieves named Opos based on model id.
 </span><span class="attr">#[utoipa::path(
     responses(
-        (status = <span class="number">200</span>, description = <span class="string">&quot;Successfully retrieved named outports&quot;</span>)
+        (status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved named outports"</span>)
     )
 )]
-#[get(<span class="string">&quot;/models/{id}/named_opos&quot;</span>)]
+#[get(<span class="string">"/models/{id}/named_opos"</span>)]
 </span><span class="kw">pub async fn </span>get_named_opos(path: web::Path&lt;i64&gt;, config: web::Data&lt;Config&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>config1 = Config {
         db_host: config.db_host.clone(),
@@ -593,10 +699,10 @@
 <span class="doccomment">/// This retrieves named ports based on model id.
 </span><span class="attr">#[utoipa::path(
     responses(
-        (status = <span class="number">200</span>, description = <span class="string">&quot;Successfully retrieved named ports&quot;</span>)
+        (status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved named ports"</span>)
     )
 )]
-#[get(<span class="string">&quot;/models/{id}/named_ports&quot;</span>)]
+#[get(<span class="string">"/models/{id}/named_ports"</span>)]
 </span><span class="kw">pub async fn </span>get_named_ports(path: web::Path&lt;i64&gt;, config: web::Data&lt;Config&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>config1 = Config {
         db_host: config.db_host.clone(),
@@ -610,10 +716,10 @@
 <span class="doccomment">/// This retrieves named Opis based on model id.
 </span><span class="attr">#[utoipa::path(
     responses(
-        (status = <span class="number">200</span>, description = <span class="string">&quot;Successfully retrieved named input ports&quot;</span>)
+        (status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved named input ports"</span>)
     )
 )]
-#[get(<span class="string">&quot;/models/{id}/named_opis&quot;</span>)]
+#[get(<span class="string">"/models/{id}/named_opis"</span>)]
 </span><span class="kw">pub async fn </span>get_named_opis(path: web::Path&lt;i64&gt;, config: web::Data&lt;Config&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>config1 = Config {
         db_host: config.db_host.clone(),
@@ -629,12 +735,12 @@
 #[utoipa::path(
     responses(
         (
-            status = <span class="number">200</span>, description = <span class="string">&quot;Successfully retrieved RN AMR&quot;</span>,
+            status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved RN AMR"</span>,
             body = RegNet
         )
     )
 )]
-#[get(<span class="string">&quot;/models/{id}/RN&quot;</span>)]
+#[get(<span class="string">"/models/{id}/RN"</span>)]
 </span><span class="kw">pub async fn </span>get_model_RN(path: web::Path&lt;i64&gt;, config: web::Data&lt;Config&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>config1 = Config {
         db_host: config.db_host.clone(),
@@ -651,12 +757,12 @@
     request_body = ModuleCollection,
     responses(
         (
-            status = <span class="number">200</span>, description = <span class="string">&quot;Successfully retrieved PN AMR&quot;</span>,
+            status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved PN AMR"</span>,
             body = ModelPetriNet
         )
     )
 )]
-#[put(<span class="string">&quot;/models/PN&quot;</span>)]
+#[put(<span class="string">"/models/PN"</span>)]
 </span><span class="kw">pub async fn </span>model2PN(
     payload: web::Json&lt;ModuleCollection&gt;,
     config: web::Data&lt;Config&gt;,
@@ -677,12 +783,12 @@
     request_body = ModuleCollection,
     responses(
         (
-            status = <span class="number">200</span>, description = <span class="string">&quot;Successfully retrieved RN AMR&quot;</span>,
+            status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved RN AMR"</span>,
             body = ModelRegNet
         )
     )
 )]
-#[put(<span class="string">&quot;/models/RN&quot;</span>)]
+#[put(<span class="string">"/models/RN"</span>)]
 </span><span class="kw">pub async fn </span>model2RN(
     payload: web::Json&lt;ModuleCollection&gt;,
     config: web::Data&lt;Config&gt;,
@@ -703,11 +809,11 @@
     request_body = ModuleCollection,
     responses(
         (
-            status = <span class="number">200</span>, description = <span class="string">&quot;Successfully retrieved MET&quot;
+            status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved MET"
         </span>)
     )
 )]
-#[put(<span class="string">&quot;/models/MET&quot;</span>)]
+#[put(<span class="string">"/models/MET"</span>)]
 </span><span class="kw">pub async fn </span>model2MET(
     payload: web::Json&lt;ModuleCollection&gt;,
     config: web::Data&lt;Config&gt;,
@@ -722,14 +828,117 @@
     <span class="kw">let </span>ref_module_id2 = module_id.as_ref();
     <span class="kw">let </span>mathml_ast = module_id2mathml_MET_ast(<span class="kw-2">*</span>ref_module_id1.unwrap(), config1.clone()).<span class="kw">await</span>; <span class="comment">// turns model into mathml ast equations
     </span><span class="kw">let </span>_del_response = delete_module(<span class="kw-2">*</span>ref_module_id2.unwrap(), config1.clone()).<span class="kw">await</span>; <span class="comment">// deletes model from db
+                                                                                        // now we convert each firstorderode into a MET. The RHS is just ported over, but we need to create the LHS as a derivative and put it into an equation
     </span><span class="kw">let </span><span class="kw-2">mut </span>mets = Vec::&lt;MathExpressionTree&gt;::new();
     <span class="kw">for </span>equation <span class="kw">in </span>mathml_ast.iter() {
         <span class="kw">let </span><span class="kw-2">mut </span>equal_args = Vec::&lt;MathExpressionTree&gt;::new();
-        equal_args.push(MathExpressionTree::Atom(MathExpression::Ci(equation.lhs_var.clone())));
+        <span class="kw">let </span>lhs_mi1 = mathml::ast::Mi(<span class="string">""</span>.to_string()); <span class="comment">// blank
+        </span><span class="kw">let </span>lhs_mi2 = mathml::ast::Mi(<span class="string">"t"</span>.to_string()); <span class="comment">// differentiation variable
+        </span><span class="kw">let </span>lhs_mi3 = mathml::ast::Mi(equation.lhs_var.to_string()); <span class="comment">// state function
+        </span><span class="kw">let </span>lhs_ci1 = mathml::ast::Ci {
+            <span class="comment">// blank
+            </span>r#type: <span class="prelude-val">Some</span>(ast::Type::Real),
+            content: Box::new(mathml::ast::MathExpression::Mi(lhs_mi1)),
+            func_of: <span class="prelude-val">None</span>,
+        };
+        <span class="kw">let </span>lhs_ci2 = mathml::ast::Ci {
+            <span class="comment">// differentiation variable
+            </span>r#type: <span class="prelude-val">Some</span>(ast::Type::Real),
+            content: Box::new(mathml::ast::MathExpression::Mi(lhs_mi2)),
+            func_of: <span class="prelude-val">None</span>,
+        };
+        <span class="kw">let </span>lhs_ci3 = mathml::ast::Ci {
+            <span class="comment">// state function
+            </span>r#type: <span class="prelude-val">Some</span>(ast::Type::Function),
+            content: Box::new(mathml::ast::MathExpression::Mi(lhs_mi3)),
+            func_of: <span class="prelude-val">Some</span>([lhs_ci1].to_vec()),
+        };
+        <span class="kw">let </span>lhs_deriv = mathml::ast::operator::Derivative {
+            order: <span class="number">1</span>,
+            var_index: <span class="number">1</span>,
+            bound_var: lhs_ci2,
+            notation: DerivativeNotation::LeibnizTotal,
+        };
+        <span class="kw">let </span>lhs = MathExpressionTree::Cons(
+            mathml::ast::operator::Operator::Derivative(lhs_deriv),
+            [MathExpressionTree::Atom(MathExpression::Ci(lhs_ci3))].to_vec(),
+        );
+        equal_args.push(lhs.clone());
         equal_args.push(equation.rhs.clone());
-        <span class="kw">let </span>met = MathExpressionTree::Cons(mathml::ast::operator::Operator::Equals, equal_args.clone());
+        <span class="kw">let </span>met =
+            MathExpressionTree::Cons(mathml::ast::operator::Operator::Equals, equal_args.clone());
         mets.push(met.clone());
     }
     HttpResponse::Ok().json(web::Json(mets))
+}
+
+<span class="doccomment">/// This returns a Generalized AMR from a gromet.
+</span><span class="attr">#[allow(non_snake_case)]
+#[utoipa::path(
+    request_body = ModuleCollection,
+    responses(
+        (
+            status = <span class="number">200</span>, description = <span class="string">"Successfully retrieved MET"</span>,
+            body = GeneralizedAMR
+        )
+    )
+)]
+#[put(<span class="string">"/models/G-AMR"</span>)]
+</span><span class="kw">pub async fn </span>model2GAMR(
+    payload: web::Json&lt;ModuleCollection&gt;,
+    config: web::Data&lt;Config&gt;,
+) -&gt; HttpResponse {
+    <span class="kw">let </span>config1 = Config {
+        db_host: config.db_host.clone(),
+        db_port: config.db_port,
+        db_protocol: config.db_protocol.clone(),
+    };
+    <span class="kw">let </span>module_id = push_model_to_db(payload.into_inner(), config1.clone()).<span class="kw">await</span>; <span class="comment">// pushes model to db and gets id
+    </span><span class="kw">let </span>ref_module_id1 = module_id.as_ref();
+    <span class="kw">let </span>ref_module_id2 = module_id.as_ref();
+    <span class="kw">let </span>mathml_ast = module_id2mathml_MET_ast(<span class="kw-2">*</span>ref_module_id1.unwrap(), config1.clone()).<span class="kw">await</span>; <span class="comment">// turns model into mathml ast equations
+    </span><span class="kw">let </span>_del_response = delete_module(<span class="kw-2">*</span>ref_module_id2.unwrap(), config1.clone()).<span class="kw">await</span>; <span class="comment">// deletes model from db
+                                                                                        // now we convert each firstorderode into a MET. The RHS is just ported over, but we need to create the LHS as a derivative and put it into an equation
+    </span><span class="kw">let </span><span class="kw-2">mut </span>mets = Vec::&lt;MathExpressionTree&gt;::new();
+    <span class="kw">for </span>equation <span class="kw">in </span>mathml_ast.iter() {
+        <span class="kw">let </span><span class="kw-2">mut </span>equal_args = Vec::&lt;MathExpressionTree&gt;::new();
+        <span class="kw">let </span>lhs_mi1 = mathml::ast::Mi(<span class="string">""</span>.to_string()); <span class="comment">// blank
+        </span><span class="kw">let </span>lhs_mi2 = mathml::ast::Mi(<span class="string">"t"</span>.to_string()); <span class="comment">// differentiation variable
+        </span><span class="kw">let </span>lhs_mi3 = mathml::ast::Mi(equation.lhs_var.to_string()); <span class="comment">// state function
+        </span><span class="kw">let </span>lhs_ci1 = mathml::ast::Ci {
+            <span class="comment">// blank
+            </span>r#type: <span class="prelude-val">Some</span>(ast::Type::Real),
+            content: Box::new(mathml::ast::MathExpression::Mi(lhs_mi1)),
+            func_of: <span class="prelude-val">None</span>,
+        };
+        <span class="kw">let </span>lhs_ci2 = mathml::ast::Ci {
+            <span class="comment">// differentiation variable
+            </span>r#type: <span class="prelude-val">Some</span>(ast::Type::Real),
+            content: Box::new(mathml::ast::MathExpression::Mi(lhs_mi2)),
+            func_of: <span class="prelude-val">None</span>,
+        };
+        <span class="kw">let </span>lhs_ci3 = mathml::ast::Ci {
+            <span class="comment">// state function
+            </span>r#type: <span class="prelude-val">Some</span>(ast::Type::Function),
+            content: Box::new(mathml::ast::MathExpression::Mi(lhs_mi3)),
+            func_of: <span class="prelude-val">Some</span>([lhs_ci1].to_vec()),
+        };
+        <span class="kw">let </span>lhs_deriv = mathml::ast::operator::Derivative {
+            order: <span class="number">1</span>,
+            var_index: <span class="number">1</span>,
+            bound_var: lhs_ci2,
+            notation: DerivativeNotation::LeibnizTotal,
+        };
+        <span class="kw">let </span>lhs = MathExpressionTree::Cons(
+            mathml::ast::operator::Operator::Derivative(lhs_deriv),
+            [MathExpressionTree::Atom(MathExpression::Ci(lhs_ci3))].to_vec(),
+        );
+        equal_args.push(lhs.clone());
+        equal_args.push(equation.rhs.clone());
+        <span class="kw">let </span>met =
+            MathExpressionTree::Cons(mathml::ast::operator::Operator::Equals, equal_args.clone());
+        mets.push(met.clone());
+    }
+    HttpResponse::Ok().json(web::Json(GeneralizedAMR::from(mets)))
 }
 </code></pre></div></section></main></body></html>

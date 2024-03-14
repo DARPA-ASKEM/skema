@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mathml/src/expression.rs`."><title>expression.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mathml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mathml/src/expression.rs`."><title>expression.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mathml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1305,15 +1306,375 @@
 <a href="#1305" id="1305">1305</a>
 <a href="#1306" id="1306">1306</a>
 <a href="#1307" id="1307">1307</a>
+<a href="#1308" id="1308">1308</a>
+<a href="#1309" id="1309">1309</a>
+<a href="#1310" id="1310">1310</a>
+<a href="#1311" id="1311">1311</a>
+<a href="#1312" id="1312">1312</a>
+<a href="#1313" id="1313">1313</a>
+<a href="#1314" id="1314">1314</a>
+<a href="#1315" id="1315">1315</a>
+<a href="#1316" id="1316">1316</a>
+<a href="#1317" id="1317">1317</a>
+<a href="#1318" id="1318">1318</a>
+<a href="#1319" id="1319">1319</a>
+<a href="#1320" id="1320">1320</a>
+<a href="#1321" id="1321">1321</a>
+<a href="#1322" id="1322">1322</a>
+<a href="#1323" id="1323">1323</a>
+<a href="#1324" id="1324">1324</a>
+<a href="#1325" id="1325">1325</a>
+<a href="#1326" id="1326">1326</a>
+<a href="#1327" id="1327">1327</a>
+<a href="#1328" id="1328">1328</a>
+<a href="#1329" id="1329">1329</a>
+<a href="#1330" id="1330">1330</a>
+<a href="#1331" id="1331">1331</a>
+<a href="#1332" id="1332">1332</a>
+<a href="#1333" id="1333">1333</a>
+<a href="#1334" id="1334">1334</a>
+<a href="#1335" id="1335">1335</a>
+<a href="#1336" id="1336">1336</a>
+<a href="#1337" id="1337">1337</a>
+<a href="#1338" id="1338">1338</a>
+<a href="#1339" id="1339">1339</a>
+<a href="#1340" id="1340">1340</a>
+<a href="#1341" id="1341">1341</a>
+<a href="#1342" id="1342">1342</a>
+<a href="#1343" id="1343">1343</a>
+<a href="#1344" id="1344">1344</a>
+<a href="#1345" id="1345">1345</a>
+<a href="#1346" id="1346">1346</a>
+<a href="#1347" id="1347">1347</a>
+<a href="#1348" id="1348">1348</a>
+<a href="#1349" id="1349">1349</a>
+<a href="#1350" id="1350">1350</a>
+<a href="#1351" id="1351">1351</a>
+<a href="#1352" id="1352">1352</a>
+<a href="#1353" id="1353">1353</a>
+<a href="#1354" id="1354">1354</a>
+<a href="#1355" id="1355">1355</a>
+<a href="#1356" id="1356">1356</a>
+<a href="#1357" id="1357">1357</a>
+<a href="#1358" id="1358">1358</a>
+<a href="#1359" id="1359">1359</a>
+<a href="#1360" id="1360">1360</a>
+<a href="#1361" id="1361">1361</a>
+<a href="#1362" id="1362">1362</a>
+<a href="#1363" id="1363">1363</a>
+<a href="#1364" id="1364">1364</a>
+<a href="#1365" id="1365">1365</a>
+<a href="#1366" id="1366">1366</a>
+<a href="#1367" id="1367">1367</a>
+<a href="#1368" id="1368">1368</a>
+<a href="#1369" id="1369">1369</a>
+<a href="#1370" id="1370">1370</a>
+<a href="#1371" id="1371">1371</a>
+<a href="#1372" id="1372">1372</a>
+<a href="#1373" id="1373">1373</a>
+<a href="#1374" id="1374">1374</a>
+<a href="#1375" id="1375">1375</a>
+<a href="#1376" id="1376">1376</a>
+<a href="#1377" id="1377">1377</a>
+<a href="#1378" id="1378">1378</a>
+<a href="#1379" id="1379">1379</a>
+<a href="#1380" id="1380">1380</a>
+<a href="#1381" id="1381">1381</a>
+<a href="#1382" id="1382">1382</a>
+<a href="#1383" id="1383">1383</a>
+<a href="#1384" id="1384">1384</a>
+<a href="#1385" id="1385">1385</a>
+<a href="#1386" id="1386">1386</a>
+<a href="#1387" id="1387">1387</a>
+<a href="#1388" id="1388">1388</a>
+<a href="#1389" id="1389">1389</a>
+<a href="#1390" id="1390">1390</a>
+<a href="#1391" id="1391">1391</a>
+<a href="#1392" id="1392">1392</a>
+<a href="#1393" id="1393">1393</a>
+<a href="#1394" id="1394">1394</a>
+<a href="#1395" id="1395">1395</a>
+<a href="#1396" id="1396">1396</a>
+<a href="#1397" id="1397">1397</a>
+<a href="#1398" id="1398">1398</a>
+<a href="#1399" id="1399">1399</a>
+<a href="#1400" id="1400">1400</a>
+<a href="#1401" id="1401">1401</a>
+<a href="#1402" id="1402">1402</a>
+<a href="#1403" id="1403">1403</a>
+<a href="#1404" id="1404">1404</a>
+<a href="#1405" id="1405">1405</a>
+<a href="#1406" id="1406">1406</a>
+<a href="#1407" id="1407">1407</a>
+<a href="#1408" id="1408">1408</a>
+<a href="#1409" id="1409">1409</a>
+<a href="#1410" id="1410">1410</a>
+<a href="#1411" id="1411">1411</a>
+<a href="#1412" id="1412">1412</a>
+<a href="#1413" id="1413">1413</a>
+<a href="#1414" id="1414">1414</a>
+<a href="#1415" id="1415">1415</a>
+<a href="#1416" id="1416">1416</a>
+<a href="#1417" id="1417">1417</a>
+<a href="#1418" id="1418">1418</a>
+<a href="#1419" id="1419">1419</a>
+<a href="#1420" id="1420">1420</a>
+<a href="#1421" id="1421">1421</a>
+<a href="#1422" id="1422">1422</a>
+<a href="#1423" id="1423">1423</a>
+<a href="#1424" id="1424">1424</a>
+<a href="#1425" id="1425">1425</a>
+<a href="#1426" id="1426">1426</a>
+<a href="#1427" id="1427">1427</a>
+<a href="#1428" id="1428">1428</a>
+<a href="#1429" id="1429">1429</a>
+<a href="#1430" id="1430">1430</a>
+<a href="#1431" id="1431">1431</a>
+<a href="#1432" id="1432">1432</a>
+<a href="#1433" id="1433">1433</a>
+<a href="#1434" id="1434">1434</a>
+<a href="#1435" id="1435">1435</a>
+<a href="#1436" id="1436">1436</a>
+<a href="#1437" id="1437">1437</a>
+<a href="#1438" id="1438">1438</a>
+<a href="#1439" id="1439">1439</a>
+<a href="#1440" id="1440">1440</a>
+<a href="#1441" id="1441">1441</a>
+<a href="#1442" id="1442">1442</a>
+<a href="#1443" id="1443">1443</a>
+<a href="#1444" id="1444">1444</a>
+<a href="#1445" id="1445">1445</a>
+<a href="#1446" id="1446">1446</a>
+<a href="#1447" id="1447">1447</a>
+<a href="#1448" id="1448">1448</a>
+<a href="#1449" id="1449">1449</a>
+<a href="#1450" id="1450">1450</a>
+<a href="#1451" id="1451">1451</a>
+<a href="#1452" id="1452">1452</a>
+<a href="#1453" id="1453">1453</a>
+<a href="#1454" id="1454">1454</a>
+<a href="#1455" id="1455">1455</a>
+<a href="#1456" id="1456">1456</a>
+<a href="#1457" id="1457">1457</a>
+<a href="#1458" id="1458">1458</a>
+<a href="#1459" id="1459">1459</a>
+<a href="#1460" id="1460">1460</a>
+<a href="#1461" id="1461">1461</a>
+<a href="#1462" id="1462">1462</a>
+<a href="#1463" id="1463">1463</a>
+<a href="#1464" id="1464">1464</a>
+<a href="#1465" id="1465">1465</a>
+<a href="#1466" id="1466">1466</a>
+<a href="#1467" id="1467">1467</a>
+<a href="#1468" id="1468">1468</a>
+<a href="#1469" id="1469">1469</a>
+<a href="#1470" id="1470">1470</a>
+<a href="#1471" id="1471">1471</a>
+<a href="#1472" id="1472">1472</a>
+<a href="#1473" id="1473">1473</a>
+<a href="#1474" id="1474">1474</a>
+<a href="#1475" id="1475">1475</a>
+<a href="#1476" id="1476">1476</a>
+<a href="#1477" id="1477">1477</a>
+<a href="#1478" id="1478">1478</a>
+<a href="#1479" id="1479">1479</a>
+<a href="#1480" id="1480">1480</a>
+<a href="#1481" id="1481">1481</a>
+<a href="#1482" id="1482">1482</a>
+<a href="#1483" id="1483">1483</a>
+<a href="#1484" id="1484">1484</a>
+<a href="#1485" id="1485">1485</a>
+<a href="#1486" id="1486">1486</a>
+<a href="#1487" id="1487">1487</a>
+<a href="#1488" id="1488">1488</a>
+<a href="#1489" id="1489">1489</a>
+<a href="#1490" id="1490">1490</a>
+<a href="#1491" id="1491">1491</a>
+<a href="#1492" id="1492">1492</a>
+<a href="#1493" id="1493">1493</a>
+<a href="#1494" id="1494">1494</a>
+<a href="#1495" id="1495">1495</a>
+<a href="#1496" id="1496">1496</a>
+<a href="#1497" id="1497">1497</a>
+<a href="#1498" id="1498">1498</a>
+<a href="#1499" id="1499">1499</a>
+<a href="#1500" id="1500">1500</a>
+<a href="#1501" id="1501">1501</a>
+<a href="#1502" id="1502">1502</a>
+<a href="#1503" id="1503">1503</a>
+<a href="#1504" id="1504">1504</a>
+<a href="#1505" id="1505">1505</a>
+<a href="#1506" id="1506">1506</a>
+<a href="#1507" id="1507">1507</a>
+<a href="#1508" id="1508">1508</a>
+<a href="#1509" id="1509">1509</a>
+<a href="#1510" id="1510">1510</a>
+<a href="#1511" id="1511">1511</a>
+<a href="#1512" id="1512">1512</a>
+<a href="#1513" id="1513">1513</a>
+<a href="#1514" id="1514">1514</a>
+<a href="#1515" id="1515">1515</a>
+<a href="#1516" id="1516">1516</a>
+<a href="#1517" id="1517">1517</a>
+<a href="#1518" id="1518">1518</a>
+<a href="#1519" id="1519">1519</a>
+<a href="#1520" id="1520">1520</a>
+<a href="#1521" id="1521">1521</a>
+<a href="#1522" id="1522">1522</a>
+<a href="#1523" id="1523">1523</a>
+<a href="#1524" id="1524">1524</a>
+<a href="#1525" id="1525">1525</a>
+<a href="#1526" id="1526">1526</a>
+<a href="#1527" id="1527">1527</a>
+<a href="#1528" id="1528">1528</a>
+<a href="#1529" id="1529">1529</a>
+<a href="#1530" id="1530">1530</a>
+<a href="#1531" id="1531">1531</a>
+<a href="#1532" id="1532">1532</a>
+<a href="#1533" id="1533">1533</a>
+<a href="#1534" id="1534">1534</a>
+<a href="#1535" id="1535">1535</a>
+<a href="#1536" id="1536">1536</a>
+<a href="#1537" id="1537">1537</a>
+<a href="#1538" id="1538">1538</a>
+<a href="#1539" id="1539">1539</a>
+<a href="#1540" id="1540">1540</a>
+<a href="#1541" id="1541">1541</a>
+<a href="#1542" id="1542">1542</a>
+<a href="#1543" id="1543">1543</a>
+<a href="#1544" id="1544">1544</a>
+<a href="#1545" id="1545">1545</a>
+<a href="#1546" id="1546">1546</a>
+<a href="#1547" id="1547">1547</a>
+<a href="#1548" id="1548">1548</a>
+<a href="#1549" id="1549">1549</a>
+<a href="#1550" id="1550">1550</a>
+<a href="#1551" id="1551">1551</a>
+<a href="#1552" id="1552">1552</a>
+<a href="#1553" id="1553">1553</a>
+<a href="#1554" id="1554">1554</a>
+<a href="#1555" id="1555">1555</a>
+<a href="#1556" id="1556">1556</a>
+<a href="#1557" id="1557">1557</a>
+<a href="#1558" id="1558">1558</a>
+<a href="#1559" id="1559">1559</a>
+<a href="#1560" id="1560">1560</a>
+<a href="#1561" id="1561">1561</a>
+<a href="#1562" id="1562">1562</a>
+<a href="#1563" id="1563">1563</a>
+<a href="#1564" id="1564">1564</a>
+<a href="#1565" id="1565">1565</a>
+<a href="#1566" id="1566">1566</a>
+<a href="#1567" id="1567">1567</a>
+<a href="#1568" id="1568">1568</a>
+<a href="#1569" id="1569">1569</a>
+<a href="#1570" id="1570">1570</a>
+<a href="#1571" id="1571">1571</a>
+<a href="#1572" id="1572">1572</a>
+<a href="#1573" id="1573">1573</a>
+<a href="#1574" id="1574">1574</a>
+<a href="#1575" id="1575">1575</a>
+<a href="#1576" id="1576">1576</a>
+<a href="#1577" id="1577">1577</a>
+<a href="#1578" id="1578">1578</a>
+<a href="#1579" id="1579">1579</a>
+<a href="#1580" id="1580">1580</a>
+<a href="#1581" id="1581">1581</a>
+<a href="#1582" id="1582">1582</a>
+<a href="#1583" id="1583">1583</a>
+<a href="#1584" id="1584">1584</a>
+<a href="#1585" id="1585">1585</a>
+<a href="#1586" id="1586">1586</a>
+<a href="#1587" id="1587">1587</a>
+<a href="#1588" id="1588">1588</a>
+<a href="#1589" id="1589">1589</a>
+<a href="#1590" id="1590">1590</a>
+<a href="#1591" id="1591">1591</a>
+<a href="#1592" id="1592">1592</a>
+<a href="#1593" id="1593">1593</a>
+<a href="#1594" id="1594">1594</a>
+<a href="#1595" id="1595">1595</a>
+<a href="#1596" id="1596">1596</a>
+<a href="#1597" id="1597">1597</a>
+<a href="#1598" id="1598">1598</a>
+<a href="#1599" id="1599">1599</a>
+<a href="#1600" id="1600">1600</a>
+<a href="#1601" id="1601">1601</a>
+<a href="#1602" id="1602">1602</a>
+<a href="#1603" id="1603">1603</a>
+<a href="#1604" id="1604">1604</a>
+<a href="#1605" id="1605">1605</a>
+<a href="#1606" id="1606">1606</a>
+<a href="#1607" id="1607">1607</a>
+<a href="#1608" id="1608">1608</a>
+<a href="#1609" id="1609">1609</a>
+<a href="#1610" id="1610">1610</a>
+<a href="#1611" id="1611">1611</a>
+<a href="#1612" id="1612">1612</a>
+<a href="#1613" id="1613">1613</a>
+<a href="#1614" id="1614">1614</a>
+<a href="#1615" id="1615">1615</a>
+<a href="#1616" id="1616">1616</a>
+<a href="#1617" id="1617">1617</a>
+<a href="#1618" id="1618">1618</a>
+<a href="#1619" id="1619">1619</a>
+<a href="#1620" id="1620">1620</a>
+<a href="#1621" id="1621">1621</a>
+<a href="#1622" id="1622">1622</a>
+<a href="#1623" id="1623">1623</a>
+<a href="#1624" id="1624">1624</a>
+<a href="#1625" id="1625">1625</a>
+<a href="#1626" id="1626">1626</a>
+<a href="#1627" id="1627">1627</a>
+<a href="#1628" id="1628">1628</a>
+<a href="#1629" id="1629">1629</a>
+<a href="#1630" id="1630">1630</a>
+<a href="#1631" id="1631">1631</a>
+<a href="#1632" id="1632">1632</a>
+<a href="#1633" id="1633">1633</a>
+<a href="#1634" id="1634">1634</a>
+<a href="#1635" id="1635">1635</a>
+<a href="#1636" id="1636">1636</a>
+<a href="#1637" id="1637">1637</a>
+<a href="#1638" id="1638">1638</a>
+<a href="#1639" id="1639">1639</a>
+<a href="#1640" id="1640">1640</a>
+<a href="#1641" id="1641">1641</a>
+<a href="#1642" id="1642">1642</a>
+<a href="#1643" id="1643">1643</a>
+<a href="#1644" id="1644">1644</a>
+<a href="#1645" id="1645">1645</a>
+<a href="#1646" id="1646">1646</a>
+<a href="#1647" id="1647">1647</a>
+<a href="#1648" id="1648">1648</a>
+<a href="#1649" id="1649">1649</a>
+<a href="#1650" id="1650">1650</a>
+<a href="#1651" id="1651">1651</a>
+<a href="#1652" id="1652">1652</a>
+<a href="#1653" id="1653">1653</a>
+<a href="#1654" id="1654">1654</a>
+<a href="#1655" id="1655">1655</a>
+<a href="#1656" id="1656">1656</a>
+<a href="#1657" id="1657">1657</a>
+<a href="#1658" id="1658">1658</a>
+<a href="#1659" id="1659">1659</a>
+<a href="#1660" id="1660">1660</a>
+<a href="#1661" id="1661">1661</a>
+<a href="#1662" id="1662">1662</a>
+<a href="#1663" id="1663">1663</a>
+<a href="#1664" id="1664">1664</a>
+<a href="#1665" id="1665">1665</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">crate</span>::ast::{operator::Operator, MathExpression, Mi};
 <span class="kw">use </span><span class="kw">crate</span>::parsers::math_expression_tree::MathExpressionTree;
 <span class="kw">use </span>petgraph::{graph::NodeIndex, Graph};
+<span class="kw">use </span>std::collections::HashMap;
 <span class="kw">use </span>std::{clone::Clone, collections::VecDeque};
 
 <span class="doccomment">/// Struct for representing mathematical expressions in order to align with source code.
-</span><span class="kw">pub type </span>MathExpressionGraph&lt;<span class="lifetime">&#39;a</span>&gt; = Graph&lt;String, String&gt;;
+</span><span class="kw">pub type </span>MathExpressionGraph&lt;<span class="lifetime">'a</span>&gt; = Graph&lt;String, String&gt;;
 
 <span class="kw">use </span>petgraph::dot::Dot;
+
 <span class="kw">use </span>std::string::ToString;
 
 <span class="attr">#[derive(Debug, PartialEq, Eq, Clone)]
@@ -1339,7 +1700,8 @@
         Operator::Sqrt
         | Operator::Factorial
         | Operator::Exp
-        | Operator::Grad
+        | Operator::Gradient(<span class="kw">_</span>)
+        | Operator::Summation(<span class="kw">_</span>)
         | Operator::Div
         | Operator::Abs
         | Operator::Derivative(<span class="kw">_</span>)
@@ -1364,18 +1726,28 @@
 /// the corresponding LaTeX representation to the provided String.
 </span><span class="kw">fn </span>process_atom_expression(expr: <span class="kw-2">&amp;</span>MathExpression, expression: <span class="kw-2">&amp;mut </span>Expr) {
     <span class="kw">match </span>expr {
-        <span class="comment">// If it&#39;s a Ci variant, recursively process its content
+        <span class="comment">// If it's a Ci variant, recursively process its content
         </span>MathExpression::Ci(x) =&gt; {
             process_atom_expression(<span class="kw-2">&amp;</span>x.content, expression);
         }
         MathExpression::Mi(Mi(id)) =&gt; {
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
-                args.push(Expr::Atom(Atom::Identifier(id.replace(<span class="string">&#39; &#39;</span>, <span class="string">&quot;&quot;</span>))));
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
+                args.push(Expr::Atom(Atom::Identifier(id.replace(<span class="string">' '</span>, <span class="string">""</span>))));
             }
         }
         MathExpression::Mn(number) =&gt; {
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
-                args.push(Expr::Atom(Atom::Number(number.replace(<span class="string">&#39; &#39;</span>, <span class="string">&quot;&quot;</span>))));
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
+                args.push(Expr::Atom(Atom::Number(number.replace(<span class="string">' '</span>, <span class="string">""</span>))));
             }
         }
         MathExpression::Msqrt(x) =&gt; {
@@ -1384,11 +1756,21 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
                 ops.push(Operator::Sqrt);
                 process_atom_expression(x, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
@@ -1398,15 +1780,30 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">""</span>.to_string()));
                 process_atom_expression(x1, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
                 ops.push(Operator::Divide);
                 process_atom_expression(x2, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
@@ -1416,15 +1813,30 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">""</span>.to_string()));
                 process_atom_expression(x1, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;^&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"^"</span>.to_string()));
                 process_atom_expression(x2, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
@@ -1434,15 +1846,30 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">""</span>.to_string()));
                 process_atom_expression(x1, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;_&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"_"</span>.to_string()));
                 process_atom_expression(x2, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
@@ -1452,19 +1879,39 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">""</span>.to_string()));
                 process_atom_expression(x1, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;_&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"_"</span>.to_string()));
                 process_atom_expression(x2, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;^&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"^"</span>.to_string()));
                 process_atom_expression(x3, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
@@ -1474,15 +1921,30 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">""</span>.to_string()));
                 process_atom_expression(x1, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;under&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"under"</span>.to_string()));
                 process_atom_expression(x2, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
@@ -1492,25 +1954,50 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">""</span>.to_string()));
                 process_atom_expression(x1, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;over&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"over"</span>.to_string()));
                 process_atom_expression(x2, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
         MathExpression::Mtext(x) =&gt; {
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
-                args.push(Expr::Atom(Atom::Identifier(x.replace(<span class="string">&#39; &#39;</span>, <span class="string">&quot;&quot;</span>))));
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
+                args.push(Expr::Atom(Atom::Identifier(x.replace(<span class="string">' '</span>, <span class="string">""</span>))));
             }
         }
         MathExpression::Mspace(x) =&gt; {
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(Expr::Atom(Atom::Identifier(x.to_string())));
             }
         }
@@ -1520,15 +2007,30 @@
                 args: Vec::&lt;Expr&gt;::new(),
                 name: String::new(),
             };
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;|.|&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"|.|"</span>.to_string()));
                 process_atom_expression(x1, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                ops.push(Operator::Other(<span class="string">&quot;_&quot;</span>.to_string()));
+            <span class="kw">if let </span>Expr::Expression {
+                ops,
+                args: <span class="kw">_</span>,
+                name: <span class="kw">_</span>,
+            } = <span class="kw-2">&amp;mut </span>new_expr
+            {
+                ops.push(Operator::Other(<span class="string">"_"</span>.to_string()));
                 process_atom_expression(x2, <span class="kw-2">&amp;mut </span>new_expr);
             }
-            <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+            <span class="kw">if let </span>Expr::Expression {
+                ops: <span class="kw">_</span>,
+                args,
+                name: <span class="kw">_</span>,
+            } = expression
+            {
                 args.push(new_expr.clone());
             }
         }
@@ -1539,15 +2041,25 @@
                     args: Vec::&lt;Expr&gt;::new(),
                     name: String::new(),
                 };
-                <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
+                <span class="kw">if let </span>Expr::Expression {
+                    ops: <span class="kw">_</span>,
+                    args: <span class="kw">_</span>,
+                    name: <span class="kw">_</span>,
+                } = <span class="kw-2">&amp;mut </span>new_expr
+                {
                     process_atom_expression(me, <span class="kw-2">&amp;mut </span>new_expr);
                 }
-                <span class="kw">if let </span>Expr::Expression { ops, args, name } = expression {
+                <span class="kw">if let </span>Expr::Expression {
+                    ops: <span class="kw">_</span>,
+                    args,
+                    name: <span class="kw">_</span>,
+                } = expression
+                {
                     args.push(new_expr.clone());
                 }
             }
         }
-        t =&gt; <span class="macro">panic!</span>(<span class="string">&quot;Unhandled MathExpression: {:?}&quot;</span>, t),
+        t =&gt; <span class="macro">panic!</span>(<span class="string">"Unhandled MathExpression: {:?}"</span>, t),
     }
 }
 
@@ -1565,51 +2077,81 @@
                     name: String::new(),
                 };
                 <span class="kw">if </span>is_unary_operator(<span class="kw-2">&amp;</span>head) || (head == Operator::Subtract &amp;&amp; rest.len() == <span class="number">1</span>) {
-                    <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
+                    <span class="kw">if let </span>Expr::Expression {
+                        ops,
+                        args: <span class="kw">_</span>,
+                        name: <span class="kw">_</span>,
+                    } = <span class="kw-2">&amp;mut </span>new_expr
+                    {
                         ops.push(head);
                         rest[<span class="number">0</span>].clone().to_expr(<span class="kw-2">&amp;mut </span>new_expr);
                     }
                 } <span class="kw">else </span>{
-                    <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
-                        ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
-                        <span class="kw">for </span>(index, r) <span class="kw">in </span>rest.iter().enumerate() {
+                    <span class="kw">if let </span>Expr::Expression {
+                        ops,
+                        args: <span class="kw">_</span>,
+                        name: <span class="kw">_</span>,
+                    } = <span class="kw-2">&amp;mut </span>new_expr
+                    {
+                        ops.push(Operator::Other(<span class="string">""</span>.to_string()));
+                        <span class="kw">for </span>(index, _r) <span class="kw">in </span>rest.iter().enumerate() {
                             <span class="kw">if </span>index &lt; rest.len() - <span class="number">1 </span>{
                                 ops.push(head.clone());
                             }
                         }
                     }
-                    <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>new_expr {
+                    <span class="kw">if let </span>Expr::Expression {
+                        ops: <span class="kw">_</span>,
+                        args: <span class="kw">_</span>,
+                        name: <span class="kw">_</span>,
+                    } = <span class="kw-2">&amp;mut </span>new_expr
+                    {
                         <span class="kw">for </span>r <span class="kw">in </span><span class="kw-2">&amp;</span>rest {
                             r.clone().to_expr(<span class="kw-2">&amp;mut </span>new_expr);
                         }
                     }
                 }
-                <span class="kw">if let </span>Expr::Expression { ops, args, name } = expr {
+                <span class="kw">if let </span>Expr::Expression {
+                    ops: <span class="kw">_</span>,
+                    args,
+                    name: <span class="kw">_</span>,
+                } = expr
+                {
                     args.push(new_expr.clone());
                 }
             }
         }
         expr
     }
-    <span class="kw">pub fn </span>to_graph(<span class="self">self</span>) -&gt; MathExpressionGraph&lt;<span class="lifetime">&#39;static</span>&gt; {
-        <span class="kw">let </span><span class="kw-2">mut </span>expr = <span class="self">self</span>.clone();
+    <span class="kw">pub fn </span>to_graph(<span class="self">self</span>) -&gt; MathExpressionGraph&lt;<span class="lifetime">'static</span>&gt; {
+        <span class="kw">let </span>expr = <span class="self">self</span>.clone();
         <span class="kw">let </span><span class="kw-2">mut </span>pre_exp = Expr::Expression {
-            ops: <span class="macro">vec!</span>[Operator::Other(<span class="string">&quot;root&quot;</span>.to_string())],
+            ops: <span class="macro">vec!</span>[Operator::Other(<span class="string">"root"</span>.to_string())],
             args: Vec::&lt;Expr&gt;::new(),
-            name: <span class="string">&quot;root&quot;</span>.to_string(),
+            name: <span class="string">"root"</span>.to_string(),
         };
 
         expr.to_expr(<span class="kw-2">&amp;mut </span>pre_exp);
 
-        <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>pre_exp {
-            <span class="kw">for </span><span class="kw-2">mut </span>arg <span class="kw">in </span>args {
+        <span class="kw">if let </span>Expr::Expression {
+            ops: <span class="kw">_</span>,
+            args,
+            name: <span class="kw">_</span>,
+        } = <span class="kw-2">&amp;mut </span>pre_exp
+        {
+            <span class="kw">for </span>arg <span class="kw">in </span>args {
                 <span class="kw">if let </span>Expr::Expression { .. } = arg {
                     arg.group_expr();
                 }
             }
         }
-        <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>pre_exp {
-            <span class="kw">for </span><span class="kw-2">mut </span>arg <span class="kw">in </span>args {
+        <span class="kw">if let </span>Expr::Expression {
+            ops: <span class="kw">_</span>,
+            args,
+            name: <span class="kw">_</span>,
+        } = <span class="kw-2">&amp;mut </span>pre_exp
+        {
+            <span class="kw">for </span>arg <span class="kw">in </span>args {
                 <span class="kw">if let </span>Expr::Expression { .. } = arg {
                     arg.collapse_expr();
                 }
@@ -1637,16 +2179,26 @@
         //         }
         //     }
         // }
-        </span><span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>pre_exp {
-            <span class="kw">for </span><span class="kw-2">mut </span>arg <span class="kw">in </span>args {
+        </span><span class="kw">if let </span>Expr::Expression {
+            ops: <span class="kw">_</span>,
+            args,
+            name: <span class="kw">_</span>,
+        } = <span class="kw-2">&amp;mut </span>pre_exp
+        {
+            <span class="kw">for </span>arg <span class="kw">in </span>args {
                 <span class="kw">if let </span>Expr::Expression { .. } = arg {
                     arg.set_name();
                 }
             }
         }
         <span class="kw">let </span><span class="kw-2">mut </span>g = MathExpressionGraph::new();
-        <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="kw-2">&amp;mut </span>pre_exp {
-            <span class="kw">for </span><span class="kw-2">mut </span>arg <span class="kw">in </span>args {
+        <span class="kw">if let </span>Expr::Expression {
+            ops: <span class="kw">_</span>,
+            args,
+            name: <span class="kw">_</span>,
+        } = <span class="kw-2">&amp;mut </span>pre_exp
+        {
+            <span class="kw">for </span>arg <span class="kw">in </span>args {
                 <span class="kw">if let </span>Expr::Expression { .. } = arg {
                     arg.to_graph(<span class="kw-2">&amp;mut </span>g);
                 }
@@ -1667,9 +2219,9 @@
                 <span class="kw">let </span><span class="kw-2">mut </span>start_index: i32 = -<span class="number">1</span>;
                 <span class="kw">let </span><span class="kw-2">mut </span>end_index: i32 = -<span class="number">1</span>;
                 <span class="kw">let </span><span class="kw-2">mut </span>new_exp = Expr::Expression {
-                    ops: <span class="macro">vec!</span>[Operator::Other(<span class="string">&quot;&quot;</span>.to_string())],
+                    ops: <span class="macro">vec!</span>[Operator::Other(<span class="string">""</span>.to_string())],
                     args: Vec::&lt;Expr&gt;::new(),
-                    name: <span class="string">&quot;&quot;</span>.to_string(),
+                    name: <span class="string">""</span>.to_string(),
                 };
                 <span class="kw">for </span>(o, operator) <span class="kw">in </span>ops.iter().enumerate() {
                     <span class="kw">if </span><span class="kw-2">*</span>operator == Operator::Multiply || <span class="kw-2">*</span>operator == Operator::Divide {
@@ -1691,9 +2243,9 @@
                         } <span class="kw">else </span>{
                             args[start_index <span class="kw">as </span>usize - <span class="number">1</span>] = new_exp.clone();
                             new_exp = Expr::Expression {
-                                ops: <span class="macro">vec!</span>[Operator::Other(<span class="string">&quot;&quot;</span>.to_string())],
+                                ops: <span class="macro">vec!</span>[Operator::Other(<span class="string">""</span>.to_string())],
                                 args: Vec::&lt;Expr&gt;::new(),
-                                name: <span class="string">&quot;&quot;</span>.to_string(),
+                                name: <span class="string">""</span>.to_string(),
                             };
                             <span class="kw">if let </span>Expr::Expression { ops, args, .. } = <span class="kw-2">&amp;mut </span>new_exp {
                                 ops.push(ops_copy[o].clone());
@@ -1729,9 +2281,9 @@
         }
     }
 
-    <span class="doccomment">/// 1) If the current term&#39;s operators are all multiplication or division, check if it contains
+    <span class="doccomment">/// 1) If the current term's operators are all multiplication or division, check if it contains
     /// nested all multiplication or division terms inside. If so, collapse them into a single term.
-    /// 2) If the current term&#39;s operators are all summation or subtraction, check if it contains
+    /// 2) If the current term's operators are all summation or subtraction, check if it contains
     /// nested all summation or subtraction terms inside. If so, collapse them into a single term.
     </span><span class="kw">fn </span>collapse_expr(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">if let </span>Expr::Expression { ops, args, .. } = <span class="self">self </span>{
@@ -1748,7 +2300,7 @@
                             is_div = <span class="bool-val">true</span>;
                         };
                         <span class="kw">if let </span>Expr::Expression { ops, args, name: <span class="kw">_ </span>} = <span class="kw-2">&amp;mut </span>args[i] {
-                            <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">&quot;&quot;</span>.to_string())
+                            <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">""</span>.to_string())
                                 &amp;&amp; all_ops_are_mult_or_div(ops.to_vec())
                             {
                                 args_copy[i + shift] = args[<span class="number">0</span>].clone();
@@ -1785,7 +2337,7 @@
                             is_subt = <span class="bool-val">true</span>;
                         };
                         <span class="kw">if let </span>Expr::Expression { ops, args, name: <span class="kw">_ </span>} = <span class="kw-2">&amp;mut </span>args[i] {
-                            <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">&quot;&quot;</span>.to_string())
+                            <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">""</span>.to_string())
                                 &amp;&amp; all_ops_are_add_or_subt(ops.to_vec())
                             {
                                 args_copy[i + shift] = args[<span class="number">0</span>].clone();
@@ -1854,7 +2406,7 @@
                         <span class="kw">let </span><span class="kw-2">mut </span>new_expr = Expr::Expression {
                             ops: distributed_ops.clone(),
                             args: distributed_terms.clone(),
-                            name: <span class="string">&quot;&quot;</span>.to_string(),
+                            name: <span class="string">""</span>.to_string(),
                         };
                         new_expr.group_expr();
                         new_expr.collapse_expr();
@@ -1876,7 +2428,7 @@
                 <span class="kw">let </span><span class="kw-2">mut </span>new_expr = Expr::Expression {
                     ops: Vec::&lt;Operator&gt;::new(),
                     args: Vec::&lt;Expr&gt;::new(),
-                    name: <span class="string">&quot;&quot;</span>.to_string(),
+                    name: <span class="string">""</span>.to_string(),
                 };
                 <span class="kw">if let </span>Expr::Expression {
                     ops,
@@ -1884,7 +2436,7 @@
                     name: <span class="kw">_</span>,
                 } = <span class="kw-2">&amp;mut </span>new_expr
                 {
-                    ops.push(Operator::Other(<span class="string">&quot;&quot;</span>.to_string()));
+                    ops.push(Operator::Other(<span class="string">""</span>.to_string()));
                 }
                 <span class="kw">let </span><span class="kw-2">mut </span>removed_idx: Vec&lt;usize&gt; = Vec::new();
                 <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..args.len() {
@@ -1920,29 +2472,29 @@
         }
     }
 
-    <span class="doccomment">/// Construct a string representation of the Expression and store it under its &#39;name&#39; property.
+    <span class="doccomment">/// MathExpressionTree::Construct a string representation of the Expression and store it under its 'name' property.
     </span><span class="kw">pub fn </span>set_name(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; String {
         <span class="kw">let </span><span class="kw-2">mut </span>add_paren = <span class="bool-val">false</span>;
         <span class="kw">match </span><span class="self">self </span>{
-            Expr::Atom(<span class="kw">_</span>) =&gt; <span class="string">&quot;&quot;</span>.to_string(),
+            Expr::Atom(<span class="kw">_</span>) =&gt; <span class="string">""</span>.to_string(),
             Expr::Expression { ops, args, name } =&gt; {
-                <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">&quot;&quot;</span>.to_string())
+                <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">""</span>.to_string())
                     &amp;&amp; !all_ops_are_mult_or_div(ops.to_vec())
                     &amp;&amp; !contains_redundant_parens(name)
                 {
-                    name.push(<span class="string">&#39;(&#39;</span>);
+                    name.push(<span class="string">'('</span>);
                     add_paren = <span class="bool-val">true</span>;
                 }
                 <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..=ops.len() - <span class="number">1 </span>{
                     <span class="kw">if </span>i &gt; <span class="number">0 </span>{
                         <span class="kw">if </span>ops[i] == Operator::Equals {
-                            <span class="kw">let </span><span class="kw-2">mut </span>new_name = <span class="string">&quot;&quot;</span>.to_string();
+                            <span class="kw">let </span><span class="kw-2">mut </span>new_name = <span class="string">""</span>.to_string();
                             <span class="kw">for </span>n <span class="kw">in </span>name.as_bytes() {
                                 <span class="kw">if </span><span class="kw-2">*</span>n == <span class="number">40_u8 </span>{
-                                    new_name.push(<span class="string">&#39;(&#39;</span>);
+                                    new_name.push(<span class="string">'('</span>);
                                 }
                                 <span class="kw">if </span><span class="kw-2">*</span>n == <span class="number">41_u8 </span>{
-                                    new_name.push(<span class="string">&#39;)&#39;</span>);
+                                    new_name.push(<span class="string">')'</span>);
                                 }
                             }
                             <span class="kw-2">*</span>name = remove_redundant_parens(<span class="kw-2">&amp;mut </span>new_name).clone();
@@ -1961,12 +2513,12 @@
                             Atom::Operator(<span class="kw">_</span>) =&gt; {}
                         },
                         Expr::Expression { ops, .. } =&gt; {
-                            <span class="kw">let </span><span class="kw-2">mut </span>string = <span class="string">&quot;&quot;</span>.to_string();
-                            <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">&quot;&quot;</span>.to_string()) {
+                            <span class="kw">let </span><span class="kw-2">mut </span>string = <span class="string">""</span>.to_string();
+                            <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">""</span>.to_string()) {
                                 string = ops[<span class="number">0</span>].to_string();
-                                string.push(<span class="string">&#39;(&#39;</span>);
+                                string.push(<span class="string">'('</span>);
                                 string.push_str(args[i].set_name().as_str());
-                                string.push(<span class="string">&#39;)&#39;</span>);
+                                string.push(<span class="string">')'</span>);
                             } <span class="kw">else </span>{
                                 string = args[i].set_name().as_str().to_string();
                             }
@@ -1975,7 +2527,7 @@
                     }
                 }
                 <span class="kw">if </span>add_paren {
-                    name.push(<span class="string">&#39;)&#39;</span>);
+                    name.push(<span class="string">')'</span>);
                 }
 
                 name.to_string()
@@ -1985,20 +2537,20 @@
 
     <span class="kw">pub fn </span>to_graph(<span class="kw-2">&amp;mut </span><span class="self">self</span>, graph: <span class="kw-2">&amp;mut </span>MathExpressionGraph) {
         <span class="kw">if let </span>Expr::Expression { ops, args, name } = <span class="self">self </span>{
-            <span class="kw">if </span>name == <span class="string">&quot;place_holder&quot; </span>{
+            <span class="kw">if </span>name == <span class="string">"place_holder" </span>{
                 <span class="kw">return</span>;
-            } <span class="kw">else if </span>name.contains(<span class="string">&quot;place_holder&quot;</span>) {
-                <span class="kw-2">*</span>name = name.replace(<span class="string">&quot;place_holder&quot;</span>, <span class="string">&quot;&quot;</span>);
+            } <span class="kw">else if </span>name.contains(<span class="string">"place_holder"</span>) {
+                <span class="kw-2">*</span>name = name.replace(<span class="string">"place_holder"</span>, <span class="string">""</span>);
             }
 
             <span class="kw">let </span><span class="kw-2">mut </span>parent_node_index: NodeIndex = Default::default();
-            <span class="kw">if </span>ops[<span class="number">0</span>].to_string() != <span class="string">&quot;derivative&quot; </span>{
+            <span class="kw">if </span>ops[<span class="number">0</span>].to_string() != <span class="string">"derivative" </span>{
                 parent_node_index = get_node_idx(graph, name)
             }
             <span class="kw">let </span><span class="kw-2">mut </span>eq_loc = <span class="number">0</span>;
             <span class="kw">if </span>ops.contains(<span class="kw-2">&amp;</span>Operator::Equals) {
                 eq_loc = ops.iter().position(|r| r == <span class="kw-2">&amp;</span>(Operator::Equals)).unwrap();
-                <span class="kw">let </span><span class="kw-2">mut </span>left_eq_name: String = <span class="string">&quot;&quot;</span>.to_string();
+                <span class="kw">let </span><span class="kw-2">mut </span>left_eq_name: String = <span class="string">""</span>.to_string();
                 <span class="kw">for </span>arg <span class="kw">in </span>args.iter_mut().take(eq_loc) {
                     <span class="kw">match </span>arg {
                         Expr::Atom(x) =&gt; <span class="kw">match </span>x {
@@ -2011,13 +2563,13 @@
                             Atom::Operator(_y) =&gt; {}
                         },
                         Expr::Expression { ops, args: <span class="kw">_</span>, name } =&gt; {
-                            <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">&quot;&quot;</span>.to_string()) {
+                            <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">""</span>.to_string()) {
                                 <span class="kw">let </span><span class="kw-2">mut </span>unitary_name = ops[<span class="number">0</span>].to_string();
                                 <span class="kw">let </span><span class="kw-2">mut </span>name_copy = name.to_string();
                                 remove_redundant_parens(<span class="kw-2">&amp;mut </span>name_copy);
-                                unitary_name.push(<span class="string">&#39;(&#39;</span>);
+                                unitary_name.push(<span class="string">'('</span>);
                                 unitary_name.push_str(<span class="kw-2">&amp;</span>name_copy);
-                                unitary_name.push(<span class="string">&#39;)&#39;</span>);
+                                unitary_name.push(<span class="string">')'</span>);
                                 left_eq_name.push_str(unitary_name.as_str());
                             } <span class="kw">else </span>{
                                 left_eq_name.push_str(name.as_str());
@@ -2027,17 +2579,17 @@
                 }
 
                 <span class="kw">let </span>node_idx = get_node_idx(graph, <span class="kw-2">&amp;mut </span>left_eq_name);
-                graph.update_edge(node_idx, parent_node_index, <span class="string">&quot;=&quot;</span>.to_string());
+                graph.update_edge(node_idx, parent_node_index, <span class="string">"="</span>.to_string());
             }
-            <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">&quot;&quot;</span>.to_string()) {
+            <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">""</span>.to_string()) {
                 <span class="kw">let </span><span class="kw-2">mut </span>unitary_name = ops[<span class="number">0</span>].to_string();
                 <span class="kw">let </span><span class="kw-2">mut </span>name_copy = name.to_string();
                 remove_redundant_parens(<span class="kw-2">&amp;mut </span>name_copy);
-                unitary_name.push(<span class="string">&#39;(&#39;</span>);
+                unitary_name.push(<span class="string">'('</span>);
                 unitary_name.push_str(<span class="kw-2">&amp;</span>name_copy);
-                unitary_name.push(<span class="string">&#39;)&#39;</span>);
+                unitary_name.push(<span class="string">')'</span>);
                 <span class="kw">let </span>node_idx = get_node_idx(graph, <span class="kw-2">&amp;mut </span>unitary_name);
-                <span class="kw">if </span>ops[<span class="number">0</span>].to_string() == <span class="string">&quot;derivative&quot; </span>{
+                <span class="kw">if </span>ops[<span class="number">0</span>].to_string() == <span class="string">"derivative" </span>{
                     <span class="kw">return</span>;
                 } <span class="kw">else </span>{
                     graph.update_edge(parent_node_index, node_idx, ops[<span class="number">0</span>].to_string());
@@ -2048,30 +2600,30 @@
                 <span class="kw">match </span><span class="kw-2">&amp;mut </span>args[i] {
                     Expr::Atom(x) =&gt; <span class="kw">match </span>x {
                         Atom::Number(x) =&gt; {
-                            <span class="kw">if </span>x == <span class="string">&quot;place_holder&quot; </span>{
+                            <span class="kw">if </span>x == <span class="string">"place_holder" </span>{
                                 <span class="kw">continue</span>;
-                            } <span class="kw">else if </span>x.contains(<span class="string">&quot;place_holder&quot;</span>) {
-                                <span class="kw-2">*</span>x = x.replace(<span class="string">&quot;place_holder&quot;</span>, <span class="string">&quot;&quot;</span>);
+                            } <span class="kw">else if </span>x.contains(<span class="string">"place_holder"</span>) {
+                                <span class="kw-2">*</span>x = x.replace(<span class="string">"place_holder"</span>, <span class="string">""</span>);
                             }
                             <span class="kw">let </span>node_idx = get_node_idx(graph, x);
                             <span class="kw">if </span>i == <span class="number">0 </span>{
                                 <span class="kw">if </span>ops_copy.len() &gt; <span class="number">1 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !x.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !x.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2083,22 +2635,22 @@
                                 }
                             } <span class="kw">else if </span>ops_copy[i] == Operator::Equals {
                                 <span class="kw">if </span>i &lt;= ops_copy.len() - <span class="number">2 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !x.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !x.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2117,30 +2669,30 @@
                             }
                         }
                         Atom::Identifier(x) =&gt; {
-                            <span class="kw">if </span>x == <span class="string">&quot;place_holder&quot; </span>{
+                            <span class="kw">if </span>x == <span class="string">"place_holder" </span>{
                                 <span class="kw">continue</span>;
-                            } <span class="kw">else if </span>x.contains(<span class="string">&quot;place_holder&quot;</span>) {
-                                <span class="kw-2">*</span>x = x.replace(<span class="string">&quot;place_holder&quot;</span>, <span class="string">&quot;&quot;</span>);
+                            } <span class="kw">else if </span>x.contains(<span class="string">"place_holder"</span>) {
+                                <span class="kw-2">*</span>x = x.replace(<span class="string">"place_holder"</span>, <span class="string">""</span>);
                             }
                             <span class="kw">let </span>node_idx = get_node_idx(graph, x);
                             <span class="kw">if </span>i == <span class="number">0 </span>{
                                 <span class="kw">if </span>ops_copy.len() &gt; <span class="number">1 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !x.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !x.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2152,22 +2704,22 @@
                                 }
                             } <span class="kw">else if </span>ops_copy[i] == Operator::Equals {
                                 <span class="kw">if </span>i &lt;= ops_copy.len() - <span class="number">2 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !x.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !x.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2188,31 +2740,31 @@
                         Atom::Operator(_x) =&gt; {}
                     },
                     Expr::Expression { ops, name, .. } =&gt; {
-                        <span class="kw">if </span>name == <span class="string">&quot;place_holder&quot; </span>{
+                        <span class="kw">if </span>name == <span class="string">"place_holder" </span>{
                             <span class="kw">continue</span>;
-                        } <span class="kw">else if </span>name.contains(<span class="string">&quot;place_holder&quot;</span>) {
-                            <span class="kw-2">*</span>name = name.replace(<span class="string">&quot;place_holder&quot;</span>, <span class="string">&quot;&quot;</span>);
+                        } <span class="kw">else if </span>name.contains(<span class="string">"place_holder"</span>) {
+                            <span class="kw-2">*</span>name = name.replace(<span class="string">"place_holder"</span>, <span class="string">""</span>);
                         }
-                        <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">&quot;&quot;</span>.to_string()) {
+                        <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">""</span>.to_string()) {
                             <span class="kw">let </span>node_idx = get_node_idx(graph, name);
                             <span class="kw">if </span>i == <span class="number">0 </span>{
                                 <span class="kw">if </span>ops_copy.len() &gt; <span class="number">1 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !name.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !name.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2224,22 +2776,22 @@
                                 }
                             } <span class="kw">else if </span>ops_copy[i] == Operator::Equals {
                                 <span class="kw">if </span>i &lt;= ops_copy.len() - <span class="number">2 </span>&amp;&amp; ops_copy.len() &gt; <span class="number">1 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !name.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !name.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2260,28 +2812,28 @@
                             <span class="kw">let </span><span class="kw-2">mut </span>unitary_name = ops[<span class="number">0</span>].to_string();
                             <span class="kw">let </span><span class="kw-2">mut </span>name_copy = name.to_string();
                             remove_redundant_parens(<span class="kw-2">&amp;mut </span>name_copy);
-                            unitary_name.push(<span class="string">&#39;(&#39;</span>);
+                            unitary_name.push(<span class="string">'('</span>);
                             unitary_name.push_str(<span class="kw-2">&amp;</span>name_copy);
-                            unitary_name.push(<span class="string">&#39;)&#39;</span>);
+                            unitary_name.push(<span class="string">')'</span>);
                             <span class="kw">let </span>node_idx = get_node_idx(graph, <span class="kw-2">&amp;mut </span>unitary_name);
                             <span class="kw">if </span>i == <span class="number">0 </span>{
                                 <span class="kw">if </span>ops_copy.len() &gt; <span class="number">1 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !unitary_name.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !unitary_name.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2293,22 +2845,22 @@
                                 }
                             } <span class="kw">else if </span>ops_copy[i] == Operator::Equals {
                                 <span class="kw">if </span>i &lt;= ops_copy.len() - <span class="number">2 </span>{
-                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;+&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;-&quot;</span>)
-                                        &amp;&amp; !unitary_name.starts_with(<span class="string">&#39;-&#39;</span>)
+                                    <span class="kw">if </span>(ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"+"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"-"</span>)
+                                        &amp;&amp; !unitary_name.starts_with(<span class="string">'-'</span>)
                                     {
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;+&quot;</span>.to_string(),
+                                            <span class="string">"+"</span>.to_string(),
                                         );
-                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;*&quot;
-                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">&quot;/&quot;
+                                    } <span class="kw">else if </span>ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"*"
+                                        </span>|| ops_copy[i + <span class="number">1</span>].to_string() == <span class="string">"/"
                                     </span>{
                                         graph.update_edge(
                                             node_idx,
                                             parent_node_index,
-                                            <span class="string">&quot;*&quot;</span>.to_string(),
+                                            <span class="string">"*"</span>.to_string(),
                                         );
                                     } <span class="kw">else </span>{
                                         graph.update_edge(
@@ -2338,25 +2890,25 @@
 /// function checks for the existence of those redundant parentheses.
 </span><span class="kw">pub fn </span>contains_redundant_parens(string: <span class="kw-2">&amp;</span>str) -&gt; bool {
     <span class="kw">let </span>str_len = string.chars().count();
-    <span class="kw">if </span>!string.starts_with(<span class="string">&#39;(&#39;</span>) || string.chars().nth(str_len - <span class="number">1</span>) != <span class="prelude-val">Some</span>(<span class="string">&#39;)&#39;</span>) {
+    <span class="kw">if </span>!string.starts_with(<span class="string">'('</span>) || string.chars().nth(str_len - <span class="number">1</span>) != <span class="prelude-val">Some</span>(<span class="string">')'</span>) {
         <span class="kw">return </span><span class="bool-val">false</span>;
     }
     <span class="kw">let </span><span class="kw-2">mut </span>par_stack = VecDeque::new();
-    par_stack.push_back(<span class="string">&quot;left_par&quot;</span>);
+    par_stack.push_back(<span class="string">"left_par"</span>);
     <span class="kw">for </span>i <span class="kw">in </span><span class="number">1</span>..=str_len - <span class="number">2 </span>{
-        <span class="kw">if </span>string.chars().nth(i) == <span class="prelude-val">Some</span>(<span class="string">&#39;(&#39;</span>) {
-            par_stack.push_back(<span class="string">&quot;par&quot;</span>);
-        } <span class="kw">else if </span>string.chars().nth(i) == <span class="prelude-val">Some</span>(<span class="string">&#39;)&#39;</span>) {
+        <span class="kw">if </span>string.chars().nth(i) == <span class="prelude-val">Some</span>(<span class="string">'('</span>) {
+            par_stack.push_back(<span class="string">"par"</span>);
+        } <span class="kw">else if </span>string.chars().nth(i) == <span class="prelude-val">Some</span>(<span class="string">')'</span>) {
             par_stack.pop_back();
         }
     }
-    <span class="kw">if </span>!par_stack.is_empty() &amp;&amp; par_stack[<span class="number">0</span>] == <span class="string">&quot;left_par&quot; </span>{
+    <span class="kw">if </span>!par_stack.is_empty() &amp;&amp; par_stack[<span class="number">0</span>] == <span class="string">"left_par" </span>{
         <span class="kw">return </span><span class="bool-val">true</span>;
     }
     <span class="bool-val">false
 </span>}
 
-<span class="doccomment">/// Check if the current term&#39;s operators are all multiply or divide.
+<span class="doccomment">/// Check if the current term's operators are all multiply or divide.
 </span><span class="kw">pub fn </span>all_ops_are_mult_or_div(ops: Vec&lt;Operator&gt;) -&gt; bool {
     <span class="kw">for </span>op <span class="kw">in </span>ops.iter().take((ops.len() - <span class="number">1</span>) + <span class="number">1</span>).skip(<span class="number">1</span>) {
         <span class="kw">if </span>op != <span class="kw-2">&amp;</span>Operator::Multiply &amp;&amp; op != <span class="kw-2">&amp;</span>Operator::Divide {
@@ -2368,7 +2920,7 @@
 
 <span class="doccomment">///Switch the multiplication operator and the division operator
 </span><span class="kw">pub fn </span>switch_mul_div(op: Operator) -&gt; Operator {
-    <span class="kw">let </span>switched_op: Operator = Operator::Other(<span class="string">&quot;&quot;</span>.to_string());
+    <span class="kw">let </span>switched_op: Operator = Operator::Other(<span class="string">""</span>.to_string());
     <span class="kw">if </span>op == Operator::Multiply {
         <span class="kw">return </span>Operator::Divide;
     }
@@ -2380,7 +2932,7 @@
 
 <span class="doccomment">///Switch the summation operator and the subtraction operator
 </span><span class="kw">pub fn </span>switch_add_subt(op: Operator) -&gt; Operator {
-    <span class="kw">let </span>switched_op: Operator = Operator::Other(<span class="string">&quot;&quot;</span>.to_string());
+    <span class="kw">let </span>switched_op: Operator = Operator::Other(<span class="string">""</span>.to_string());
     <span class="kw">if </span>op == Operator::Add {
         <span class="kw">return </span>Operator::Subtract;
     }
@@ -2390,7 +2942,7 @@
     switched_op
 }
 
-<span class="doccomment">/// Check if the current term&#39;s operators are all add or subtract.
+<span class="doccomment">/// Check if the current term's operators are all add or subtract.
 </span><span class="kw">pub fn </span>all_ops_are_add_or_subt(ops: Vec&lt;Operator&gt;) -&gt; bool {
     <span class="kw">for </span>op <span class="kw">in </span>ops.iter().take((ops.len() - <span class="number">1</span>) + <span class="number">1</span>).skip(<span class="number">1</span>) {
         <span class="kw">if </span>op != <span class="kw-2">&amp;</span>Operator::Add &amp;&amp; op != <span class="kw-2">&amp;</span>Operator::Subtract {
@@ -2400,7 +2952,7 @@
     <span class="bool-val">true
 </span>}
 
-<span class="doccomment">/// Check if the current term&#39;s operators contain multiply.
+<span class="doccomment">/// Check if the current term's operators contain multiply.
 </span><span class="kw">pub fn </span>ops_contain_mult(ops: Vec&lt;Operator&gt;) -&gt; bool {
     <span class="kw">for </span>op <span class="kw">in </span>ops.iter().take((ops.len() - <span class="number">1</span>) + <span class="number">1</span>).skip(<span class="number">1</span>) {
         <span class="kw">if </span>op == <span class="kw-2">&amp;</span>Operator::Multiply {
@@ -2410,7 +2962,7 @@
     <span class="bool-val">false
 </span>}
 
-<span class="doccomment">/// Check if the current term&#39;s operators contain multiple divisions, and the denominators contain
+<span class="doccomment">/// Check if the current term's operators contain multiple divisions, and the denominators contain
 /// add and subtract and without unary operators
 </span><span class="kw">pub fn </span>need_to_distribute_divs(ops: Vec&lt;Operator&gt;, args: Vec&lt;Expr&gt;) -&gt; bool {
     <span class="kw">let </span><span class="kw-2">mut </span>num_div: i32 = <span class="number">0</span>;
@@ -2424,7 +2976,7 @@
                 name: <span class="kw">_</span>,
             } = <span class="kw-2">&amp;</span>args[o]
             {
-                <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">&quot;&quot;</span>.to_string()) &amp;&amp; all_ops_are_add_or_subt(ops.clone())
+                <span class="kw">if </span>ops[<span class="number">0</span>] == Operator::Other(<span class="string">""</span>.to_string()) &amp;&amp; all_ops_are_add_or_subt(ops.clone())
                 {
                     contain_add_subt_without_uop = <span class="bool-val">true</span>;
                 }
@@ -2437,9 +2989,9 @@
     <span class="bool-val">false
 </span>}
 
-<span class="doccomment">/// Check if the current term&#39;s operators contain add or minus and without the unary operator.
+<span class="doccomment">/// Check if the current term's operators contain add or minus and without the unary operator.
 </span><span class="kw">pub fn </span>need_to_distribute(ops: Vec&lt;Operator&gt;) -&gt; bool {
-    <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">&quot;&quot;</span>.to_string()) {
+    <span class="kw">if </span>ops[<span class="number">0</span>] != Operator::Other(<span class="string">""</span>.to_string()) {
         <span class="kw">return </span><span class="bool-val">false</span>;
     }
     <span class="kw">for </span>op <span class="kw">in </span>ops.iter().take((ops.len() - <span class="number">1</span>) + <span class="number">1</span>).skip(<span class="number">1</span>) {
@@ -2456,15 +3008,15 @@
         string.remove(string.len() - <span class="number">1</span>);
         string.remove(<span class="number">0</span>);
     }
-    <span class="kw-2">*</span>string = string.replace(<span class="string">&quot;()&quot;</span>, <span class="string">&quot;&quot;</span>);
+    <span class="kw-2">*</span>string = string.replace(<span class="string">"()"</span>, <span class="string">""</span>);
     string
 }
 
 <span class="doccomment">/// Return the node index if it exists; if not, add a new node and return the node index.
 </span><span class="kw">pub fn </span>get_node_idx(graph: <span class="kw-2">&amp;mut </span>MathExpressionGraph, name: <span class="kw-2">&amp;mut </span>String) -&gt; NodeIndex {
     remove_redundant_parens(name);
-    <span class="kw">if </span>name.contains(<span class="string">&quot;derivative&quot;</span>) {
-        <span class="kw-2">*</span>name = name.replace(<span class="string">&#39;/&#39;</span>, <span class="string">&quot;, &quot;</span>);
+    <span class="kw">if </span>name.contains(<span class="string">"derivative"</span>) {
+        <span class="kw-2">*</span>name = name.replace(<span class="string">'/'</span>, <span class="string">", "</span>);
     }
     <span class="kw">if </span>graph.node_count() &gt; <span class="number">0 </span>{
         <span class="kw">for </span>n <span class="kw">in </span><span class="number">0</span>..=graph.node_count() - <span class="number">1 </span>{
@@ -2481,9 +3033,33 @@
     graph.add_node(name.to_string())
 }
 
+<span class="doccomment">/// Generates a JSON representation of DOT graphs for each MathExpressionTree of the code implementation.
+</span><span class="kw">pub fn </span>get_code_exp_graphs(expressions: Vec&lt;MathExpressionTree&gt;) -&gt; String {
+    <span class="kw">let </span><span class="kw-2">mut </span>graph_json = HashMap::new();
+
+    <span class="kw">for </span>(index, expression) <span class="kw">in </span>expressions.iter().enumerate() {
+        <span class="comment">// Create a new MathExpressionTree representing the outer layer with Operator::Equals
+        // let outer_layer = MathExpressionTree::Cons(
+        //     Operator::Equals,
+        //     vec![
+        //         MathExpressionTree::Atom(MathExpression::Mi(Mi(format!("exp_{}", index + 1)))),
+        //         expression.clone(),
+        //     ],
+        // );
+        </span><span class="kw">let </span>outer_layer = expression.clone();
+        <span class="kw">let </span>graph = outer_layer.to_graph();
+        <span class="kw">let </span>dot_representation = Dot::new(<span class="kw-2">&amp;</span>graph);
+        <span class="kw">let </span>dot_string = dot_representation.to_string();
+
+        <span class="comment">// JSON key starts from 1
+        </span>graph_json.insert(index + <span class="number">1</span>, dot_string);
+    }
+
+    serde_json::to_string_pretty(<span class="kw-2">&amp;</span>graph_json).unwrap()
+}
 <span class="attr">#[test]
 </span><span class="kw">fn </span>test_plus_to_graph() {
-    <span class="kw">let </span>input = <span class="string">&quot;
+    <span class="kw">let </span>input = <span class="string">"
     &lt;math&gt;
         &lt;mrow&gt;
             &lt;mi&gt;a&lt;/mi&gt;
@@ -2491,22 +3067,19 @@
             &lt;mi&gt;b&lt;/mi&gt;
         &lt;/mrow&gt;
     &lt;/math&gt;
-    &quot;</span>;
+    "</span>;
     <span class="kw">let </span>exp = input.parse::&lt;MathExpressionTree&gt;().unwrap();
     <span class="kw">let </span>g = exp.to_graph();
     <span class="kw">let </span>dot_representation = Dot::new(<span class="kw-2">&amp;</span>g);
     <span class="macro">assert_eq!</span>(
-        dot_representation
-            .to_string()
-            .replace(<span class="string">&quot;\n&quot;</span>, <span class="string">&quot;&quot;</span>)
-            .replace(<span class="string">&quot; &quot;</span>, <span class="string">&quot;&quot;</span>),
-        <span class="string">&quot;digraph{0[label=\&quot;a+b\&quot;]1[label=\&quot;a\&quot;]2[label=\&quot;b\&quot;]1-&gt;0[label=\&quot;+\&quot;]2-&gt;0[label=\&quot;+\&quot;]}&quot;
+        dot_representation.to_string().replace([<span class="string">'\n'</span>, <span class="string">' '</span>], <span class="string">""</span>),
+        <span class="string">"digraph{0[label=\"a+b\"]1[label=\"a\"]2[label=\"b\"]1-&gt;0[label=\"+\"]2-&gt;0[label=\"+\"]}"
     </span>)
 }
 
 <span class="attr">#[test]
 </span><span class="kw">fn </span>test_equation_halfar_dome_8_1_to_graph() {
-    <span class="kw">let </span>input = <span class="string">&quot;
+    <span class="kw">let </span>input = <span class="string">"
     &lt;math&gt;
       &lt;mfrac&gt;
         &lt;mrow&gt;
@@ -2546,20 +3119,19 @@
       &lt;mi&gt;H&lt;/mi&gt;
       &lt;mo&gt;)&lt;/mo&gt;
     &lt;/math&gt;
-    &quot;</span>;
+    "</span>;
 
     <span class="kw">let </span>exp = input.parse::&lt;MathExpressionTree&gt;().unwrap();
     <span class="kw">let </span>g = exp.to_graph();
     <span class="kw">let </span>dot_representation = Dot::new(<span class="kw-2">&amp;</span>g);
     <span class="macro">assert_eq!</span>(dot_representation.to_string()
-                   .replace(<span class="string">&quot;\n&quot;</span>, <span class="string">&quot;&quot;</span>)
-                   .replace(<span class="string">&quot; &quot;</span>, <span class="string">&quot;&quot;</span>),
-               <span class="string">&quot;digraph{0[label=\&quot;Div(Γ*(H^(n+2))*(Abs(Grad(H))^(n-1))*Grad(H))\&quot;]1[label=\&quot;D(1,t)(H)\&quot;]2[label=\&quot;Γ*(H^(n+2))*(Abs(Grad(H))^(n-1))*Grad(H)\&quot;]3[label=\&quot;Γ\&quot;]4[label=\&quot;H^(n+2)\&quot;]5[label=\&quot;H\&quot;]6[label=\&quot;n+2\&quot;]7[label=\&quot;n\&quot;]8[label=\&quot;2\&quot;]9[label=\&quot;Abs(Grad(H))^(n-1)\&quot;]10[label=\&quot;Abs(Grad(H))\&quot;]11[label=\&quot;Grad(H)\&quot;]12[label=\&quot;n-1\&quot;]13[label=\&quot;1\&quot;]1-&gt;0[label=\&quot;=\&quot;]2-&gt;0[label=\&quot;Div\&quot;]3-&gt;2[label=\&quot;*\&quot;]4-&gt;2[label=\&quot;*\&quot;]5-&gt;4[label=\&quot;^\&quot;]6-&gt;4[label=\&quot;^\&quot;]7-&gt;6[label=\&quot;+\&quot;]8-&gt;6[label=\&quot;+\&quot;]9-&gt;2[label=\&quot;*\&quot;]10-&gt;9[label=\&quot;^\&quot;]11-&gt;10[label=\&quot;Abs\&quot;]5-&gt;11[label=\&quot;Grad\&quot;]12-&gt;9[label=\&quot;^\&quot;]7-&gt;12[label=\&quot;+\&quot;]13-&gt;12[label=\&quot;-\&quot;]11-&gt;2[label=\&quot;*\&quot;]}&quot;</span>);
+                   .replace([<span class="string">'\n'</span>, <span class="string">' '</span>], <span class="string">""</span>),
+        <span class="string">"digraph{0[label=\"Div(Γ*(H^(n+2))*(Abs(Grad(H))^(n-1))*Grad(H))\"]1[label=\"PD(1,t)(H)\"]2[label=\"Γ*(H^(n+2))*(Abs(Grad(H))^(n-1))*Grad(H)\"]3[label=\"Γ\"]4[label=\"H^(n+2)\"]5[label=\"H\"]6[label=\"n+2\"]7[label=\"n\"]8[label=\"2\"]9[label=\"Abs(Grad(H))^(n-1)\"]10[label=\"Abs(Grad(H))\"]11[label=\"Grad(H)\"]12[label=\"n-1\"]13[label=\"1\"]1-&gt;0[label=\"=\"]2-&gt;0[label=\"Div\"]3-&gt;2[label=\"*\"]4-&gt;2[label=\"*\"]5-&gt;4[label=\"^\"]6-&gt;4[label=\"^\"]7-&gt;6[label=\"+\"]8-&gt;6[label=\"+\"]9-&gt;2[label=\"*\"]10-&gt;9[label=\"^\"]11-&gt;10[label=\"Abs\"]5-&gt;11[label=\"Grad\"]12-&gt;9[label=\"^\"]7-&gt;12[label=\"+\"]13-&gt;12[label=\"-\"]11-&gt;2[label=\"*\"]}"</span>);
 }
 
 <span class="attr">#[test]
 </span><span class="kw">fn </span>test_equation_sidarthe_1_to_graph() {
-    <span class="kw">let </span>input = <span class="string">&quot;
+    <span class="kw">let </span>input = <span class="string">"
     &lt;math&gt;
       &lt;mrow&gt;
         &lt;mover&gt;
@@ -2602,14 +3174,159 @@
       &lt;mo&gt;)&lt;/mo&gt;
       &lt;mo&gt;)&lt;/mo&gt;
     &lt;/math&gt;
-    &quot;</span>;
+    "</span>;
 
     <span class="kw">let </span>exp = input.parse::&lt;MathExpressionTree&gt;().unwrap();
     <span class="kw">let </span>g = exp.to_graph();
     <span class="kw">let </span>dot_representation = Dot::new(<span class="kw-2">&amp;</span>g);
     <span class="macro">assert_eq!</span>(dot_representation.to_string()
-                   .replace(<span class="string">&quot;\n&quot;</span>, <span class="string">&quot;&quot;</span>)
-                   .replace(<span class="string">&quot; &quot;</span>, <span class="string">&quot;&quot;</span>),
-               <span class="string">&quot;digraph{0[label=\&quot;-(S)*(α*I+β*D+γ*A+δ*R)\&quot;]1[label=\&quot;D(1,t)(S)\&quot;]2[label=\&quot;-(S)\&quot;]3[label=\&quot;S\&quot;]4[label=\&quot;α*I+β*D+γ*A+δ*R\&quot;]5[label=\&quot;α*I\&quot;]6[label=\&quot;α\&quot;]7[label=\&quot;I\&quot;]8[label=\&quot;β*D\&quot;]9[label=\&quot;β\&quot;]10[label=\&quot;D\&quot;]11[label=\&quot;γ*A\&quot;]12[label=\&quot;γ\&quot;]13[label=\&quot;A\&quot;]14[label=\&quot;δ*R\&quot;]15[label=\&quot;δ\&quot;]16[label=\&quot;R\&quot;]1-&gt;0[label=\&quot;=\&quot;]2-&gt;0[label=\&quot;*\&quot;]3-&gt;2[label=\&quot;-\&quot;]4-&gt;0[label=\&quot;*\&quot;]5-&gt;4[label=\&quot;+\&quot;]6-&gt;5[label=\&quot;*\&quot;]7-&gt;5[label=\&quot;*\&quot;]8-&gt;4[label=\&quot;+\&quot;]9-&gt;8[label=\&quot;*\&quot;]10-&gt;8[label=\&quot;*\&quot;]11-&gt;4[label=\&quot;+\&quot;]12-&gt;11[label=\&quot;*\&quot;]13-&gt;11[label=\&quot;*\&quot;]14-&gt;4[label=\&quot;+\&quot;]15-&gt;14[label=\&quot;*\&quot;]16-&gt;14[label=\&quot;*\&quot;]}&quot;</span>);
+                   .replace([<span class="string">'\n'</span>, <span class="string">' '</span>], <span class="string">""</span>),
+               <span class="string">"digraph{0[label=\"-(S)*(α*I+β*D+γ*A+δ*R)\"]1[label=\"D(1,t)(S)\"]2[label=\"-(S)\"]3[label=\"S\"]4[label=\"α*I+β*D+γ*A+δ*R\"]5[label=\"α*I\"]6[label=\"α\"]7[label=\"I\"]8[label=\"β*D\"]9[label=\"β\"]10[label=\"D\"]11[label=\"γ*A\"]12[label=\"γ\"]13[label=\"A\"]14[label=\"δ*R\"]15[label=\"δ\"]16[label=\"R\"]1-&gt;0[label=\"=\"]2-&gt;0[label=\"*\"]3-&gt;2[label=\"-\"]4-&gt;0[label=\"*\"]5-&gt;4[label=\"+\"]6-&gt;5[label=\"*\"]7-&gt;5[label=\"*\"]8-&gt;4[label=\"+\"]9-&gt;8[label=\"*\"]10-&gt;8[label=\"*\"]11-&gt;4[label=\"+\"]12-&gt;11[label=\"*\"]13-&gt;11[label=\"*\"]14-&gt;4[label=\"+\"]15-&gt;14[label=\"*\"]16-&gt;14[label=\"*\"]}"</span>);
+}
+
+<span class="attr">#[test]
+</span><span class="kw">fn </span>test_get_code_exp_graphs() {
+    <span class="comment">// Create a sample vector of MathExpressionTree instances
+    </span><span class="kw">let </span>expressions: Vec&lt;MathExpressionTree&gt; = <span class="macro">vec!</span>[
+        MathExpressionTree::Cons(
+            Operator::Subtract,
+            <span class="macro">vec!</span>[
+                MathExpressionTree::Cons(
+                    Operator::Multiply,
+                    <span class="macro">vec!</span>[
+                        MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"I"</span>.to_string()))),
+                        MathExpressionTree::Cons(
+                            Operator::Divide,
+                            <span class="macro">vec!</span>[
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(
+                                    <span class="string">"epsilon"</span>.to_string()
+                                ))),
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"3"</span>.to_string()))),
+                            ],
+                        ),
+                    ],
+                ),
+                MathExpressionTree::Cons(
+                    Operator::Multiply,
+                    <span class="macro">vec!</span>[
+                        MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"eta"</span>.to_string()))),
+                        MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"D"</span>.to_string()))),
+                    ],
+                ),
+            ],
+        ),
+        MathExpressionTree::Cons(
+            Operator::Subtract,
+            <span class="macro">vec!</span>[
+                MathExpressionTree::Cons(
+                    Operator::Multiply,
+                    <span class="macro">vec!</span>[
+                        MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"zeta"</span>.to_string()))),
+                        MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"I"</span>.to_string()))),
+                    ],
+                ),
+                MathExpressionTree::Cons(
+                    Operator::Multiply,
+                    <span class="macro">vec!</span>[
+                        MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"A"</span>.to_string()))),
+                        MathExpressionTree::Cons(
+                            Operator::Add,
+                            <span class="macro">vec!</span>[
+                                MathExpressionTree::Cons(
+                                    Operator::Add,
+                                    <span class="macro">vec!</span>[
+                                        MathExpressionTree::Atom(MathExpression::Mi(Mi(
+                                            <span class="string">"theta"</span>.to_string()
+                                        ))),
+                                        MathExpressionTree::Atom(MathExpression::Mi(Mi(
+                                            <span class="string">"mu"</span>.to_string()
+                                        ))),
+                                    ],
+                                ),
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(
+                                    <span class="string">"kappa"</span>.to_string()
+                                ))),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ),
+        MathExpressionTree::Cons(
+            Operator::Subtract,
+            <span class="macro">vec!</span>[
+                MathExpressionTree::Cons(
+                    Operator::Add,
+                    <span class="macro">vec!</span>[
+                        MathExpressionTree::Cons(
+                            Operator::Multiply,
+                            <span class="macro">vec!</span>[
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"eta"</span>.to_string()))),
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"D"</span>.to_string()))),
+                            ],
+                        ),
+                        MathExpressionTree::Cons(
+                            Operator::Multiply,
+                            <span class="macro">vec!</span>[
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(
+                                    <span class="string">"theta"</span>.to_string()
+                                ))),
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"A"</span>.to_string()))),
+                            ],
+                        ),
+                    ],
+                ),
+                MathExpressionTree::Cons(
+                    Operator::Multiply,
+                    <span class="macro">vec!</span>[
+                        MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"R"</span>.to_string()))),
+                        MathExpressionTree::Cons(
+                            Operator::Add,
+                            <span class="macro">vec!</span>[
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"nu"</span>.to_string()))),
+                                MathExpressionTree::Atom(MathExpression::Mi(Mi(<span class="string">"xi"</span>.to_string()))),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    ];
+
+    <span class="comment">// Call the function to generate the JSON representation of DOT graphs
+    </span><span class="kw">let </span>json_result = get_code_exp_graphs(expressions);
+
+    <span class="comment">// Parse the JSON string into serde_json::Value
+    </span><span class="kw">let </span>parsed_json: serde_json::Value = serde_json::from_str(<span class="kw-2">&amp;</span>json_result).unwrap();
+
+    <span class="comment">// Iterate over each key-value pair in the JSON
+    </span><span class="kw">for </span>(index_str, value) <span class="kw">in </span>parsed_json.as_object().unwrap().iter() {
+        <span class="comment">// Convert the index string to usize
+        </span><span class="kw">let </span>index = index_str.parse::&lt;usize&gt;().unwrap();
+
+        <span class="comment">// Retrieve the DOT graph string for the current index
+        </span><span class="kw">let </span>dot_graph_string = value.as_str().unwrap();
+        <span class="macro">println!</span>(<span class="string">"{}"</span>, dot_graph_string);
+        <span class="comment">// Add assertions or validations based on your specific needs
+        </span><span class="kw">match </span>index {
+            <span class="number">1 </span>=&gt; {
+                <span class="comment">// Test assertions for index 1
+                </span><span class="macro">assert!</span>(dot_graph_string.contains(<span class="string">"I*epsilon/3-eta*D"</span>));
+            }
+            <span class="number">2 </span>=&gt; {
+                <span class="comment">// Test assertions for index 2
+                </span><span class="macro">assert!</span>(dot_graph_string.contains(<span class="string">"zeta*I-A*(theta+mu+kappa)"</span>));
+            }
+            <span class="number">3 </span>=&gt; {
+                <span class="comment">// Test assertions for index 3
+                </span><span class="macro">assert!</span>(dot_graph_string.contains(<span class="string">"eta*D+theta*A-R*(nu+xi)"</span>));
+            }
+            <span class="comment">// Add more cases as needed for other indices
+            </span><span class="kw">_ </span>=&gt; {
+                <span class="comment">// Unexpected index, fail the test
+                </span><span class="macro">panic!</span>(<span class="string">"Unexpected index: {}"</span>, index);
+            }
+        }
+    }
 }
 </code></pre></div></section></main></body></html>

@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chrono-0.4.32/src/naive/datetime/serde.rs`."><title>serde.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="chrono" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/chrono-0.4.35/src/naive/datetime/serde.rs`."><title>serde.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../../" data-static-root-path="../../../../static.files/" data-current-crate="chrono" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../../src-files.js"></script><script defer src="../../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1175,14 +1176,10 @@
 <a href="#1175" id="1175">1175</a>
 <a href="#1176" id="1176">1176</a>
 <a href="#1177" id="1177">1177</a>
-<a href="#1178" id="1178">1178</a>
-<a href="#1179" id="1179">1179</a>
-<a href="#1180" id="1180">1180</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>core::fmt;
 <span class="kw">use </span>serde::{de, ser};
 
 <span class="kw">use </span><span class="kw">super</span>::NaiveDateTime;
-<span class="kw">use </span><span class="kw">crate</span>::offset::LocalResult;
 
 <span class="doccomment">/// Serialize a `NaiveDateTime` as an RFC 3339 string
 ///
@@ -1193,11 +1190,11 @@
     <span class="kw">where
         </span>S: ser::Serializer,
     {
-        <span class="kw">struct </span>FormatWrapped&lt;<span class="lifetime">&#39;a</span>, D: <span class="lifetime">&#39;a</span>&gt; {
-            inner: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>D,
+        <span class="kw">struct </span>FormatWrapped&lt;<span class="lifetime">'a</span>, D: <span class="lifetime">'a</span>&gt; {
+            inner: <span class="kw-2">&amp;</span><span class="lifetime">'a </span>D,
         }
 
-        <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>, D: fmt::Debug&gt; fmt::Display <span class="kw">for </span>FormatWrapped&lt;<span class="lifetime">&#39;a</span>, D&gt; {
+        <span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, D: fmt::Debug&gt; fmt::Display <span class="kw">for </span>FormatWrapped&lt;<span class="lifetime">'a</span>, D&gt; {
             <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
                 <span class="self">self</span>.inner.fmt(f)
             }
@@ -1209,11 +1206,11 @@
 
 <span class="kw">struct </span>NaiveDateTimeVisitor;
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>NaiveDateTimeVisitor {
+<span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>NaiveDateTimeVisitor {
     <span class="kw">type </span>Value = NaiveDateTime;
 
     <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        formatter.write_str(<span class="string">&quot;a formatted date and time string&quot;</span>)
+        formatter.write_str(<span class="string">"a formatted date and time string"</span>)
     }
 
     <span class="kw">fn </span>visit_str&lt;E&gt;(<span class="self">self</span>, value: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
@@ -1224,10 +1221,10 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Deserialize&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>NaiveDateTime {
+<span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Deserialize&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>NaiveDateTime {
     <span class="kw">fn </span>deserialize&lt;D&gt;(deserializer: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         deserializer.deserialize_str(NaiveDateTimeVisitor)
     }
@@ -1243,17 +1240,18 @@
 /// use chrono::naive::serde::ts_nanoseconds;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_nanoseconds&quot;)]
-///     time: NaiveDateTime
+///     #[serde(with = "ts_nanoseconds")]
+///     time: NaiveDateTime,
 /// }
 ///
-/// let time = NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_nano_opt(02, 04, 59, 918355733).unwrap();
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let time = NaiveDate::from_ymd_opt(2018, 5, 17)
+///     .unwrap()
+///     .and_hms_nano_opt(02, 04, 59, 918355733)
+///     .unwrap();
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355733}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1526522699918355733}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -1262,8 +1260,8 @@
     <span class="kw">use </span>core::fmt;
     <span class="kw">use </span>serde::{de, ser};
 
-    <span class="kw">use </span><span class="kw">super</span>::ne_timestamp;
-    <span class="kw">use </span><span class="kw">crate</span>::NaiveDateTime;
+    <span class="kw">use </span><span class="kw">crate</span>::serde::invalid_ts;
+    <span class="kw">use crate</span>::{DateTime, NaiveDateTime};
 
     <span class="doccomment">/// Serialize a datetime into an integer number of nanoseconds since the epoch
     ///
@@ -1285,23 +1283,26 @@
     /// use chrono::naive::serde::ts_nanoseconds::serialize as to_nano_ts;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_nano_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(serialize_with = "to_nano_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
     /// let my_s = S {
-    ///     time: NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_nano_opt(02, 04, 59, 918355733).unwrap(),
+    ///     time: NaiveDate::from_ymd_opt(2018, 5, 17)
+    ///         .unwrap()
+    ///         .and_hms_nano_opt(02, 04, 59, 918355733)
+    ///         .unwrap(),
     /// };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355733}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1526522699918355733}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(dt: <span class="kw-2">&amp;</span>NaiveDateTime, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
     <span class="kw">where
         </span>S: ser::Serializer,
     {
-        serializer.serialize_i64(dt.timestamp_nanos_opt().ok_or(ser::Error::custom(
-            <span class="string">&quot;value out of range for a timestamp with nanosecond precision&quot;</span>,
+        serializer.serialize_i64(dt.and_utc().timestamp_nanos_opt().ok_or(ser::Error::custom(
+            <span class="string">"value out of range for a timestamp with nanosecond precision"</span>,
         ))<span class="question-mark">?</span>)
     }
 
@@ -1312,65 +1313,66 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_nanoseconds::deserialize as from_nano_ts;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_nano_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(deserialize_with = "from_nano_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1526522699918355733 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1526522699, 918355733).unwrap() });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1526522699918355733 }"#)?;
+    /// let expected = DateTime::from_timestamp(1526522699, 918355733).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: expected });
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: -1 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(-1, 999_999_999).unwrap() });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": -1 }"#)?;
+    /// let expected = DateTime::from_timestamp(-1, 999_999_999).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: expected });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_i64(NanoSecondsTimestampVisitor)
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>NanoSecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>NanoSecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>NanoSecondsTimestampVisitor {
         <span class="kw">type </span>Value = NaiveDateTime;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp"</span>)
         }
 
         <span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, value: i64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_opt(
+            DateTime::from_timestamp(
                 value.div_euclid(<span class="number">1_000_000_000</span>),
                 (value.rem_euclid(<span class="number">1_000_000_000</span>)) <span class="kw">as </span>u32,
             )
-            .ok_or_else(|| E::custom(ne_timestamp(value)))
+            .map(|dt| dt.naive_utc())
+            .ok_or_else(|| invalid_ts(value))
         }
 
         <span class="kw">fn </span>visit_u64&lt;E&gt;(<span class="self">self</span>, value: u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_opt(
-                (value / <span class="number">1_000_000_000</span>) <span class="kw">as </span>i64,
-                (value % <span class="number">1_000_000_000</span>) <span class="kw">as </span>u32,
-            )
-            .ok_or_else(|| E::custom(ne_timestamp(value)))
+            DateTime::from_timestamp((value / <span class="number">1_000_000_000</span>) <span class="kw">as </span>i64, (value % <span class="number">1_000_000_000</span>) <span class="kw">as </span>u32)
+                .map(|dt| dt.naive_utc())
+                .ok_or_else(|| invalid_ts(value))
         }
     }
 }
 
 <span class="doccomment">/// Ser/de to/from optional timestamps in nanoseconds
 ///
-/// Intended for use with `serde`&#39;s `with` attribute.
+/// Intended for use with `serde`'s `with` attribute.
 ///
 /// # Example:
 ///
@@ -1380,17 +1382,20 @@
 /// use chrono::naive::serde::ts_nanoseconds_option;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_nanoseconds_option&quot;)]
-///     time: Option&lt;NaiveDateTime&gt;
+///     #[serde(with = "ts_nanoseconds_option")]
+///     time: Option&lt;NaiveDateTime&gt;,
 /// }
 ///
-/// let time = Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_nano_opt(02, 04, 59, 918355733).unwrap());
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let time = Some(
+///     NaiveDate::from_ymd_opt(2018, 5, 17)
+///         .unwrap()
+///         .and_hms_nano_opt(02, 04, 59, 918355733)
+///         .unwrap(),
+/// );
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355733}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1526522699918355733}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -1422,15 +1427,20 @@
     /// use chrono::naive::serde::ts_nanoseconds_option::serialize as to_nano_tsopt;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_nano_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(serialize_with = "to_nano_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
     /// let my_s = S {
-    ///     time: Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_nano_opt(02, 04, 59, 918355733).unwrap()),
+    ///     time: Some(
+    ///         NaiveDate::from_ymd_opt(2018, 5, 17)
+    ///             .unwrap()
+    ///             .and_hms_nano_opt(02, 04, 59, 918355733)
+    ///             .unwrap(),
+    ///     ),
     /// };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355733}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1526522699918355733}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(opt: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
@@ -1438,8 +1448,8 @@
         </span>S: ser::Serializer,
     {
         <span class="kw">match </span><span class="kw-2">*</span>opt {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.timestamp_nanos_opt().ok_or(
-                ser::Error::custom(<span class="string">&quot;value out of range for a timestamp with nanosecond precision&quot;</span>),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.and_utc().timestamp_nanos_opt().ok_or(
+                ser::Error::custom(<span class="string">"value out of range for a timestamp with nanosecond precision"</span>),
             )<span class="question-mark">?</span>),
             <span class="prelude-val">None </span>=&gt; serializer.serialize_none(),
         }
@@ -1452,42 +1462,44 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::naive::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_nanoseconds_option::deserialize as from_nano_tsopt;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_nano_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(deserialize_with = "from_nano_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1526522699918355733 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1526522699, 918355733) });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1526522699918355733 }"#)?;
+    /// let expected = DateTime::from_timestamp(1526522699, 918355733).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: Some(expected) });
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: -1 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(-1, 999_999_999) });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": -1 }"#)?;
+    /// let expected = DateTime::from_timestamp(-1, 999_999_999).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: Some(expected) });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_option(OptionNanoSecondsTimestampVisitor)
     }
 
     <span class="kw">struct </span>OptionNanoSecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>OptionNanoSecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>OptionNanoSecondsTimestampVisitor {
         <span class="kw">type </span>Value = <span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp in nanoseconds or none&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp in nanoseconds or none"</span>)
         }
 
         <span class="doccomment">/// Deserialize a timestamp in nanoseconds since the epoch
         </span><span class="kw">fn </span>visit_some&lt;D&gt;(<span class="self">self</span>, d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, D::Error&gt;
         <span class="kw">where
-            </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+            </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
         {
             d.deserialize_i64(NanoSecondsTimestampVisitor).map(<span class="prelude-val">Some</span>)
         }
@@ -1520,17 +1532,18 @@
 /// use chrono::naive::serde::ts_microseconds;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_microseconds&quot;)]
-///     time: NaiveDateTime
+///     #[serde(with = "ts_microseconds")]
+///     time: NaiveDateTime,
 /// }
 ///
-/// let time = NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_micro_opt(02, 04, 59, 918355).unwrap();
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let time = NaiveDate::from_ymd_opt(2018, 5, 17)
+///     .unwrap()
+///     .and_hms_micro_opt(02, 04, 59, 918355)
+///     .unwrap();
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1526522699918355}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -1539,8 +1552,8 @@
     <span class="kw">use </span>core::fmt;
     <span class="kw">use </span>serde::{de, ser};
 
-    <span class="kw">use </span><span class="kw">super</span>::ne_timestamp;
-    <span class="kw">use </span><span class="kw">crate</span>::NaiveDateTime;
+    <span class="kw">use </span><span class="kw">crate</span>::serde::invalid_ts;
+    <span class="kw">use crate</span>::{DateTime, NaiveDateTime};
 
     <span class="doccomment">/// Serialize a datetime into an integer number of microseconds since the epoch
     ///
@@ -1554,22 +1567,25 @@
     /// use chrono::naive::serde::ts_microseconds::serialize as to_micro_ts;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_micro_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(serialize_with = "to_micro_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
     /// let my_s = S {
-    ///     time: NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_micro_opt(02, 04, 59, 918355).unwrap(),
+    ///     time: NaiveDate::from_ymd_opt(2018, 5, 17)
+    ///         .unwrap()
+    ///         .and_hms_micro_opt(02, 04, 59, 918355)
+    ///         .unwrap(),
     /// };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1526522699918355}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(dt: <span class="kw-2">&amp;</span>NaiveDateTime, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
     <span class="kw">where
         </span>S: ser::Serializer,
     {
-        serializer.serialize_i64(dt.timestamp_micros())
+        serializer.serialize_i64(dt.and_utc().timestamp_micros())
     }
 
     <span class="doccomment">/// Deserialize a `NaiveDateTime` from a microseconds timestamp
@@ -1579,62 +1595,66 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_microseconds::deserialize as from_micro_ts;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_micro_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(deserialize_with = "from_micro_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1526522699918355 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1526522699, 918355000).unwrap() });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1526522699918355 }"#)?;
+    /// let expected = DateTime::from_timestamp(1526522699, 918355000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: expected });
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: -1 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(-1, 999_999_000).unwrap() });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": -1 }"#)?;
+    /// let expected = DateTime::from_timestamp(-1, 999_999_000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: expected });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_i64(MicroSecondsTimestampVisitor)
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>MicroSecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>MicroSecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>MicroSecondsTimestampVisitor {
         <span class="kw">type </span>Value = NaiveDateTime;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp"</span>)
         }
 
         <span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, value: i64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_micros(value)
-                .ok_or_else(|| E::custom(ne_timestamp(value)))
+            DateTime::from_timestamp_micros(value)
+                .map(|dt| dt.naive_utc())
+                .ok_or_else(|| invalid_ts(value))
         }
 
         <span class="kw">fn </span>visit_u64&lt;E&gt;(<span class="self">self</span>, value: u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_opt(
+            DateTime::from_timestamp(
                 (value / <span class="number">1_000_000</span>) <span class="kw">as </span>i64,
                 ((value % <span class="number">1_000_000</span>) * <span class="number">1_000</span>) <span class="kw">as </span>u32,
             )
-            .ok_or_else(|| E::custom(ne_timestamp(value)))
+            .map(|dt| dt.naive_utc())
+            .ok_or_else(|| invalid_ts(value))
         }
     }
 }
 
 <span class="doccomment">/// Ser/de to/from optional timestamps in microseconds
 ///
-/// Intended for use with `serde`&#39;s `with` attribute.
+/// Intended for use with `serde`'s `with` attribute.
 ///
 /// # Example:
 ///
@@ -1644,17 +1664,20 @@
 /// use chrono::naive::serde::ts_microseconds_option;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_microseconds_option&quot;)]
-///     time: Option&lt;NaiveDateTime&gt;
+///     #[serde(with = "ts_microseconds_option")]
+///     time: Option&lt;NaiveDateTime&gt;,
 /// }
 ///
-/// let time = Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_micro_opt(02, 04, 59, 918355).unwrap());
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let time = Some(
+///     NaiveDate::from_ymd_opt(2018, 5, 17)
+///         .unwrap()
+///         .and_hms_micro_opt(02, 04, 59, 918355)
+///         .unwrap(),
+/// );
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1526522699918355}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -1678,15 +1701,20 @@
     /// use chrono::naive::serde::ts_microseconds_option::serialize as to_micro_tsopt;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_micro_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(serialize_with = "to_micro_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
     /// let my_s = S {
-    ///     time: Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_micro_opt(02, 04, 59, 918355).unwrap()),
+    ///     time: Some(
+    ///         NaiveDate::from_ymd_opt(2018, 5, 17)
+    ///             .unwrap()
+    ///             .and_hms_micro_opt(02, 04, 59, 918355)
+    ///             .unwrap(),
+    ///     ),
     /// };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918355}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1526522699918355}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(opt: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
@@ -1694,7 +1722,7 @@
         </span>S: ser::Serializer,
     {
         <span class="kw">match </span><span class="kw-2">*</span>opt {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.timestamp_micros()),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.and_utc().timestamp_micros()),
             <span class="prelude-val">None </span>=&gt; serializer.serialize_none(),
         }
     }
@@ -1706,42 +1734,44 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::naive::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_microseconds_option::deserialize as from_micro_tsopt;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_micro_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(deserialize_with = "from_micro_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1526522699918355 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1526522699, 918355000) });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1526522699918355 }"#)?;
+    /// let expected = DateTime::from_timestamp(1526522699, 918355000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: Some(expected) });
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: -1 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(-1, 999_999_000) });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": -1 }"#)?;
+    /// let expected = DateTime::from_timestamp(-1, 999_999_000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: Some(expected) });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_option(OptionMicroSecondsTimestampVisitor)
     }
 
     <span class="kw">struct </span>OptionMicroSecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>OptionMicroSecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>OptionMicroSecondsTimestampVisitor {
         <span class="kw">type </span>Value = <span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp in microseconds or none&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp in microseconds or none"</span>)
         }
 
         <span class="doccomment">/// Deserialize a timestamp in microseconds since the epoch
         </span><span class="kw">fn </span>visit_some&lt;D&gt;(<span class="self">self</span>, d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, D::Error&gt;
         <span class="kw">where
-            </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+            </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
         {
             d.deserialize_i64(MicroSecondsTimestampVisitor).map(<span class="prelude-val">Some</span>)
         }
@@ -1774,17 +1804,16 @@
 /// use chrono::naive::serde::ts_milliseconds;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_milliseconds&quot;)]
-///     time: NaiveDateTime
+///     #[serde(with = "ts_milliseconds")]
+///     time: NaiveDateTime,
 /// }
 ///
-/// let time = NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_milli_opt(02, 04, 59, 918).unwrap();
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let time =
+///     NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_milli_opt(02, 04, 59, 918).unwrap();
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1526522699918}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -1793,8 +1822,8 @@
     <span class="kw">use </span>core::fmt;
     <span class="kw">use </span>serde::{de, ser};
 
-    <span class="kw">use </span><span class="kw">super</span>::ne_timestamp;
-    <span class="kw">use </span><span class="kw">crate</span>::NaiveDateTime;
+    <span class="kw">use </span><span class="kw">crate</span>::serde::invalid_ts;
+    <span class="kw">use crate</span>::{DateTime, NaiveDateTime};
 
     <span class="doccomment">/// Serialize a datetime into an integer number of milliseconds since the epoch
     ///
@@ -1808,22 +1837,25 @@
     /// use chrono::naive::serde::ts_milliseconds::serialize as to_milli_ts;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_milli_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(serialize_with = "to_milli_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
     /// let my_s = S {
-    ///     time: NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_milli_opt(02, 04, 59, 918).unwrap(),
+    ///     time: NaiveDate::from_ymd_opt(2018, 5, 17)
+    ///         .unwrap()
+    ///         .and_hms_milli_opt(02, 04, 59, 918)
+    ///         .unwrap(),
     /// };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1526522699918}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(dt: <span class="kw-2">&amp;</span>NaiveDateTime, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
     <span class="kw">where
         </span>S: ser::Serializer,
     {
-        serializer.serialize_i64(dt.timestamp_millis())
+        serializer.serialize_i64(dt.and_utc().timestamp_millis())
     }
 
     <span class="doccomment">/// Deserialize a `NaiveDateTime` from a milliseconds timestamp
@@ -1833,62 +1865,63 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_milliseconds::deserialize as from_milli_ts;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_milli_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(deserialize_with = "from_milli_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1526522699918 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1526522699, 918000000).unwrap() });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1526522699918 }"#)?;
+    /// let expected = DateTime::from_timestamp(1526522699, 918000000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: expected });
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: -1 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(-1, 999_000_000).unwrap() });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": -1 }"#)?;
+    /// let expected = DateTime::from_timestamp(-1, 999_000_000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: expected });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_i64(MilliSecondsTimestampVisitor)
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>MilliSecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>MilliSecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>MilliSecondsTimestampVisitor {
         <span class="kw">type </span>Value = NaiveDateTime;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp"</span>)
         }
 
         <span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, value: i64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_millis(value)
-                .ok_or_else(|| E::custom(ne_timestamp(value)))
+            DateTime::from_timestamp_millis(value)
+                .map(|dt| dt.naive_utc())
+                .ok_or_else(|| invalid_ts(value))
         }
 
         <span class="kw">fn </span>visit_u64&lt;E&gt;(<span class="self">self</span>, value: u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_opt(
-                (value / <span class="number">1000</span>) <span class="kw">as </span>i64,
-                ((value % <span class="number">1000</span>) * <span class="number">1_000_000</span>) <span class="kw">as </span>u32,
-            )
-            .ok_or_else(|| E::custom(ne_timestamp(value)))
+            DateTime::from_timestamp((value / <span class="number">1000</span>) <span class="kw">as </span>i64, ((value % <span class="number">1000</span>) * <span class="number">1_000_000</span>) <span class="kw">as </span>u32)
+                .map(|dt| dt.naive_utc())
+                .ok_or_else(|| invalid_ts(value))
         }
     }
 }
 
 <span class="doccomment">/// Ser/de to/from optional timestamps in milliseconds
 ///
-/// Intended for use with `serde`&#39;s `with` attribute.
+/// Intended for use with `serde`'s `with` attribute.
 ///
 /// # Example:
 ///
@@ -1898,17 +1931,17 @@
 /// use chrono::naive::serde::ts_milliseconds_option;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_milliseconds_option&quot;)]
-///     time: Option&lt;NaiveDateTime&gt;
+///     #[serde(with = "ts_milliseconds_option")]
+///     time: Option&lt;NaiveDateTime&gt;,
 /// }
 ///
-/// let time = Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_milli_opt(02, 04, 59, 918).unwrap());
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let time = Some(
+///     NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_milli_opt(02, 04, 59, 918).unwrap(),
+/// );
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1526522699918}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -1932,15 +1965,20 @@
     /// use chrono::naive::serde::ts_milliseconds_option::serialize as to_milli_tsopt;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_milli_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(serialize_with = "to_milli_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
     /// let my_s = S {
-    ///     time: Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_milli_opt(02, 04, 59, 918).unwrap()),
+    ///     time: Some(
+    ///         NaiveDate::from_ymd_opt(2018, 5, 17)
+    ///             .unwrap()
+    ///             .and_hms_milli_opt(02, 04, 59, 918)
+    ///             .unwrap(),
+    ///     ),
     /// };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699918}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1526522699918}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(opt: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
@@ -1948,7 +1986,7 @@
         </span>S: ser::Serializer,
     {
         <span class="kw">match </span><span class="kw-2">*</span>opt {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.timestamp_millis()),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.and_utc().timestamp_millis()),
             <span class="prelude-val">None </span>=&gt; serializer.serialize_none(),
         }
     }
@@ -1960,42 +1998,44 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::naive::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_milliseconds_option::deserialize as from_milli_tsopt;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_milli_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(deserialize_with = "from_milli_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1526522699918 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1526522699, 918000000) });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1526522699918 }"#)?;
+    /// let expected = DateTime::from_timestamp(1526522699, 918000000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: Some(expected) });
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: -1 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(-1, 999_000_000) });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": -1 }"#)?;
+    /// let expected = DateTime::from_timestamp(-1, 999_000_000).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: Some(expected) });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_option(OptionMilliSecondsTimestampVisitor)
     }
 
     <span class="kw">struct </span>OptionMilliSecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>OptionMilliSecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>OptionMilliSecondsTimestampVisitor {
         <span class="kw">type </span>Value = <span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp in milliseconds or none&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp in milliseconds or none"</span>)
         }
 
         <span class="doccomment">/// Deserialize a timestamp in milliseconds since the epoch
         </span><span class="kw">fn </span>visit_some&lt;D&gt;(<span class="self">self</span>, d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, D::Error&gt;
         <span class="kw">where
-            </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+            </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
         {
             d.deserialize_i64(MilliSecondsTimestampVisitor).map(<span class="prelude-val">Some</span>)
         }
@@ -2028,17 +2068,15 @@
 /// use chrono::naive::serde::ts_seconds;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_seconds&quot;)]
-///     time: NaiveDateTime
+///     #[serde(with = "ts_seconds")]
+///     time: NaiveDateTime,
 /// }
 ///
 /// let time = NaiveDate::from_ymd_opt(2015, 5, 15).unwrap().and_hms_opt(10, 0, 0).unwrap();
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1431684000}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1431684000}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -2047,8 +2085,8 @@
     <span class="kw">use </span>core::fmt;
     <span class="kw">use </span>serde::{de, ser};
 
-    <span class="kw">use </span><span class="kw">super</span>::ne_timestamp;
-    <span class="kw">use </span><span class="kw">crate</span>::NaiveDateTime;
+    <span class="kw">use </span><span class="kw">crate</span>::serde::invalid_ts;
+    <span class="kw">use crate</span>::{DateTime, NaiveDateTime};
 
     <span class="doccomment">/// Serialize a datetime into an integer number of seconds since the epoch
     ///
@@ -2062,22 +2100,21 @@
     /// use chrono::naive::serde::ts_seconds::serialize as to_ts;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(serialize_with = "to_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
-    /// let my_s = S {
-    ///     time: NaiveDate::from_ymd_opt(2015, 5, 15).unwrap().and_hms_opt(10, 0, 0).unwrap(),
-    /// };
+    /// let my_s =
+    ///     S { time: NaiveDate::from_ymd_opt(2015, 5, 15).unwrap().and_hms_opt(10, 0, 0).unwrap() };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1431684000}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1431684000}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(dt: <span class="kw-2">&amp;</span>NaiveDateTime, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
     <span class="kw">where
         </span>S: ser::Serializer,
     {
-        serializer.serialize_i64(dt.timestamp())
+        serializer.serialize_i64(dt.and_utc().timestamp())
     }
 
     <span class="doccomment">/// Deserialize a `NaiveDateTime` from a seconds timestamp
@@ -2087,56 +2124,63 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_seconds::deserialize as from_ts;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_ts&quot;)]
-    ///     time: NaiveDateTime
+    ///     #[serde(deserialize_with = "from_ts")]
+    ///     time: NaiveDateTime,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1431684000 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1431684000, 0).unwrap() });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1431684000 }"#)?;
+    /// let expected = DateTime::from_timestamp(1431684000, 0).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: expected });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;NaiveDateTime, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_i64(SecondsTimestampVisitor)
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">struct </span>SecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>SecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>SecondsTimestampVisitor {
         <span class="kw">type </span>Value = NaiveDateTime;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp"</span>)
         }
 
         <span class="kw">fn </span>visit_i64&lt;E&gt;(<span class="self">self</span>, value: i64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_opt(value, <span class="number">0</span>)
-                .ok_or_else(|| E::custom(ne_timestamp(value)))
+            DateTime::from_timestamp(value, <span class="number">0</span>)
+                .map(|dt| dt.naive_utc())
+                .ok_or_else(|| invalid_ts(value))
         }
 
         <span class="kw">fn </span>visit_u64&lt;E&gt;(<span class="self">self</span>, value: u64) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, E&gt;
         <span class="kw">where
             </span>E: de::Error,
         {
-            NaiveDateTime::from_timestamp_opt(value <span class="kw">as </span>i64, <span class="number">0</span>)
-                .ok_or_else(|| E::custom(ne_timestamp(value)))
+            <span class="kw">if </span>value &gt; i64::MAX <span class="kw">as </span>u64 {
+                <span class="prelude-val">Err</span>(invalid_ts(value))
+            } <span class="kw">else </span>{
+                DateTime::from_timestamp(value <span class="kw">as </span>i64, <span class="number">0</span>)
+                    .map(|dt| dt.naive_utc())
+                    .ok_or_else(|| invalid_ts(value))
+            }
         }
     }
 }
 
 <span class="doccomment">/// Ser/de to/from optional timestamps in seconds
 ///
-/// Intended for use with `serde`&#39;s `with` attribute.
+/// Intended for use with `serde`'s `with` attribute.
 ///
 /// # Example:
 ///
@@ -2146,17 +2190,15 @@
 /// use chrono::naive::serde::ts_seconds_option;
 /// #[derive(Deserialize, Serialize)]
 /// struct S {
-///     #[serde(with = &quot;ts_seconds_option&quot;)]
-///     time: Option&lt;NaiveDateTime&gt;
+///     #[serde(with = "ts_seconds_option")]
+///     time: Option&lt;NaiveDateTime&gt;,
 /// }
 ///
 /// let time = Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_opt(02, 04, 59).unwrap());
-/// let my_s = S {
-///     time: time.clone(),
-/// };
+/// let my_s = S { time: time.clone() };
 ///
 /// let as_string = serde_json::to_string(&amp;my_s)?;
-/// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699}&quot;#);
+/// assert_eq!(as_string, r#"{"time":1526522699}"#);
 /// let my_s: S = serde_json::from_str(&amp;as_string)?;
 /// assert_eq!(my_s.time, time);
 /// # Ok::&lt;(), serde_json::Error&gt;(())
@@ -2180,15 +2222,15 @@
     /// use chrono::naive::serde::ts_seconds_option::serialize as to_tsopt;
     /// #[derive(Serialize)]
     /// struct S {
-    ///     #[serde(serialize_with = &quot;to_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(serialize_with = "to_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
-    /// let my_s = S {
-    ///     time: Some(NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_opt(02, 04, 59).unwrap()),
-    /// };
+    /// let expected =
+    ///     NaiveDate::from_ymd_opt(2018, 5, 17).unwrap().and_hms_opt(02, 04, 59).unwrap();
+    /// let my_s = S { time: Some(expected) };
     /// let as_string = serde_json::to_string(&amp;my_s)?;
-    /// assert_eq!(as_string, r#&quot;{&quot;time&quot;:1526522699}&quot;#);
+    /// assert_eq!(as_string, r#"{"time":1526522699}"#);
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
     </span><span class="kw">pub fn </span>serialize&lt;S&gt;(opt: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, serializer: S) -&gt; <span class="prelude-ty">Result</span>&lt;S::Ok, S::Error&gt;
@@ -2196,7 +2238,7 @@
         </span>S: ser::Serializer,
     {
         <span class="kw">match </span><span class="kw-2">*</span>opt {
-            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.timestamp()),
+            <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>dt) =&gt; serializer.serialize_some(<span class="kw-2">&amp;</span>dt.and_utc().timestamp()),
             <span class="prelude-val">None </span>=&gt; serializer.serialize_none(),
         }
     }
@@ -2208,39 +2250,40 @@
     /// # Example:
     ///
     /// ```rust
-    /// # use chrono::naive::NaiveDateTime;
+    /// # use chrono::{DateTime, NaiveDateTime};
     /// # use serde_derive::Deserialize;
     /// use chrono::naive::serde::ts_seconds_option::deserialize as from_tsopt;
     /// #[derive(Debug, PartialEq, Deserialize)]
     /// struct S {
-    ///     #[serde(deserialize_with = &quot;from_tsopt&quot;)]
-    ///     time: Option&lt;NaiveDateTime&gt;
+    ///     #[serde(deserialize_with = "from_tsopt")]
+    ///     time: Option&lt;NaiveDateTime&gt;,
     /// }
     ///
-    /// let my_s: S = serde_json::from_str(r#&quot;{ &quot;time&quot;: 1431684000 }&quot;#)?;
-    /// assert_eq!(my_s, S { time: NaiveDateTime::from_timestamp_opt(1431684000, 0) });
+    /// let my_s: S = serde_json::from_str(r#"{ "time": 1431684000 }"#)?;
+    /// let expected = DateTime::from_timestamp(1431684000, 0).unwrap().naive_utc();
+    /// assert_eq!(my_s, S { time: Some(expected) });
     /// # Ok::&lt;(), serde_json::Error&gt;(())
     /// ```
-    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">&#39;de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
+    </span><span class="kw">pub fn </span>deserialize&lt;<span class="lifetime">'de</span>, D&gt;(d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;, D::Error&gt;
     <span class="kw">where
-        </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+        </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
     {
         d.deserialize_option(OptionSecondsTimestampVisitor)
     }
 
     <span class="kw">struct </span>OptionSecondsTimestampVisitor;
 
-    <span class="kw">impl</span>&lt;<span class="lifetime">&#39;de</span>&gt; de::Visitor&lt;<span class="lifetime">&#39;de</span>&gt; <span class="kw">for </span>OptionSecondsTimestampVisitor {
+    <span class="kw">impl</span>&lt;<span class="lifetime">'de</span>&gt; de::Visitor&lt;<span class="lifetime">'de</span>&gt; <span class="kw">for </span>OptionSecondsTimestampVisitor {
         <span class="kw">type </span>Value = <span class="prelude-ty">Option</span>&lt;NaiveDateTime&gt;;
 
         <span class="kw">fn </span>expecting(<span class="kw-2">&amp;</span><span class="self">self</span>, formatter: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-            formatter.write_str(<span class="string">&quot;a unix timestamp in seconds or none&quot;</span>)
+            formatter.write_str(<span class="string">"a unix timestamp in seconds or none"</span>)
         }
 
         <span class="doccomment">/// Deserialize a timestamp in seconds since the epoch
         </span><span class="kw">fn </span>visit_some&lt;D&gt;(<span class="self">self</span>, d: D) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>::Value, D::Error&gt;
         <span class="kw">where
-            </span>D: de::Deserializer&lt;<span class="lifetime">&#39;de</span>&gt;,
+            </span>D: de::Deserializer&lt;<span class="lifetime">'de</span>&gt;,
         {
             d.deserialize_i64(SecondsTimestampVisitor).map(<span class="prelude-val">Some</span>)
         }
@@ -2259,54 +2302,6 @@
             </span>E: de::Error,
         {
             <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
-        }
-    }
-}
-
-<span class="comment">// lik? function to convert a LocalResult into a serde-ish Result
-</span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>serde_from&lt;T, E, V&gt;(me: LocalResult&lt;T&gt;, ts: <span class="kw-2">&amp;</span>V) -&gt; <span class="prelude-ty">Result</span>&lt;T, E&gt;
-<span class="kw">where
-    </span>E: de::Error,
-    V: fmt::Display,
-    T: fmt::Display,
-{
-    <span class="kw">match </span>me {
-        LocalResult::None =&gt; <span class="prelude-val">Err</span>(E::custom(ne_timestamp(ts))),
-        LocalResult::Ambiguous(min, max) =&gt; {
-            <span class="prelude-val">Err</span>(E::custom(SerdeError::Ambiguous { timestamp: ts, min, max }))
-        }
-        LocalResult::Single(val) =&gt; <span class="prelude-val">Ok</span>(val),
-    }
-}
-
-<span class="kw">enum </span>SerdeError&lt;V: fmt::Display, D: fmt::Display&gt; {
-    NonExistent { timestamp: V },
-    Ambiguous { timestamp: V, min: D, max: D },
-}
-
-<span class="doccomment">/// Construct a [`SerdeError::NonExistent`]
-</span><span class="kw">fn </span>ne_timestamp&lt;T: fmt::Display&gt;(ts: T) -&gt; SerdeError&lt;T, u8&gt; {
-    SerdeError::NonExistent::&lt;T, u8&gt; { timestamp: ts }
-}
-
-<span class="kw">impl</span>&lt;V: fmt::Display, D: fmt::Display&gt; fmt::Debug <span class="kw">for </span>SerdeError&lt;V, D&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        <span class="macro">write!</span>(f, <span class="string">&quot;ChronoSerdeError({})&quot;</span>, <span class="self">self</span>)
-    }
-}
-
-<span class="comment">// impl&lt;V: fmt::Display, D: fmt::Debug&gt; core::error::Error for SerdeError&lt;V, D&gt; {}
-</span><span class="kw">impl</span>&lt;V: fmt::Display, D: fmt::Display&gt; fmt::Display <span class="kw">for </span>SerdeError&lt;V, D&gt; {
-    <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
-        <span class="kw">match </span><span class="self">self </span>{
-            SerdeError::NonExistent { timestamp } =&gt; {
-                <span class="macro">write!</span>(f, <span class="string">&quot;value is not a legal timestamp: {}&quot;</span>, timestamp)
-            }
-            SerdeError::Ambiguous { timestamp, min, max } =&gt; <span class="macro">write!</span>(
-                f,
-                <span class="string">&quot;value is an ambiguous timestamp: {}, could be either of {}, {}&quot;</span>,
-                timestamp, min, max
-            ),
         }
     }
 }
@@ -2346,7 +2341,7 @@
         <span class="attr">#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
         </span><span class="kw">struct </span>Test {
             one: <span class="prelude-ty">Option</span>&lt;i64&gt;,
-            <span class="attr">#[serde(with = <span class="string">&quot;ts_nanoseconds_option&quot;</span>)]
+            <span class="attr">#[serde(with = <span class="string">"ts_nanoseconds_option"</span>)]
             </span>two: <span class="prelude-ty">Option</span>&lt;DateTime&lt;Utc&gt;&gt;,
         }
 

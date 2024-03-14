@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `skema/src/services/mathml.rs`."><title>mathml.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="skema" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `skema/src/services/mathml.rs`."><title>mathml.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="skema" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -231,6 +232,66 @@
 <a href="#231" id="231">231</a>
 <a href="#232" id="232">232</a>
 <a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>actix_web::{post, put, web, HttpResponse};
 <span class="kw">use </span>mathml::parsers::decapodes_serialization::{
     to_wiring_diagram, DecapodesCollection, WiringDiagram,
@@ -241,12 +302,13 @@
 <span class="kw">use </span>mathml::parsers::math_expression_tree::{
     preprocess_mathml_for_to_latex, replace_unicode_with_symbols,
 };
-
 <span class="kw">use </span>mathml::{
-    acset::{AMRmathml, PetriNet, RegNet},
+    acset::{AMRmathml, GeneralizedAMR, PetriNet, RegNet},
+    expression::get_code_exp_graphs,
     parsers::first_order_ode::{first_order_ode, FirstOrderODE},
 };
 <span class="kw">use </span>petgraph::dot::{Config, Dot};
+<span class="kw">use </span>serde_json::from_str;
 <span class="kw">use </span>utoipa;
 
 <span class="doccomment">/// Parse MathML and return a DOT representation of the abstract syntax tree (AST)
@@ -259,7 +321,7 @@
         )
     )
 )]
-#[put(<span class="string">&quot;/mathml/ast-graph&quot;</span>)]
+#[put(<span class="string">"/mathml/ast-graph"</span>)]
 </span><span class="kw">pub async fn </span>get_ast_graph(payload: String) -&gt; String {
     <span class="kw">let </span>contents = <span class="kw-2">&amp;</span>payload;
     <span class="kw">let </span>math_results = math(contents.as_str().into());
@@ -285,13 +347,32 @@
         )
     )
 )]
-#[put(<span class="string">&quot;/mathml/math-exp-graph&quot;</span>)]
+#[put(<span class="string">"/mathml/math-exp-graph"</span>)]
 </span><span class="kw">pub async fn </span>get_math_exp_graph(payload: String) -&gt; String {
-    <span class="kw">let </span><span class="kw-2">mut </span>contents = payload;
+    <span class="kw">let </span>contents = payload;
     <span class="kw">let </span>exp = contents.parse::&lt;MathExpressionTree&gt;().unwrap();
     <span class="kw">let </span>g = exp.to_graph();
     <span class="kw">let </span>dot_representation = Dot::new(<span class="kw-2">&amp;</span>g);
     dot_representation.to_string()
+}
+
+<span class="doccomment">/// Parse a MathML representation of the code implementation and return a DOT representation of the math
+/// expression graph (MEG), which can be used to perform structural alignment with the scientific
+/// model code that corresponds to the equation.
+</span><span class="attr">#[utoipa::path(
+request_body = Vec&lt;MathExpressionTree&gt;,
+responses(
+(
+status = <span class="number">200</span>,
+body = String
+)
+)
+)]
+#[put(<span class="string">"/mathml/code-exp-graphs"</span>)]
+</span><span class="kw">pub async fn </span>get_code_exp_graph_set(payload: web::Json&lt;Vec&lt;MathExpressionTree&gt;&gt;) -&gt; String {
+    <span class="kw">let </span>content = payload.clone();
+
+    get_code_exp_graphs(content)
 }
 
 <span class="doccomment">/// Parse a presentation MathML representation of an equation and
@@ -305,7 +386,7 @@
         )
     )
 )]
-#[post(<span class="string">&quot;/mathml/latex&quot;</span>)]
+#[post(<span class="string">"/mathml/latex"</span>)]
 </span><span class="kw">pub async fn </span>get_latex(payload: String) -&gt; String {
     <span class="kw">let </span>modified_input1 = <span class="kw-2">&amp;</span>replace_unicode_with_symbols(<span class="kw-2">&amp;</span>payload).to_string();
     <span class="kw">let </span>modified_input2 = <span class="kw-2">&amp;</span>preprocess_mathml_for_to_latex(modified_input1).to_string();
@@ -324,7 +405,7 @@
         )
     )
 )]
-#[put(<span class="string">&quot;/mathml/content-mathml&quot;</span>)]
+#[put(<span class="string">"/mathml/content-mathml"</span>)]
 </span><span class="kw">pub async fn </span>get_content_mathml(payload: String) -&gt; String {
     <span class="kw">let </span>ode = payload.parse::&lt;FirstOrderODE&gt;().unwrap();
     ode.to_cmml()
@@ -341,7 +422,7 @@
         )
     )
 )]
-#[put(<span class="string">&quot;/mathml/decapodes&quot;</span>)]
+#[put(<span class="string">"/mathml/decapodes"</span>)]
 </span><span class="kw">pub async fn </span>get_decapodes(payload: web::Json&lt;Vec&lt;String&gt;&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>met_vec: Vec&lt;MathExpressionTree&gt; = payload
         .iter()
@@ -357,6 +438,46 @@
     HttpResponse::Ok().json(web::Json(decapodes_collection))
 }
 
+<span class="doccomment">/// Return a JSON representation of a METCollection from
+/// an array of MathML strings.
+</span><span class="attr">#[utoipa::path(
+request_body = Vec&lt;String&gt;,
+responses(
+(
+status = <span class="number">200</span>,
+body = Vec&lt;String&gt;
+)
+)
+)]
+#[put(<span class="string">"/mathml/met"</span>)]
+</span><span class="kw">pub async fn </span>get_met(payload: web::Json&lt;Vec&lt;String&gt;&gt;) -&gt; HttpResponse {
+    <span class="kw">let </span>met_vec: Vec&lt;MathExpressionTree&gt; = payload
+        .iter()
+        .map(|x| x.parse::&lt;MathExpressionTree&gt;().unwrap())
+        .collect();
+    HttpResponse::Ok().json(web::Json(met_vec))
+}
+
+<span class="doccomment">/// Return a JSON of a Generalized AMR from
+/// an array of MET strings.
+</span><span class="attr">#[utoipa::path(
+    request_body = Vec&lt;String&gt;,
+    responses(
+    (
+    status = <span class="number">200</span>,
+    body = GeneralizedAMR
+    )
+    )
+    )]
+#[put(<span class="string">"/mathml/g-amr"</span>)]
+</span><span class="kw">pub async fn </span>get_gamr(payload: web::Json&lt;Vec&lt;String&gt;&gt;) -&gt; HttpResponse {
+    <span class="kw">let </span>met_vec: Vec&lt;MathExpressionTree&gt; = payload
+        .iter()
+        .map(|x| x.parse::&lt;MathExpressionTree&gt;().unwrap())
+        .collect();
+    HttpResponse::Ok().json(web::Json(GeneralizedAMR::from(met_vec)))
+}
+
 <span class="doccomment">/// Return a JSON representation of a PetriNet ModelRep constructed from an array of MathML strings.
 </span><span class="attr">#[utoipa::path(
     request_body = Vec&lt;String&gt;,
@@ -367,7 +488,7 @@
         )
     )
 )]
-#[put(<span class="string">&quot;/mathml/petrinet&quot;</span>)]
+#[put(<span class="string">"/mathml/petrinet"</span>)]
 </span><span class="kw">pub async fn </span>get_acset(payload: web::Json&lt;Vec&lt;String&gt;&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>asts_result: <span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, <span class="kw">_</span>&gt; = payload
         .iter()
@@ -384,7 +505,7 @@
             HttpResponse::Ok().json(web::Json(PetriNet::from(flattened_asts)))
         }
         <span class="prelude-val">Err</span>(err) =&gt; HttpResponse::BadRequest()
-            .content_type(<span class="string">&quot;text/plain&quot;</span>)
+            .content_type(<span class="string">"text/plain"</span>)
             .body(err.to_string()),
     }
 }
@@ -399,7 +520,7 @@
         )
     )
 )]
-#[put(<span class="string">&quot;/mathml/regnet&quot;</span>)]
+#[put(<span class="string">"/mathml/regnet"</span>)]
 </span><span class="kw">pub async fn </span>get_regnet(payload: web::Json&lt;Vec&lt;String&gt;&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>asts_result: <span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, <span class="kw">_</span>&gt; = payload
         .iter()
@@ -416,7 +537,7 @@
             HttpResponse::Ok().json(web::Json(RegNet::from(flattened_asts)))
         }
         <span class="prelude-val">Err</span>(err) =&gt; HttpResponse::BadRequest()
-            .content_type(<span class="string">&quot;text/plain&quot;</span>)
+            .content_type(<span class="string">"text/plain"</span>)
             .body(err.to_string()),
     }
 }
@@ -432,7 +553,7 @@
         )
     )
 )]
-#[put(<span class="string">&quot;/mathml/amr&quot;</span>)]
+#[put(<span class="string">"/mathml/amr"</span>)]
 </span><span class="kw">pub async fn </span>get_amr(payload: web::Json&lt;AMRmathml&gt;) -&gt; HttpResponse {
     <span class="kw">let </span>mt_asts: <span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, <span class="kw">_</span>&gt; = payload
         .mathml
@@ -449,18 +570,18 @@
                 flattened_asts.push(eq.clone());
             }
             <span class="kw">let </span>model_type = payload.model.clone();
-            <span class="kw">if </span>model_type == <span class="kw-2">*</span><span class="string">&quot;regnet&quot; </span>{
+            <span class="kw">if </span>model_type == <span class="kw-2">*</span><span class="string">"regnet" </span>{
                 HttpResponse::Ok().json(web::Json(RegNet::from(flattened_asts)))
-            } <span class="kw">else if </span>model_type == <span class="kw-2">*</span><span class="string">&quot;petrinet&quot; </span>{
+            } <span class="kw">else if </span>model_type == <span class="kw-2">*</span><span class="string">"petrinet" </span>{
                 HttpResponse::Ok().json(web::Json(PetriNet::from(flattened_asts)))
             } <span class="kw">else </span>{
                 HttpResponse::BadRequest()
-                    .content_type(<span class="string">&quot;text/plain&quot;</span>)
-                    .body(<span class="string">&quot;Please specify a valid model.&quot;</span>)
+                    .content_type(<span class="string">"text/plain"</span>)
+                    .body(<span class="string">"Please specify a valid model."</span>)
             }
         }
         <span class="prelude-val">Err</span>(err) =&gt; HttpResponse::BadRequest()
-            .content_type(<span class="string">&quot;text/plain&quot;</span>)
+            .content_type(<span class="string">"text/plain"</span>)
             .body(err.to_string()),
     }
 }

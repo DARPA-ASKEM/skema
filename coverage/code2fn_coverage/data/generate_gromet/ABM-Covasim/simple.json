@@ -1,11 +1,11 @@
 {
     "schema": "FN",
-    "schema_version": "0.1.8",
+    "schema_version": "0.1.9",
     "name": "simple",
     "modules": [
         {
             "schema": "FN",
-            "schema_version": "0.1.8",
+            "schema_version": "0.1.9",
             "name": "simple",
             "fn": {
                 "b": [{"function_type":"MODULE","gromet_type":"GrometBoxFunction","name":"module","metadata":3}],
@@ -48,20 +48,20 @@
 
                 ],
                 [
-                    {"gromet_type":"SourceCodeCollection","name":"","global_reference_id":"","files":[{"gromet_type":"CodeFileReference","uid":"e54696f3-b569-4180-ed45-efbbf710e230","name":"simple.py","path":""}],"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-01-24 19:56:56.867664"}},
-                    {"gromet_type":"GrometCreation","gromet_version":"0.1.8","is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-01-24 19:56:56.867643"}}
+                    {"gromet_type":"SourceCodeCollection","name":"","global_reference_id":"","files":[{"gromet_type":"CodeFileReference","uid":"e72715ee-1d1c-191d-4882-bb45b6a90d9d","name":"simple.py","path":""}],"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-03-14 17:57:30.982650"}},
+                    {"gromet_type":"GrometCreation","gromet_version":"0.1.9","is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-03-14 17:57:30.982610"}}
                 ],
                 [
-                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e54696f3-b569-4180-ed45-efbbf710e230","line_begin":1,"line_end":8,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-01-24 19:56:56.867682"}}
+                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e72715ee-1d1c-191d-4882-bb45b6a90d9d","line_begin":1,"line_end":8,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-03-14 17:57:30.982682"}}
                 ],
                 [
-                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e54696f3-b569-4180-ed45-efbbf710e230","line_begin":6,"line_end":6,"col_begin":6,"col_end":14,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-01-24 19:56:56.867723"}}
+                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e72715ee-1d1c-191d-4882-bb45b6a90d9d","line_begin":6,"line_end":6,"col_begin":6,"col_end":14,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-03-14 17:57:30.982757"}}
                 ],
                 [
-                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e54696f3-b569-4180-ed45-efbbf710e230","line_begin":7,"line_end":7,"col_begin":0,"col_end":9,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-01-24 19:56:56.867863"}}
+                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e72715ee-1d1c-191d-4882-bb45b6a90d9d","line_begin":7,"line_end":7,"col_begin":0,"col_end":9,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-03-14 17:57:30.982965"}}
                 ],
                 [
-                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e54696f3-b569-4180-ed45-efbbf710e230","line_begin":8,"line_end":8,"col_begin":0,"col_end":10,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-01-24 19:56:56.867952"}}
+                    {"gromet_type":"SourceCodeReference","code_file_reference_uid":"e72715ee-1d1c-191d-4882-bb45b6a90d9d","line_begin":8,"line_end":8,"col_begin":0,"col_end":10,"is_metadatum":true,"provenance":{"gromet_type":"Provenance","method":"skema_code2fn_program_analysis","timestamp":"2024-03-14 17:57:30.983059"}}
                 ]
             ],
             "gromet_type": "GrometFNModule",
@@ -70,6 +70,16 @@
     ],
     "module_index": [
         "examples.simple"
+    ],
+    "module_dependencies": [
+        {
+            "name": "covasim",
+            "source_reference": {
+                "type": "Url",
+                "value": "https://files.pythonhosted.org/packages/2e/70/ab585de682f29695b258e536e723bd56519a64b261dbf4405649ec6b42be/covasim-3.1.6.tar.gz",
+                "gromet_type": "TypedValue"
+            }
+        }
     ],
     "executables": [
 

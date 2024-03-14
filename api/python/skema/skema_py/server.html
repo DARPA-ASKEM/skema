@@ -109,6 +109,11 @@ class System(BaseModel):
             &#34;#Variable declaration\nx=2\n#Function definition\ndef foo(x):\n    &#39;&#39;&#39;Increment the input variable&#39;&#39;&#39;\n    return x+1&#34;,
         ]],
     )
+    model: Optional[str] = Field(
+        default=&#34;petrinet&#34;,
+        description=&#34;A model name for the type of amr to get out&#34;,
+        examples=[&#34;regnet&#34;],
+    )
     system_name: Optional[str] = Field(
         default=None,
         description=&#34;A model name to associate with the provided code&#34;,
@@ -142,7 +147,42 @@ class System(BaseModel):
             }
         }],
     )
+    dependency_depth: Optional[int] = Field(
+        default=0,
+        ge=0,
+        le=1,
+        description=&#34;The depth at which to ingest dependencies into Gromet. i.e. 0=Ingest no dependencies, 1=Ingest system dependencies. Accepted values: [0,1]&#34;,
+        examples = [
+            1
+        ]
+    )
+    
 
+class MML_System(BaseModel):
+    &#34;&#34;&#34;
+        Pydantic BaseModel representing a system with MML (MathML).
+
+        Attributes:
+            mml (str): The MML equation.
+            system (System): An instance of the System class representing system details.
+        &#34;&#34;&#34;
+    mml: str
+    system: System
+
+
+class Equation_Extraction_System(BaseModel):
+    &#34;&#34;&#34;
+    Pydantic BaseModel representing a system with equation extraction.
+
+    Attributes:
+        pdf_local_path (str): the local path to the PDF file
+        save_folder (str): the folder path where images will be saved
+        gpt_key (str): your OpenAI API key
+    &#34;&#34;&#34;
+
+    pdf_local_path: str
+    save_folder: str
+    gpt_key: str
 
 async def system_to_enriched_system(system: System) -&gt; System:
     &#34;&#34;&#34;Takes a System as input and enriches it with comments by running the tree-sitter comment extractor.&#34;&#34;&#34;
@@ -179,18 +219,35 @@ async def system_to_gromet(system: System):
     # We maintain a log of warnings and error to pass back to the user.
     # This allows us to warn the user about unsupported file extensions.
     server_log = []
+    to_remove = []
+    for index, (file, blob) in enumerate(zip(system.files, system.blobs)):
+        valid = True
 
-    # Check for unsupported files before processing. They will be removed and the user will be warned.
-    unsupported_files = [
-        file
-        for file in system.files
-        if Path(file).suffix not in SUPPORTED_FILE_EXTENSIONS
-    ]
-    for file in unsupported_files:
-        unsupported_file_str = f&#34;WARNING: Ingestion of file extension {Path(file).suffix} for file {file} is not supported and will be skipped.&#34;
-        print(unsupported_file_str)
-        system.files.remove(file)
-        server_log.append(unsupported_file_str)
+        # Itterate over parent directories to check for unsupported file paths
+        path_obj = Path(file)
+        for parent in path_obj.parents:
+            if parent.name == &#34;_MACOSX&#34;:
+                unsupported_file_str = f&#34;WARNING: Ingestion of files in _MACOSX directory not supported. File {file} will be skipped. &#34;
+                valid = False
+            elif parent.name.startswith(&#34;.&#34;):
+                unsupported_file_str = f&#34;WARNING: File {file} is in a hidden directory and will be skipped.&#34;
+                valid = False
+
+        # Check file extension is in the list of supported file extensions
+        if Path(file).suffix not in SUPPORTED_FILE_EXTENSIONS:
+            unsupported_file_str = f&#34;WARNING: Ingestion of file extension {Path(file).suffix} for file {file} is not supported and will be skipped.&#34;
+            valid = False
+        
+        if not valid:
+            to_remove.append(index)
+            print(unsupported_file_str)
+            server_log.append(unsupported_file_str)
+
+    # Remove files to prevent ingestion. Removed in reverse sorted order since each removal shifts the indecies.
+    for index in sorted(to_remove, reverse=True):
+        system.files.pop(index)
+        system.blobs.pop(index)
+    
 
     # If there are no supported files, then we will return an empty GrometFNModuleCollection with a top-level Debug metadata
     if len(system.files) == 0:
@@ -227,6 +284,7 @@ async def system_to_gromet(system: System):
             system.system_name or &#34;&#34;,
             str(Path(tmp_path, system.root_name or &#34;&#34;)),
             str(system_filepaths),
+            dependency_depth=system.dependency_depth
         )
 
     # Attempt to enrich the system with comments. May return the same system if Rust isn&#39;t insalled.
@@ -326,7 +384,6 @@ async def fn_given_filepaths(system: System):
     response = requests.post(&#34;http://0.0.0.0:8000/fn-given-filepaths&#34;, json=system)
     gromet_json = response.json()
     &#34;&#34;&#34;
-
     return await system_to_gromet(system)
 
 
@@ -563,7 +620,6 @@ async def fn_given_filepaths(system: System):
     response = requests.post(&#34;http://0.0.0.0:8000/fn-given-filepaths&#34;, json=system)
     gromet_json = response.json()
     &#34;&#34;&#34;
-
     return await system_to_gromet(system)</code></pre>
 </details>
 </dd>
@@ -914,18 +970,35 @@ def healthcheck() -&gt; int:
     # We maintain a log of warnings and error to pass back to the user.
     # This allows us to warn the user about unsupported file extensions.
     server_log = []
+    to_remove = []
+    for index, (file, blob) in enumerate(zip(system.files, system.blobs)):
+        valid = True
 
-    # Check for unsupported files before processing. They will be removed and the user will be warned.
-    unsupported_files = [
-        file
-        for file in system.files
-        if Path(file).suffix not in SUPPORTED_FILE_EXTENSIONS
-    ]
-    for file in unsupported_files:
-        unsupported_file_str = f&#34;WARNING: Ingestion of file extension {Path(file).suffix} for file {file} is not supported and will be skipped.&#34;
-        print(unsupported_file_str)
-        system.files.remove(file)
-        server_log.append(unsupported_file_str)
+        # Itterate over parent directories to check for unsupported file paths
+        path_obj = Path(file)
+        for parent in path_obj.parents:
+            if parent.name == &#34;_MACOSX&#34;:
+                unsupported_file_str = f&#34;WARNING: Ingestion of files in _MACOSX directory not supported. File {file} will be skipped. &#34;
+                valid = False
+            elif parent.name.startswith(&#34;.&#34;):
+                unsupported_file_str = f&#34;WARNING: File {file} is in a hidden directory and will be skipped.&#34;
+                valid = False
+
+        # Check file extension is in the list of supported file extensions
+        if Path(file).suffix not in SUPPORTED_FILE_EXTENSIONS:
+            unsupported_file_str = f&#34;WARNING: Ingestion of file extension {Path(file).suffix} for file {file} is not supported and will be skipped.&#34;
+            valid = False
+        
+        if not valid:
+            to_remove.append(index)
+            print(unsupported_file_str)
+            server_log.append(unsupported_file_str)
+
+    # Remove files to prevent ingestion. Removed in reverse sorted order since each removal shifts the indecies.
+    for index in sorted(to_remove, reverse=True):
+        system.files.pop(index)
+        system.blobs.pop(index)
+    
 
     # If there are no supported files, then we will return an empty GrometFNModuleCollection with a top-level Debug metadata
     if len(system.files) == 0:
@@ -962,6 +1035,7 @@ def healthcheck() -&gt; int:
             system.system_name or &#34;&#34;,
             str(Path(tmp_path, system.root_name or &#34;&#34;)),
             str(system_filepaths),
+            dependency_depth=system.dependency_depth
         )
 
     # Attempt to enrich the system with comments. May return the same system if Rust isn&#39;t insalled.
@@ -1047,12 +1121,141 @@ If deemed appropriate, the record may be modified in-place.</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="skema.skema_py.server.Equation_Extraction_System"><code class="flex name class">
+<span>class <span class="ident">Equation_Extraction_System</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pydantic BaseModel representing a system with equation extraction.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>pdf_local_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>the local path to the PDF file</dd>
+<dt><strong><code>save_folder</code></strong> :&ensp;<code>str</code></dt>
+<dd>the folder path where images will be saved</dd>
+<dt><strong><code>gpt_key</code></strong> :&ensp;<code>str</code></dt>
+<dd>your OpenAI API key</dd>
+</dl>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<code>ValidationError</code>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><code>self</code> is explicitly positional-only to allow <code>self</code> as a field name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Equation_Extraction_System(BaseModel):
+    &#34;&#34;&#34;
+    Pydantic BaseModel representing a system with equation extraction.
+
+    Attributes:
+        pdf_local_path (str): the local path to the PDF file
+        save_folder (str): the folder path where images will be saved
+        gpt_key (str): your OpenAI API key
+    &#34;&#34;&#34;
+
+    pdf_local_path: str
+    save_folder: str
+    gpt_key: str</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="skema.skema_py.server.Equation_Extraction_System.gpt_key"><code class="name">var <span class="ident">gpt_key</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.Equation_Extraction_System.model_computed_fields"><code class="name">var <span class="ident">model_computed_fields</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.Equation_Extraction_System.model_config"><code class="name">var <span class="ident">model_config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.Equation_Extraction_System.model_fields"><code class="name">var <span class="ident">model_fields</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.Equation_Extraction_System.pdf_local_path"><code class="name">var <span class="ident">pdf_local_path</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.Equation_Extraction_System.save_folder"><code class="name">var <span class="ident">save_folder</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="skema.skema_py.server.MML_System"><code class="flex name class">
+<span>class <span class="ident">MML_System</span></span>
+<span>(</span><span>**data: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pydantic BaseModel representing a system with MML (MathML).</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>mml</code></strong> :&ensp;<code>str</code></dt>
+<dd>The MML equation.</dd>
+<dt><strong><code>system</code></strong> :&ensp;<code><a title="skema.skema_py.server.System" href="#skema.skema_py.server.System">System</a></code></dt>
+<dd>An instance of the System class representing system details.</dd>
+</dl>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<code>ValidationError</code>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><code>self</code> is explicitly positional-only to allow <code>self</code> as a field name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MML_System(BaseModel):
+    &#34;&#34;&#34;
+        Pydantic BaseModel representing a system with MML (MathML).
+
+        Attributes:
+            mml (str): The MML equation.
+            system (System): An instance of the System class representing system details.
+        &#34;&#34;&#34;
+    mml: str
+    system: System</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>pydantic.main.BaseModel</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="skema.skema_py.server.MML_System.mml"><code class="name">var <span class="ident">mml</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.MML_System.model_computed_fields"><code class="name">var <span class="ident">model_computed_fields</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.MML_System.model_config"><code class="name">var <span class="ident">model_config</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.MML_System.model_fields"><code class="name">var <span class="ident">model_fields</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.MML_System.system"><code class="name">var <span class="ident">system</span> : <a title="skema.skema_py.server.System" href="#skema.skema_py.server.System">System</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="skema.skema_py.server.Ports"><code class="flex name class">
 <span>class <span class="ident">Ports</span></span>
 <span>(</span><span>**data: Any)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Usage docs: <a href="https://docs.pydantic.dev/2.5/concepts/models/">https://docs.pydantic.dev/2.5/concepts/models/</a></p>
+<div class="desc"><p>Usage docs: <a href="https://docs.pydantic.dev/2.6/concepts/models/">https://docs.pydantic.dev/2.6/concepts/models/</a></p>
 <p>A base class for creating Pydantic models.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
@@ -1095,8 +1298,7 @@ This replaces <code>Model.__validators__</code> and <code>Model.__root_validator
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<code>ValidationError</code>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><code>__init__</code> uses <code>__pydantic_self__</code> instead of the more common <code>self</code> for the first arg to
-allow <code>self</code> as a field name.</p></div>
+<p><code>self</code> is explicitly positional-only to allow <code>self</code> as a field name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1111,6 +1313,10 @@ allow <code>self</code> as a field name.</p></div>
 </ul>
 <h3>Class variables</h3>
 <dl>
+<dt id="skema.skema_py.server.Ports.model_computed_fields"><code class="name">var <span class="ident">model_computed_fields</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="skema.skema_py.server.Ports.model_config"><code class="name">var <span class="ident">model_config</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -1134,7 +1340,7 @@ allow <code>self</code> as a field name.</p></div>
 <span>(</span><span>**data: Any)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Usage docs: <a href="https://docs.pydantic.dev/2.5/concepts/models/">https://docs.pydantic.dev/2.5/concepts/models/</a></p>
+<div class="desc"><p>Usage docs: <a href="https://docs.pydantic.dev/2.6/concepts/models/">https://docs.pydantic.dev/2.6/concepts/models/</a></p>
 <p>A base class for creating Pydantic models.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
@@ -1177,8 +1383,7 @@ This replaces <code>Model.__validators__</code> and <code>Model.__root_validator
 <p>Create a new model by parsing and validating input data from keyword arguments.</p>
 <p>Raises [<code>ValidationError</code>][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.</p>
-<p><code>__init__</code> uses <code>__pydantic_self__</code> instead of the more common <code>self</code> for the first arg to
-allow <code>self</code> as a field name.</p></div>
+<p><code>self</code> is explicitly positional-only to allow <code>self</code> as a field name.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1194,6 +1399,11 @@ allow <code>self</code> as a field name.</p></div>
             &#34;greet = lambda: print(&#39;howdy!&#39;)\ngreet()&#34;,
             &#34;#Variable declaration\nx=2\n#Function definition\ndef foo(x):\n    &#39;&#39;&#39;Increment the input variable&#39;&#39;&#39;\n    return x+1&#34;,
         ]],
+    )
+    model: Optional[str] = Field(
+        default=&#34;petrinet&#34;,
+        description=&#34;A model name for the type of amr to get out&#34;,
+        examples=[&#34;regnet&#34;],
     )
     system_name: Optional[str] = Field(
         default=None,
@@ -1227,6 +1437,15 @@ allow <code>self</code> as a field name.</p></div>
                 }
             }
         }],
+    )
+    dependency_depth: Optional[int] = Field(
+        default=0,
+        ge=0,
+        le=1,
+        description=&#34;The depth at which to ingest dependencies into Gromet. i.e. 0=Ingest no dependencies, 1=Ingest system dependencies. Accepted values: [0,1]&#34;,
+        examples = [
+            1
+        ]
     )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -1243,7 +1462,19 @@ allow <code>self</code> as a field name.</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="skema.skema_py.server.System.dependency_depth"><code class="name">var <span class="ident">dependency_depth</span> : Optional[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="skema.skema_py.server.System.files"><code class="name">var <span class="ident">files</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.System.model"><code class="name">var <span class="ident">model</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="skema.skema_py.server.System.model_computed_fields"><code class="name">var <span class="ident">model_computed_fields</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1301,8 +1532,30 @@ allow <code>self</code> as a field name.</p></div>
 </ul>
 </li>
 <li>
+<h4><code><a title="skema.skema_py.server.Equation_Extraction_System" href="#skema.skema_py.server.Equation_Extraction_System">Equation_Extraction_System</a></code></h4>
+<ul class="">
+<li><code><a title="skema.skema_py.server.Equation_Extraction_System.gpt_key" href="#skema.skema_py.server.Equation_Extraction_System.gpt_key">gpt_key</a></code></li>
+<li><code><a title="skema.skema_py.server.Equation_Extraction_System.model_computed_fields" href="#skema.skema_py.server.Equation_Extraction_System.model_computed_fields">model_computed_fields</a></code></li>
+<li><code><a title="skema.skema_py.server.Equation_Extraction_System.model_config" href="#skema.skema_py.server.Equation_Extraction_System.model_config">model_config</a></code></li>
+<li><code><a title="skema.skema_py.server.Equation_Extraction_System.model_fields" href="#skema.skema_py.server.Equation_Extraction_System.model_fields">model_fields</a></code></li>
+<li><code><a title="skema.skema_py.server.Equation_Extraction_System.pdf_local_path" href="#skema.skema_py.server.Equation_Extraction_System.pdf_local_path">pdf_local_path</a></code></li>
+<li><code><a title="skema.skema_py.server.Equation_Extraction_System.save_folder" href="#skema.skema_py.server.Equation_Extraction_System.save_folder">save_folder</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="skema.skema_py.server.MML_System" href="#skema.skema_py.server.MML_System">MML_System</a></code></h4>
+<ul class="">
+<li><code><a title="skema.skema_py.server.MML_System.mml" href="#skema.skema_py.server.MML_System.mml">mml</a></code></li>
+<li><code><a title="skema.skema_py.server.MML_System.model_computed_fields" href="#skema.skema_py.server.MML_System.model_computed_fields">model_computed_fields</a></code></li>
+<li><code><a title="skema.skema_py.server.MML_System.model_config" href="#skema.skema_py.server.MML_System.model_config">model_config</a></code></li>
+<li><code><a title="skema.skema_py.server.MML_System.model_fields" href="#skema.skema_py.server.MML_System.model_fields">model_fields</a></code></li>
+<li><code><a title="skema.skema_py.server.MML_System.system" href="#skema.skema_py.server.MML_System.system">system</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="skema.skema_py.server.Ports" href="#skema.skema_py.server.Ports">Ports</a></code></h4>
 <ul class="">
+<li><code><a title="skema.skema_py.server.Ports.model_computed_fields" href="#skema.skema_py.server.Ports.model_computed_fields">model_computed_fields</a></code></li>
 <li><code><a title="skema.skema_py.server.Ports.model_config" href="#skema.skema_py.server.Ports.model_config">model_config</a></code></li>
 <li><code><a title="skema.skema_py.server.Ports.model_fields" href="#skema.skema_py.server.Ports.model_fields">model_fields</a></code></li>
 <li><code><a title="skema.skema_py.server.Ports.opis" href="#skema.skema_py.server.Ports.opis">opis</a></code></li>
@@ -1311,10 +1564,13 @@ allow <code>self</code> as a field name.</p></div>
 </li>
 <li>
 <h4><code><a title="skema.skema_py.server.System" href="#skema.skema_py.server.System">System</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="skema.skema_py.server.System.blobs" href="#skema.skema_py.server.System.blobs">blobs</a></code></li>
 <li><code><a title="skema.skema_py.server.System.comments" href="#skema.skema_py.server.System.comments">comments</a></code></li>
+<li><code><a title="skema.skema_py.server.System.dependency_depth" href="#skema.skema_py.server.System.dependency_depth">dependency_depth</a></code></li>
 <li><code><a title="skema.skema_py.server.System.files" href="#skema.skema_py.server.System.files">files</a></code></li>
+<li><code><a title="skema.skema_py.server.System.model" href="#skema.skema_py.server.System.model">model</a></code></li>
+<li><code><a title="skema.skema_py.server.System.model_computed_fields" href="#skema.skema_py.server.System.model_computed_fields">model_computed_fields</a></code></li>
 <li><code><a title="skema.skema_py.server.System.model_config" href="#skema.skema_py.server.System.model_config">model_config</a></code></li>
 <li><code><a title="skema.skema_py.server.System.model_fields" href="#skema.skema_py.server.System.model_fields">model_fields</a></code></li>
 <li><code><a title="skema.skema_py.server.System.root_name" href="#skema.skema_py.server.System.root_name">root_name</a></code></li>

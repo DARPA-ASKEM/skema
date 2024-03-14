@@ -40,7 +40,7 @@ from skema.program_analysis.CAST2FN.model.cast import (
     Attribute,
     Call,
     FunctionDef,
-    LiteralValue,
+    CASTLiteralValue,
     Loop,
     ModelBreak,
     ModelContinue,
@@ -120,7 +120,10 @@ class CASTToAGraphVisitor(CASTVisitor):
         &#34;&#34;&#34;Visits the entire CAST object to populate the graph G
         and returns an AGraph of the graph G as a result.
         &#34;&#34;&#34;
-        self.visit_list(self.cast.nodes)
+        if isinstance(self.cast, list):
+            self.visit_list(self.cast[0].nodes)
+        else:
+            self.visit_list(self.cast.nodes)
         A = nx.nx_agraph.to_agraph(self.G)
         A.graph_attr.update(
             {&#34;dpi&#34;: 227, &#34;fontsize&#34;: 20, &#34;fontname&#34;: &#34;Menlo&#34;, &#34;rankdir&#34;: &#34;TB&#34;}
@@ -504,6 +507,22 @@ class CASTToAGraphVisitor(CASTVisitor):
         return node_uid
 
     @visit.register
+    def _(self, node: Goto):
+        node_uid = uuid.uuid4()
+        if node.expr == None:
+            self.G.add_node(node_uid, label=f&#34;Goto {node.label}&#34;)
+        else:
+            self.G.add_node(node_uid, label=&#34;Goto (Computed)&#34;)
+        
+        return node_uid
+
+    @visit.register
+    def _(self, node: Label):
+        node_uid = uuid.uuid4()
+        self.G.add_node(node_uid, label=f&#34;Label {node.label}&#34;)
+        return node_uid
+
+    @visit.register
     def _(self, node: Loop):
         &#34;&#34;&#34;Visits Loop nodes. We visit the conditional expression and the
         body of the loop, and connect them to this node in the graph.
@@ -579,7 +598,7 @@ class CASTToAGraphVisitor(CASTVisitor):
             if isinstance(node.value, ValueConstructor):
                 op = node.value.operator
                 init_val = node.value.initial_value.value
-                if isinstance(node.value.size, LiteralValue):
+                if isinstance(node.value.size, CASTLiteralValue):
                     size = node.value.size.value
                     id = -1
                 else:
@@ -602,18 +621,18 @@ class CASTToAGraphVisitor(CASTVisitor):
             ), f&#34;cast_to_agraph_visitor LiteralValue: type not supported yet {type(node)}&#34;
 
     @visit.register
-    def _(self, node: LiteralValue):
+    def _(self, node: CASTLiteralValue):
         if node.value_type == ScalarType.INTEGER:
             node_uid = uuid.uuid4()
             self.G.add_node(node_uid, label=f&#34;Integer: {node.value}&#34;)
             return node_uid
-        elif node.value_type == ScalarType.BOOLEAN:
-            node_uid = uuid.uuid4()
-            self.G.add_node(node_uid, label=f&#34;Boolean: {str(node.value)}&#34;)
-            return node_uid
         elif node.value_type == ScalarType.CHARACTER:
             node_uid = uuid.uuid4()
             self.G.add_node(node_uid, label=f&#34;Character: {str(node.value)}&#34;)
+            return node_uid
+        elif node.value_type == ScalarType.BOOLEAN:
+            node_uid = uuid.uuid4()
+            self.G.add_node(node_uid, label=f&#34;Boolean: {str(node.value)}&#34;)
             return node_uid
         elif node.value_type == ScalarType.ABSTRACTFLOAT:
             node_uid = uuid.uuid4()
@@ -625,10 +644,7 @@ class CASTToAGraphVisitor(CASTVisitor):
             return node_uid
         elif node.value_type == StructureType.TUPLE:
             node_uid = uuid.uuid4()
-            self.G.add_node(node_uid, label=f&#34;Tuple&#34;)
-            tuple_elems = self.visit_list(node.value)
-            for elem_uid in tuple_elems:
-                self.G.add_edge(node_uid, elem_uid)
+            self.G.add_node(node_uid, label=f&#34;Tuple (...)&#34;)
             return node_uid
         elif node.value_type == None:
             node_uid = uuid.uuid4()
@@ -639,7 +655,7 @@ class CASTToAGraphVisitor(CASTVisitor):
             if isinstance(node.value, ValueConstructor):
                 op = node.value.operator
                 init_val = node.value.initial_value.value
-                if isinstance(node.value.size, LiteralValue):
+                if isinstance(node.value.size, CASTLiteralValue):
                     size = node.value.size.value
                     id = -1
                 else:
@@ -986,7 +1002,8 @@ class CASTToAGraphVisitor(CASTVisitor):
         node_uid = uuid.uuid4()
 
         class_init = False
-        for n in self.cast.nodes[0].body:
+        body = self.cast[0].nodes[0].body if isinstance(self.cast, list) else self.cast.nodes[0].body
+        for n in body:
             if isinstance(n, RecordDef) and n.name == node.name:
                 class_init = True
                 self.G.add_node(node_uid, label=node.name + &#34; Init()&#34;)
@@ -1116,7 +1133,10 @@ nodes are visited.</dd>
         &#34;&#34;&#34;Visits the entire CAST object to populate the graph G
         and returns an AGraph of the graph G as a result.
         &#34;&#34;&#34;
-        self.visit_list(self.cast.nodes)
+        if isinstance(self.cast, list):
+            self.visit_list(self.cast[0].nodes)
+        else:
+            self.visit_list(self.cast.nodes)
         A = nx.nx_agraph.to_agraph(self.G)
         A.graph_attr.update(
             {&#34;dpi&#34;: 227, &#34;fontsize&#34;: 20, &#34;fontname&#34;: &#34;Menlo&#34;, &#34;rankdir&#34;: &#34;TB&#34;}
@@ -1500,6 +1520,22 @@ nodes are visited.</dd>
         return node_uid
 
     @visit.register
+    def _(self, node: Goto):
+        node_uid = uuid.uuid4()
+        if node.expr == None:
+            self.G.add_node(node_uid, label=f&#34;Goto {node.label}&#34;)
+        else:
+            self.G.add_node(node_uid, label=&#34;Goto (Computed)&#34;)
+        
+        return node_uid
+
+    @visit.register
+    def _(self, node: Label):
+        node_uid = uuid.uuid4()
+        self.G.add_node(node_uid, label=f&#34;Label {node.label}&#34;)
+        return node_uid
+
+    @visit.register
     def _(self, node: Loop):
         &#34;&#34;&#34;Visits Loop nodes. We visit the conditional expression and the
         body of the loop, and connect them to this node in the graph.
@@ -1575,7 +1611,7 @@ nodes are visited.</dd>
             if isinstance(node.value, ValueConstructor):
                 op = node.value.operator
                 init_val = node.value.initial_value.value
-                if isinstance(node.value.size, LiteralValue):
+                if isinstance(node.value.size, CASTLiteralValue):
                     size = node.value.size.value
                     id = -1
                 else:
@@ -1598,18 +1634,18 @@ nodes are visited.</dd>
             ), f&#34;cast_to_agraph_visitor LiteralValue: type not supported yet {type(node)}&#34;
 
     @visit.register
-    def _(self, node: LiteralValue):
+    def _(self, node: CASTLiteralValue):
         if node.value_type == ScalarType.INTEGER:
             node_uid = uuid.uuid4()
             self.G.add_node(node_uid, label=f&#34;Integer: {node.value}&#34;)
             return node_uid
-        elif node.value_type == ScalarType.BOOLEAN:
-            node_uid = uuid.uuid4()
-            self.G.add_node(node_uid, label=f&#34;Boolean: {str(node.value)}&#34;)
-            return node_uid
         elif node.value_type == ScalarType.CHARACTER:
             node_uid = uuid.uuid4()
             self.G.add_node(node_uid, label=f&#34;Character: {str(node.value)}&#34;)
+            return node_uid
+        elif node.value_type == ScalarType.BOOLEAN:
+            node_uid = uuid.uuid4()
+            self.G.add_node(node_uid, label=f&#34;Boolean: {str(node.value)}&#34;)
             return node_uid
         elif node.value_type == ScalarType.ABSTRACTFLOAT:
             node_uid = uuid.uuid4()
@@ -1621,10 +1657,7 @@ nodes are visited.</dd>
             return node_uid
         elif node.value_type == StructureType.TUPLE:
             node_uid = uuid.uuid4()
-            self.G.add_node(node_uid, label=f&#34;Tuple&#34;)
-            tuple_elems = self.visit_list(node.value)
-            for elem_uid in tuple_elems:
-                self.G.add_edge(node_uid, elem_uid)
+            self.G.add_node(node_uid, label=f&#34;Tuple (...)&#34;)
             return node_uid
         elif node.value_type == None:
             node_uid = uuid.uuid4()
@@ -1635,7 +1668,7 @@ nodes are visited.</dd>
             if isinstance(node.value, ValueConstructor):
                 op = node.value.operator
                 init_val = node.value.initial_value.value
-                if isinstance(node.value.size, LiteralValue):
+                if isinstance(node.value.size, CASTLiteralValue):
                     size = node.value.size.value
                     id = -1
                 else:
@@ -1982,7 +2015,8 @@ nodes are visited.</dd>
         node_uid = uuid.uuid4()
 
         class_init = False
-        for n in self.cast.nodes[0].body:
+        body = self.cast[0].nodes[0].body if isinstance(self.cast, list) else self.cast.nodes[0].body
+        for n in body:
             if isinstance(n, RecordDef) and n.name == node.name:
                 class_init = True
                 self.G.add_node(node_uid, label=node.name + &#34; Init()&#34;)
@@ -2052,7 +2086,10 @@ and returns an AGraph of the graph G as a result.</p></div>
     &#34;&#34;&#34;Visits the entire CAST object to populate the graph G
     and returns an AGraph of the graph G as a result.
     &#34;&#34;&#34;
-    self.visit_list(self.cast.nodes)
+    if isinstance(self.cast, list):
+        self.visit_list(self.cast[0].nodes)
+    else:
+        self.visit_list(self.cast.nodes)
     A = nx.nx_agraph.to_agraph(self.G)
     A.graph_attr.update(
         {&#34;dpi&#34;: 227, &#34;fontsize&#34;: 20, &#34;fontname&#34;: &#34;Menlo&#34;, &#34;rankdir&#34;: &#34;TB&#34;}
