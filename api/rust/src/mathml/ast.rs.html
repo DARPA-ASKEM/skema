@@ -1,5 +1,6 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mathml/src/ast.rs`."><title>ast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mathml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `mathml/src/ast.rs`."><title>ast.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="mathml" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.1 (7cf61ebde 2024-03-27)" data-channel="1.77.1" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-4c98445ec4002617.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title">
+            <h2>Files</h2></div></nav><div class="sidebar-resizer"></div>
+    <main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../mathml/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -271,6 +272,39 @@
 <a href="#270" id="270">270</a>
 <a href="#271" id="271">271</a>
 <a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
 </pre></div><pre class="rust"><code><span class="kw">use </span>derive_new::new;
 <span class="kw">use </span>schemars::JsonSchema;
 <span class="kw">use </span>std::fmt;
@@ -321,6 +355,16 @@
     <span class="kw">pub </span>r#type: <span class="prelude-ty">Option</span>&lt;Type&gt;,
     <span class="kw">pub </span>content: Box&lt;MathExpression&gt;,
     <span class="kw">pub </span>func_of: <span class="prelude-ty">Option</span>&lt;Vec&lt;Ci&gt;&gt;,
+    <span class="kw">pub </span>notation: <span class="prelude-ty">Option</span>&lt;VectorNotation&gt;,
+}
+
+<span class="doccomment">/// Vector notation call for Ci being bold or an arrow
+</span><span class="attr">#[derive(
+    Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Hash, new, Deserialize, Serialize, JsonSchema,
+)]
+</span><span class="kw">pub enum </span>VectorNotation {
+    Bold,
+    Arrow,
 }
 
 <span class="doccomment">/// Represents the differentiation operator `diff` for functions or expresions `func`
@@ -339,6 +383,16 @@
     Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Hash, new, Deserialize, Serialize, JsonSchema,
 )]
 </span><span class="kw">pub struct </span>SummationMath {
+    <span class="kw">pub </span>op: Box&lt;MathExpression&gt;,
+    <span class="kw">pub </span>func: Box&lt;MathExpression&gt;,
+}
+
+<span class="doccomment">/// Represents expoenential operator with terms that are in the exponential
+/// E.g. exp( x(y-z) )
+</span><span class="attr">#[derive(
+    Debug, Ord, PartialOrd, PartialEq, Eq, Clone, Hash, new, Deserialize, Serialize, JsonSchema,
+)]
+</span><span class="kw">pub struct </span>ExpMath {
     <span class="kw">pub </span>op: Box&lt;MathExpression&gt;,
     <span class="kw">pub </span>func: Box&lt;MathExpression&gt;,
 }
@@ -455,6 +509,8 @@
     </span>SurfaceIntegral(Box&lt;MathExpression&gt;),
     <span class="doccomment">/// ↓ as an operator e.g. I↓ indicates downward diffuse radiative fluxes per unit indcident flux
     </span>DownArrow(DownArrow),
+    Minimize(Box&lt;MathExpression&gt;, Vec&lt;MathExpression&gt;),
+    ExpMath(ExpMath),
     <span class="attr">#[default]
     </span><span class="prelude-val">None</span>,
 }
@@ -467,6 +523,7 @@
                 r#type: <span class="kw">_</span>,
                 content,
                 func_of: <span class="kw">_</span>,
+                notation: <span class="kw">_</span>,
             }) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, content),
             MathExpression::Mn(number) =&gt; <span class="macro">write!</span>(f, <span class="string">"{}"</span>, number),
             MathExpression::Msup(base, superscript) =&gt; {
@@ -500,6 +557,10 @@
                 <span class="macro">write!</span>(f, <span class="string">"{op}"</span>)<span class="question-mark">?</span>;
                 <span class="macro">write!</span>(f, <span class="string">"{func}"</span>)
             }
+            MathExpression::ExpMath(ExpMath { op, func }) =&gt; {
+                <span class="macro">write!</span>(f, <span class="string">"{op}"</span>)<span class="question-mark">?</span>;
+                <span class="macro">write!</span>(f, <span class="string">"{func}"</span>)
+            }
             MathExpression::HatComp(HatComp { op, comp }) =&gt; {
                 <span class="macro">write!</span>(f, <span class="string">"{op}"</span>)<span class="question-mark">?</span>;
                 <span class="macro">write!</span>(f, <span class="string">"{comp}"</span>)
@@ -526,6 +587,12 @@
                 (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(up)) =&gt; <span class="macro">write!</span>(f, <span class="string">"{comp}↓^{{{up}}}"</span>),
                 (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">"{comp}↓"</span>),
             },
+            MathExpression::Minimize(op, row) =&gt; {
+                <span class="kw">for </span>e <span class="kw">in </span>row {
+                    <span class="macro">write!</span>(f, <span class="string">"{}"</span>, e)<span class="question-mark">?</span>;
+                }
+                <span class="prelude-val">Ok</span>(())
+            }
             expression =&gt; <span class="macro">write!</span>(f, <span class="string">"{expression:?}"</span>),
         }
     }
