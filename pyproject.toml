@@ -57,7 +57,7 @@ isa = [
 ]
 
 # shared ML dependencies
-ml = ["torch==2.0.1", "torchvision==0.15.2", "beartype==0.15.0"]
+ml = ["torch==2.0.1", "torchvision==0.15.2", "beartype==0.15.0", "huggingface_hub"]
 
 # Im2MML dependencies. The img2mml service converts equation images to MathML.
 # See the skema/img2mml directory.
@@ -100,6 +100,7 @@ all = ["skema[core]", "skema[dev]", "skema[doc]", "skema[demo]", "skema[annotati
 "skema.rest" = "skema/rest"
 "skema.skema_py" = "skema/skema_py"
 "skema.utils" = "skema/utils"
+"skema.data" = "skema/data"
 
 # re-map skema/text_reading/python to skema.text_reading
 #"skema.text_reading" = "skema/text_reading/python"
@@ -110,7 +111,7 @@ all = ["skema[core]", "skema[dev]", "skema[doc]", "skema[demo]", "skema[annotati
 
 [tool.setuptools.package-data]
 # needed to ensure models are included in package/discoverable
-"*" = ["*.json", "*vocab.txt", "*.pt", "*.png", "*.html", "*.yml", "*.yaml"]
+"*" = ["*.json", "*vocab.txt", "*.pt", "*.png", "*.html", "*.yml", "*.yaml", "*.zip"]
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.md"], content-type = "text/markdown"}
