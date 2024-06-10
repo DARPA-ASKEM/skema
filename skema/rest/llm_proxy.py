@@ -94,7 +94,7 @@ async def get_lines_of_model(zip_file: UploadFile = File()) -> List[Dynamics]:
     # initialize the models
     openai = ChatOpenAI(
         temperature=temperature,
-        model_name='gpt-3.5-turbo-0613',
+        model_name='gpt-3.5-turbo',
         openai_api_key=SKEMA_OPENAI_KEY
     )
 
